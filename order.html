@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Place a custom order with Handy Crafts — handmade gifts made just for you." />
+  <title>Place Order · Handy Crafts</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc', muted:'#b59070' },
+            beige: { warm:'#f5ede3', soft:'#faf5ef', cream:'#fffdf9' },
+          },
+          letterSpacing: { widest2:'0.22em', widest3:'0.28em' },
+        },
+      },
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+    body { font-family: 'Jost', system-ui, sans-serif; font-weight: 300; background: #fffdf9; color: #6b4f35; }
+    .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-1 { animation: fadeUp .6s ease both; }
+    .anim-2 { animation: fadeUp .6s .1s ease both; }
+
+    /* Field */
+    .field {
+      width: 100%;
+      background: #faf5ef;
+      border: 1.5px solid #ecdccc;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: #6b4f35;
+      outline: none;
+      transition: border-color .2s, background .2s;
+      appearance: none;
+    }
+    .field::placeholder { color: #c4a882; }
+    .field:focus { border-color: #c4a882; background: #fff; }
+
+    /* Upload zone */
+    .upload-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: #faf5ef;
+      border: 1.5px dashed #ecdccc;
+      border-radius: 14px;
+      padding: 28px 20px;
+      cursor: pointer;
+      text-align: center;
+      transition: background .2s, border-color .2s;
+      position: relative;
+    }
+    .upload-zone:hover { background: #f5ede3; border-color: #c4a882; }
+    .upload-zone input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+    /* Image preview grid */
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .preview-grid .preview-thumb {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid #ecdccc;
+    }
+    .preview-grid .preview-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .preview-grid .preview-thumb .remove-btn {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 18px;
+      height: 18px;
+      background: rgba(107,79,53,0.75);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .preview-single {
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid #ecdccc;
+      max-width: 200px;
+    }
+    .preview-single img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Success overlay */
+    @keyframes scaleIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-card { animation: scaleIn .45s cubic-bezier(.34,1.56,.64,1) both; }
+
+    @keyframes ping {
+      0%   { transform: scale(1); opacity: .6; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .ping { animation: ping 1.2s ease infinite; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══════ NAVBAR ═══════ -->
+  <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/70">
+    <div class="max-w-[520px] mx-auto px-6 h-16 flex items-center justify-between">
+
+      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+        <img src="images/logo.png" alt="Handy Crafts" class="h-14 scale-[1.3] origin-left w-auto"
+          onerror="this.style.display='none';document.getElementById('ltxt').style.display='flex'" />
+        <span id="ltxt" class="font-cormorant text-[22px] italic text-[#9e7550] leading-none flex flex-col">
+          Handy crafts
+          <span class="text-[8px] not-italic tracking-[0.28em] uppercase text-[#c4a882] font-sans mt-0.5">Gift Shop</span>
+        </span>
+      </a>
+
+      <a href="index.html" id="back-home-link"
+         class="flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+        </svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════ PAGE HEADER ═══════ -->
+  <div class="max-w-[520px] mx-auto px-6 pt-12 pb-8 text-center anim-1">
+    <div class="inline-flex items-center gap-2 bg-[#f5ede3] border border-[#ecdccc] rounded-full px-5 py-2 mb-6">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#c4a882] inline-block"></span>
+      <span class="text-[10px] tracking-[0.22em] uppercase text-[#b59070]">Custom order</span>
+    </div>
+    <h1 class="font-cormorant italic text-[44px] leading-tight text-[#6b4f35] mb-2">
+      Place Your Order
+    </h1>
+    <p class="text-[12px] tracking-[0.18em] uppercase text-[#c4a882]">Tell us what you'd love 🤎</p>
+  </div>
+
+  <!-- ═══════ FORM ═══════ -->
+  <form id="order-form" novalidate class="max-w-[520px] mx-auto px-6 pb-28 anim-2">
+
+    <!-- Divider label -->
+    <div class="flex items-center gap-3 mb-6">
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+      <span class="text-[10px] tracking-[0.22em] uppercase text-[#c4a882] shrink-0">Messages</span>
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+    </div>
+
+    <!-- Love message -->
+    <div class="mb-5">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2" for="f-love-msg">Love Message</label>
+      <textarea id="f-love-msg" class="field min-h-[80px] resize-y leading-relaxed" placeholder="Write your heartfelt message here..." required></textarea>
+    </div>
+
+    <!-- How it started -->
+    <div class="mb-5">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2" for="f-how-started">How it started</label>
+      <textarea id="f-how-started" class="field min-h-[80px] resize-y leading-relaxed" placeholder="Share your story..." required></textarea>
+    </div>
+
+    <!-- Proud message -->
+    <div class="mb-8">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2" for="f-proud-msg">Proud message</label>
+      <textarea id="f-proud-msg" class="field min-h-[80px] resize-y leading-relaxed" placeholder="Something you are proud of..." required></textarea>
+    </div>
+
+    <!-- Divider -->
+    <div class="flex items-center gap-3 mb-6">
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+      <span class="text-[10px] tracking-[0.22em] uppercase text-[#c4a882] shrink-0">Photos</span>
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+    </div>
+
+    <!-- Images -->
+    <div class="mb-8">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2">Upload your favorite moments and memories</label>
+      <label for="f-images" class="upload-zone">
+        <input type="file" id="f-images" accept="image/*" multiple />
+        <svg class="w-7 h-7 text-[#c4a882]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
+        </svg>
+        <span class="text-[12px] text-[#c4a882]">Tap to upload photos</span>
+        <span id="img-names" class="text-[11px] text-[#9e7550] hidden mt-1 max-w-[260px] truncate"></span>
+      </label>
+      <div id="img-previews" class="preview-grid"></div>
+    </div>
+
+    <!-- Divider -->
+    <div class="flex items-center gap-3 mb-6">
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+      <span class="text-[10px] tracking-[0.22em] uppercase text-[#c4a882] shrink-0">Extra Info</span>
+      <div class="flex-1 h-px bg-[#ecdccc]/70"></div>
+    </div>
+
+    <!-- Year started -->
+    <div class="mb-5">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2" for="f-year">Year your story started</label>
+      <input type="text" id="f-year" class="field" placeholder="e.g. 2020" />
+    </div>
+
+    <!-- Favorite song -->
+    <div class="mb-8">
+      <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-2" for="f-song">Favorite song</label>
+      <input type="text" id="f-song" class="field" placeholder="Song title & artist" />
+    </div>
+
+    <!-- Error -->
+    <p id="form-error" class="text-center text-[13px] text-red-400 mb-4 hidden">
+      Please fill in your messages.
+    </p>
+
+    <!-- Submit -->
+    <button type="submit" id="submit-btn"
+            class="w-full bg-[#9e7550] text-white py-4 rounded-full
+                   text-[11px] tracking-[0.22em] uppercase font-normal
+                   hover:bg-[#6b4f35] hover:shadow-xl
+                   transition-all duration-300 active:scale-[0.98]">
+      Submit Order
+    </button>
+
+    <!-- Reassurance line -->
+    <p class="text-center text-[11px] text-[#c4a882] mt-4 tracking-wide">
+      We'll reach out within 24 hours 🤎
+    </p>
+
+  </form>
+
+  <!-- ═══════ SUCCESS OVERLAY ═══════ -->
+  <div id="success-overlay"
+       class="fixed inset-0 z-50 bg-[#fffdf9]/95 backdrop-blur-sm flex items-center justify-center px-8 hidden">
+    <div class="success-card bg-white rounded-3xl shadow-2xl px-8 py-12 max-w-sm w-full text-center ring-1 ring-[#ecdccc]">
+
+      <!-- Pulsing icon -->
+      <div class="relative inline-flex items-center justify-center mb-8">
+        <span class="ping absolute inline-flex h-20 w-20 rounded-full bg-[#f5ede3]"></span>
+        <span class="relative inline-flex h-20 w-20 rounded-full bg-[#f5ede3] items-center justify-center text-4xl">🤎</span>
+      </div>
+
+      <h2 class="font-cormorant italic text-[40px] leading-tight text-[#6b4f35] mb-3">
+        Order received
+      </h2>
+      <p class="text-[13px] text-[#c4a882] tracking-wider leading-relaxed mb-2">
+        We will contact you soon
+      </p>
+      <p id="success-order-id" class="text-[11px] tracking-[0.22em] uppercase text-[#b59070] mb-8 font-medium">
+        Order ID: #-----
+      </p>
+
+      <div class="flex flex-col gap-3">
+        <a href="index.html"
+           class="block w-full bg-[#9e7550] text-white text-[11px] tracking-[0.22em] uppercase py-4 rounded-full hover:bg-[#6b4f35] transition duration-200">
+          Back to Home
+        </a>
+        <a href="https://instagram.com/handycrafts" target="_blank"
+           class="block w-full border border-[#ecdccc] text-[#9e7550] text-[11px] tracking-[0.22em] uppercase py-4 rounded-full hover:bg-[#f5ede3] transition duration-200">
+          Visit Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instagram FAB -->
+  <a href="https://instagram.com/handycrafts" target="_blank" id="instagram-fab" aria-label="Visit Instagram"
+     class="fixed bottom-6 right-5 z-40 w-[52px] h-[52px] bg-[#9e7550] rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(158,117,80,0.4)] hover:scale-110 hover:shadow-[0_8px_28px_rgba(158,117,80,0.5)] transition-transform duration-300">
+    <svg class="w-[26px] h-[26px] fill-white" viewBox="0 0 24 24">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+  </a>
+
+  <script>
+    /* ═══════════════════════════════════════════
+       Handy Crafts — Order Form Logic
+       ═══════════════════════════════════════════ */
+
+    // ── State ─────────────────────────────────
+    let refImageDataUrls  = [];   // base64 data URLs for reference images
+
+    // ── Init ──────────────────────────────────
+    function init() {
+      bindImageUpload();
+      bindFormSubmit();
+    }
+
+    // ── Reference Images: preview + data URLs ─
+    function bindImageUpload() {
+      document.getElementById('f-images').addEventListener('change', function () {
+        const container = document.getElementById('img-previews');
+        const nameEl    = document.getElementById('img-names');
+        container.innerHTML = '';
+        refImageDataUrls    = [];
+
+        if (!this.files.length) {
+          nameEl.classList.add('hidden');
+          return;
+        }
+
+        nameEl.textContent = [...this.files].map(f => f.name).join(', ');
+        nameEl.classList.remove('hidden');
+
+        [...this.files].forEach((file, i) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            refImageDataUrls.push(e.target.result);
+
+            // Build thumbnail
+            const thumb = document.createElement('div');
+            thumb.className = 'preview-thumb';
+            thumb.innerHTML = `
+              <img src="${e.target.result}" alt="Preview ${i + 1}" />
+              <button type="button" class="remove-btn" data-index="${i}" title="Remove">✕</button>
+            `;
+            container.appendChild(thumb);
+
+            // Remove button
+            thumb.querySelector('.remove-btn').addEventListener('click', function () {
+              const idx = parseInt(this.dataset.index);
+              refImageDataUrls.splice(idx, 1);
+              thumb.remove();
+              // Re-index remaining buttons
+              container.querySelectorAll('.remove-btn').forEach((btn, j) => btn.dataset.index = j);
+            });
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+
+    // ── Validate form fields ──────────────────
+    function validateForm() {
+      const msg1  = document.getElementById('f-love-msg').value.trim();
+      const msg2  = document.getElementById('f-how-started').value.trim();
+      const msg3  = document.getElementById('f-proud-msg').value.trim();
+
+      const errors = [];
+      if (!msg1)  errors.push('msg1');
+      if (!msg2)  errors.push('msg2');
+      if (!msg3)  errors.push('msg3');
+
+      return { valid: errors.length === 0, errors };
+    }
+
+    // ── Collect all form data ─────────────────
+    function collectFormData() {
+      const orderId = 'HC-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4);
+      return {
+        id:        orderId,
+        date:      new Date().toLocaleString(),
+        loveMsg:   document.getElementById('f-love-msg').value.trim(),
+        howStarted:document.getElementById('f-how-started').value.trim(),
+        proudMsg:  document.getElementById('f-proud-msg').value.trim(),
+        year:      document.getElementById('f-year').value.trim(),
+        song:      document.getElementById('f-song').value.trim(),
+        images:    [...refImageDataUrls]
+      };
+    }
+
+    // ── Save order to localStorage ────────────
+    function saveOrder(order) {
+      const orders = JSON.parse(localStorage.getItem('hc_orders') || '[]');
+      orders.push(order);
+      localStorage.setItem('hc_orders', JSON.stringify(orders));
+    }
+
+    // ── Form submit handler ───────────────────
+    function bindFormSubmit() {
+      document.getElementById('order-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const { valid } = validateForm();
+        const err = document.getElementById('form-error');
+        const btn = document.getElementById('submit-btn');
+
+        if (!valid) {
+          err.classList.remove('hidden');
+          err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        err.classList.add('hidden');
+        btn.textContent = 'Sending…';
+        btn.disabled    = true;
+        btn.style.opacity = '.65';
+
+        // Collect & save
+        const order = collectFormData();
+        saveOrder(order);
+
+        // Redirect to payment page
+        window.location.href = `payment.html?orderId=${order.id}`;
+      });
+    }
+
+    // ── Run ───────────────────────────────────
+    init();
+  </script>
+
+</body>
+</html>
+

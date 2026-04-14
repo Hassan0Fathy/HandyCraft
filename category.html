@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Handy Crafts – Browse our handmade collections." />
+  <title>Category · Handy Crafts</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .logo-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; font-style: italic; color: var(--brown-mid); letter-spacing: 0.06em; line-height: 1.1; display: inline-block; }
+    .logo-text small { display: block; font-family: 'Jost', sans-serif; font-size: 8px; font-style: normal; letter-spacing: 0.28em; text-transform: uppercase; color: var(--text-light); margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container" style="position:relative;">
+      <a href="index.html" class="nav-back" id="back-home">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </a>
+      <img src="images/logo.png" alt="Handy Crafts" class="logo" onerror="this.style.display='none';document.getElementById('logo-text-cat').style.display='inline-block'" />
+      <span class="logo-text" id="logo-text-cat" style="display:inline-block;">Handy crafts<small>Gift Shop</small></span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Category Hero -->
+    <section class="category-hero container fade-in">
+      <h1 class="page-title" id="cat-title">Frames</h1>
+      <p class="subtitle" id="cat-subtitle">Custom-made just for you ✦</p>
+    </section>
+
+    <!-- Gallery -->
+    <section class="container fade-in-2">
+      <div class="category-gallery" id="cat-gallery">
+        <div class="gallery-main">
+          <img id="img-main" src="images/frames.png" alt="Main product image" />
+        </div>
+        <div class="gallery-sub">
+          <img id="img-sub1" src="images/frames.png" alt="Product detail" />
+        </div>
+        <div class="gallery-sub">
+          <img id="img-sub2" src="images/frames.png" alt="Product detail" />
+        </div>
+      </div>
+
+      <p class="category-note fade-in-3">"Custom-made just for you"</p>
+
+      <div class="category-action fade-in-4">
+        <a href="order.html" class="btn btn-primary" id="btn-order-now">Order Now</a>
+      </div>
+    </section>
+
+    <!-- Other Categories -->
+    <section class="container fade-in-4" style="margin-top:48px;">
+      <div class="divider"><span>More Collections</span></div>
+      <div class="categories-grid" id="related-grid">
+        <!-- filled by JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Handy Crafts · All rights reserved</p>
+    </div>
+  </footer>
+
+  <!-- Instagram FAB -->
+  <a href="https://instagram.com/handycrafts" target="_blank" class="social-fab" id="instagram-btn" aria-label="Visit Instagram" style="background:#a07850;box-shadow:0 4px 20px rgba(160,120,80,0.4);">
+    <svg viewBox="0 0 24 24" fill="#ffffff" style="width:24px;height:24px;">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+  </a>
+
+  <script>
+    const categories = {
+      frames:   { title: 'Frames',   img: 'images/frames.png',   alt: 'Handmade frames' },
+      books:    { title: 'Books',    img: 'images/books.png',    alt: 'Handmade books' },
+      birthday: { title: 'Birthday', img: 'images/birthday.png', alt: 'Birthday gifts' },
+      baby:     { title: 'Baby',     img: 'images/baby.png',     alt: 'Baby gifts' },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const cat    = params.get('cat') || 'frames';
+    const data   = categories[cat] || categories.frames;
+
+    // Update title & images
+    document.getElementById('cat-title').textContent   = data.title;
+    document.title = data.title + ' · Handy Crafts';
+    document.getElementById('img-main').src  = data.img;
+    document.getElementById('img-main').alt  = data.alt;
+    document.getElementById('img-sub1').src  = data.img;
+    document.getElementById('img-sub1').alt  = data.alt;
+    document.getElementById('img-sub2').src  = data.img;
+    document.getElementById('img-sub2').alt  = data.alt;
+
+    // Pre-fill order category
+    document.getElementById('btn-order-now').href = `order.html?cat=${cat}`;
+
+    // Related categories (exclude current)
+    const related  = Object.entries(categories).filter(([k]) => k !== cat);
+    const grid     = document.getElementById('related-grid');
+    related.forEach(([key, val]) => {
+      grid.innerHTML += `
+        <a href="category.html?cat=${key}" class="category-card" id="card-${key}">
+          <img src="${val.img}" alt="${val.alt}" class="card-img" />
+          <div class="card-label">${val.title}</div>
+        </a>`;
+    });
+  </script>
+</body>
+</html>
+

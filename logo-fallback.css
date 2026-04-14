@@ -1,0 +1,20 @@
+/* Logo fallback — shown when logo.png is missing */
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--brown-mid);
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+.logo-text span {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-top: 2px;
+}

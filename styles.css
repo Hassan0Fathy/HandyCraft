@@ -1,0 +1,589 @@
+/* =============================================
+   HANDY CRAFTS — Global Styles
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+/* --- CSS Variables --- */
+:root {
+  --brown-dark:   #7a5c3e;
+  --brown-mid:    #a07850;
+  --brown-light:  #c4a882;
+  --beige-warm:   #f5ede3;
+  --beige-soft:   #faf5ef;
+  --cream:        #fffdf9;
+  --text-dark:    #4a3728;
+  --text-mid:     #7a6152;
+  --text-light:   #b09882;
+  --border:       #e8d8c8;
+  --shadow:       rgba(122, 92, 62, 0.08);
+  --radius-sm:    12px;
+  --radius-md:    20px;
+  --radius-lg:    32px;
+  --radius-xl:    50px;
+  --transition:   0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--cream);
+  color: var(--text-dark);
+  font-weight: 300;
+  line-height: 1.7;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a  { text-decoration: none; color: inherit; }
+
+/* --- Typography --- */
+.serif {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* --- Utility --- */
+.container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* =============================================
+   HEADER / NAV
+   ============================================= */
+.site-header {
+  padding: 24px 0 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header .logo {
+  height: 80px;
+  width: auto;
+  margin: 0 auto;
+  display: block;
+  transform: scale(1.4);
+}
+
+.site-header .nav-back {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--brown-mid);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--transition);
+}
+
+.site-header .nav-back:hover { color: var(--brown-dark); }
+
+.site-header .nav-back svg {
+  width: 16px; height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px 32px;
+  border-radius: var(--radius-xl);
+  transition: all var(--transition);
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--brown-mid);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(160, 120, 80, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--brown-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(160, 120, 80, 0.35);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--brown-mid);
+  border: 1.5px solid var(--brown-light);
+}
+
+.btn-outline:hover {
+  background: var(--beige-warm);
+  border-color: var(--brown-mid);
+  transform: translateY(-2px);
+}
+
+.btn-outline:active { transform: translateY(0); }
+
+/* =============================================
+   HOME PAGE
+   ============================================= */
+.home-hero {
+  padding: 48px 0 40px;
+  text-align: center;
+}
+
+.home-hero .tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 8vw, 38px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--brown-mid);
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.home-hero .sub {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 40px;
+}
+
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 56px;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.divider span {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Category Cards */
+.categories-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 60px;
+}
+
+.category-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--beige-soft);
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 2px 12px var(--shadow);
+  text-decoration: none;
+  display: block;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(122, 92, 62, 0.14);
+}
+
+.category-card:active { transform: translateY(-1px); }
+
+.category-card .card-img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.category-card .card-label {
+  padding: 12px 14px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  font-weight: 400;
+}
+
+/* =============================================
+   CATEGORY PAGE
+   ============================================= */
+.category-hero {
+  padding: 40px 0 20px;
+  text-align: center;
+}
+
+.category-hero .page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 10vw, 52px);
+  font-weight: 300;
+  color: var(--brown-dark);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.category-hero .subtitle {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 36px;
+}
+
+.category-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.category-gallery .gallery-main {
+  grid-column: 1 / -1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.category-gallery .gallery-main img,
+.category-gallery .gallery-sub img {
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.category-gallery .gallery-main img {
+  height: 240px;
+}
+
+.category-gallery .gallery-sub {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.category-gallery .gallery-sub img {
+  height: 160px;
+}
+
+.category-note {
+  text-align: center;
+  padding: 20px 0 32px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text-mid);
+  letter-spacing: 0.04em;
+}
+
+.category-action {
+  padding-bottom: 60px;
+}
+
+/* =============================================
+   ORDER PAGE
+   ============================================= */
+.order-hero {
+  padding: 40px 0 32px;
+  text-align: center;
+}
+
+.order-hero .page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 9vw, 44px);
+  font-weight: 300;
+  color: var(--brown-dark);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.order-hero .subtitle {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+/* Form */
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 60px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  font-weight: 400;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  background: var(--beige-soft);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-family: 'Jost', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+  appearance: none;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-light);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--brown-light);
+  background: #fff;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23b09882' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+.upload-area {
+  background: var(--beige-soft);
+  border: 1.5px dashed var(--brown-light);
+  border-radius: var(--radius-sm);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.upload-area:hover {
+  background: var(--beige-warm);
+  border-color: var(--brown-mid);
+}
+
+.upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.upload-text {
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+/* =============================================
+   SUCCESS PAGE
+   ============================================= */
+.success-page {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.success-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.success-icon {
+  width: 88px;
+  height: 88px;
+  background: var(--beige-warm);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 9vw, 44px);
+  font-weight: 300;
+  color: var(--brown-dark);
+  letter-spacing: 0.04em;
+  animation: fadeUp 0.6s 0.2s both;
+}
+
+.success-sub {
+  font-size: 14px;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  animation: fadeUp 0.6s 0.35s both;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  animation: fadeUp 0.6s 0.5s both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================
+   SOCIAL FAB
+   ============================================= */
+.social-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  width: 54px;
+  height: 54px;
+  background: var(--brown-mid);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(160, 120, 80, 0.35);
+  transition: transform var(--transition), box-shadow var(--transition);
+  cursor: pointer;
+}
+
+.social-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 28px rgba(160, 120, 80, 0.45);
+}
+
+.social-fab svg {
+  width: 28px;
+  height: 28px;
+  fill: #fff;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.site-footer p {
+  font-size: 12px;
+  color: var(--text-light);
+  letter-spacing: 0.14em;
+}
+
+/* =============================================
+   FADE-IN ANIMATION
+   ============================================= */
+.fade-in {
+  animation: fadeUp 0.7s both;
+}
+
+.fade-in-2 { animation: fadeUp 0.7s 0.1s both; }
+.fade-in-3 { animation: fadeUp 0.7s 0.2s both; }
+.fade-in-4 { animation: fadeUp 0.7s 0.3s both; }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 360px) {
+  .categories-grid { gap: 10px; }
+  .category-gallery { gap: 8px; }
+  .btn { font-size: 13px; padding: 14px 24px; }
+}
+
+@media (min-width: 640px) {
+  .container { max-width: 540px; }
+  .home-hero .tagline { font-size: 44px; }
+}

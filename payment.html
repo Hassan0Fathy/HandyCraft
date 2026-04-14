@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Complete your custom order with Handy Crafts." />
+  <title>Payment · Handy Crafts</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc', muted:'#b59070' },
+            beige: { warm:'#f5ede3', soft:'#faf5ef', cream:'#fffdf9' },
+          },
+          letterSpacing: { widest2:'0.22em', widest3:'0.28em' },
+        },
+      },
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+    body { font-family: 'Jost', system-ui, sans-serif; font-weight: 300; background: #fffdf9; color: #6b4f35; }
+    .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-1 { animation: fadeUp .6s ease both; }
+    .anim-2 { animation: fadeUp .6s .1s ease both; }
+
+    /* Upload zone */
+    .upload-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: #faf5ef;
+      border: 1.5px dashed #ecdccc;
+      border-radius: 14px;
+      padding: 28px 20px;
+      cursor: pointer;
+      text-align: center;
+      transition: background .2s, border-color .2s;
+      position: relative;
+    }
+    .upload-zone:hover { background: #f5ede3; border-color: #c4a882; }
+    .upload-zone input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+    .preview-single {
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid #ecdccc;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .preview-single img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      color: #9e7550;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .copy-btn:hover { color: #6b4f35; }
+    .copy-btn:active { transform: scale(0.95); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══════ NAVBAR ═══════ -->
+  <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/70">
+    <div class="max-w-[520px] mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+        <img src="images/logo.png" alt="Handy Crafts" class="h-14 scale-[1.3] origin-left w-auto"
+          onerror="this.style.display='none';document.getElementById('ltxt').style.display='flex'" />
+        <span id="ltxt" class="font-cormorant text-[22px] italic text-[#9e7550] leading-none flex flex-col">
+          Handy crafts
+          <span class="text-[8px] not-italic tracking-[0.28em] uppercase text-[#c4a882] font-sans mt-0.5">Gift Shop</span>
+        </span>
+      </a>
+      <a href="javascript:history.back()"
+         class="flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+        </svg>
+        Back
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══════ PAGE HEADER ═══════ -->
+  <div class="max-w-[520px] mx-auto px-6 pt-12 pb-6 text-center anim-1">
+    <div class="inline-flex items-center gap-2 bg-[#f5ede3] border border-[#ecdccc] rounded-full px-5 py-2 mb-6">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#c4a882] inline-block"></span>
+      <span class="text-[10px] tracking-[0.22em] uppercase text-[#b59070]">Step 2</span>
+    </div>
+    <h1 class="font-cormorant italic text-[40px] leading-tight text-[#6b4f35] mb-3">
+      Complete Your Order
+    </h1>
+    <p class="text-[13px] text-[#c4a882] leading-relaxed max-w-[320px] mx-auto mb-2">
+      To confirm your order, please send a 50% deposit using one of the following methods.
+    </p>
+  </div>
+
+  <!-- ═══════ PAYMENT METHODS ═══════ -->
+  <div class="max-w-[420px] mx-auto px-6 pb-24 anim-2">
+    
+    <!-- Vodafone Cash -->
+    <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 mb-4 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-[#f5ede3] rounded-full flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-[#9e7550]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-1">Vodafone Cash</p>
+          <p class="text-[15px] font-medium text-[#6b4f35] tracking-wide" id="v-cash-num">0100 123 4567</p>
+        </div>
+      </div>
+      <button type="button" class="copy-btn p-2" onclick="copyToClipboard('01001234567')" title="Copy Number">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- InstaPay -->
+    <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 mb-8 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 bg-[#f5ede3] rounded-full flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-[#9e7550]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-1">InstaPay</p>
+          <p class="text-[15px] font-medium text-[#6b4f35] tracking-wide" id="instapay-user">handycrafts@instapay</p>
+        </div>
+      </div>
+      <button type="button" class="copy-btn p-2" onclick="copyToClipboard('handycrafts@instapay')" title="Copy Handle">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/>
+        </svg>
+      </button>
+    </div>
+
+    <form id="payment-form" novalidate>
+      <!-- Upload Section -->
+      <div class="mb-8">
+        <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-3 text-center">
+          Upload screenshot after transfer to confirm your order
+        </label>
+        <label for="f-payment" class="upload-zone">
+          <input type="file" id="f-payment" accept="image/*" required />
+          <svg class="w-7 h-7 text-[#c4a882]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+          </svg>
+          <span class="text-[12px] text-[#c4a882]">Upload transfer receipt</span>
+          <span id="pay-name" class="text-[11px] text-[#9e7550] hidden mt-1"></span>
+        </label>
+        <p id="form-error" class="text-center text-[12px] text-red-400 mt-2 hidden">Please upload your payment screenshot.</p>
+        <!-- Payment preview -->
+        <div id="pay-preview" class="preview-single hidden"></div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" id="submit-btn"
+              class="w-full bg-[#9e7550] text-white py-4 rounded-full
+                     text-[11px] tracking-[0.22em] uppercase font-normal
+                     hover:bg-[#6b4f35] hover:shadow-xl
+                     transition-all duration-300 active:scale-[0.98]">
+        Confirm Order
+      </button>
+    </form>
+    
+    <!-- Temporary success toast for copy -->
+    <div id="copy-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#6b4f35] text-white text-[11px] tracking-widest uppercase px-6 py-3 rounded-full opacity-0 pointer-events-none transition-opacity duration-300">
+      Copied!
+    </div>
+
+  </div>
+
+  <script>
+    // Copy helper
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copy-toast');
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 2000);
+      });
+    }
+
+    // Payment upload preview
+    let paymentDataUrl = null;
+    document.getElementById('f-payment').addEventListener('change', function () {
+      const nameEl    = document.getElementById('pay-name');
+      const previewEl = document.getElementById('pay-preview');
+      const err       = document.getElementById('form-error');
+
+      if (!this.files.length) {
+        nameEl.classList.add('hidden');
+        previewEl.classList.add('hidden');
+        previewEl.innerHTML = '';
+        paymentDataUrl = null;
+        return;
+      }
+
+      err.classList.add('hidden');
+      nameEl.textContent = this.files[0].name;
+      nameEl.classList.remove('hidden');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        paymentDataUrl = e.target.result;
+        previewEl.innerHTML = `<img src="${e.target.result}" alt="Payment receipt" />`;
+        previewEl.classList.remove('hidden');
+      };
+      reader.readAsDataURL(this.files[0]);
+    });
+
+    // Form submission
+    document.getElementById('payment-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const err = document.getElementById('form-error');
+      
+      if (!paymentDataUrl) {
+        err.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Confirming…';
+      btn.disabled = true;
+      btn.style.opacity = '.65';
+
+      // Keep original orderId if it exists in URL
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('orderId') || ('HC-' + Math.floor(1000 + Math.random() * 9000));
+
+      // Simulate small delay then redirect to success
+      setTimeout(() => {
+        window.location.href = `success.html?orderId=${orderId}`;
+      }, 600);
+    });
+  </script>
+
+</body>
+</html>
+

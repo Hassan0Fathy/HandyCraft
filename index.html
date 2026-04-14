@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Handy Crafts – Handmade gifts made with love. Custom frames, books, birthday & baby gifts." />
+  <title>Handy Crafts · Gift Shop</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc', muted:'#b59070' },
+            beige: { warm:'#f5ede3', soft:'#faf5ef', cream:'#fffdf9', dark:'#ede1d4' },
+          },
+          letterSpacing: { widest2: '0.22em', widest3: '0.28em' },
+        },
+      },
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      * { -webkit-font-smoothing: antialiased; }
+      body { @apply bg-beige-cream text-brown-dark; }
+    }
+    @layer components {
+      .btn-primary {
+        @apply inline-flex items-center justify-center
+               bg-brown-mid text-white text-[11px] tracking-widest2 uppercase
+               px-8 py-4 rounded-full font-normal
+               transition duration-300 hover:bg-brown-dark hover:shadow-xl
+               active:scale-[0.97];
+      }
+      .btn-ghost {
+        @apply inline-flex items-center justify-center
+               border border-brown-pale text-brown-muted text-[11px] tracking-widest2 uppercase
+               px-8 py-4 rounded-full font-normal
+               transition duration-300 hover:border-brown-mid hover:text-brown-mid hover:bg-beige-warm
+               active:scale-[0.97];
+      }
+    }
+  </style>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    body              { font-family: 'Jost', system-ui, sans-serif; font-weight: 300; }
+    .font-cormorant   { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #e0cfc0; border-radius: 99px; }
+
+    /* Fade-up animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-1 { animation: fadeUp .65s ease both; }
+    .anim-2 { animation: fadeUp .65s .1s ease both; }
+    .anim-3 { animation: fadeUp .65s .2s ease both; }
+    .anim-4 { animation: fadeUp .65s .3s ease both; }
+    .anim-5 { animation: fadeUp .65s .4s ease both; }
+
+    /* Category card hover image zoom */
+    .cat-card img { transition: transform .55s cubic-bezier(.4,0,.2,1); }
+    .cat-card:hover img { transform: scale(1.06); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ═══════════════════════════════════════════
+       NAVBAR
+  ════════════════════════════════════════════ -->
+  <nav class="sticky top-0 z-50 bg-beige-cream/95 backdrop-blur-md border-b border-brown-pale/60">
+    <div class="max-w-[520px] mx-auto px-6 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
+        <img src="images/logo.png" alt="Handy Crafts" class="h-14 scale-125 origin-left w-auto"
+          onerror="this.style.display='none';document.getElementById('logo-txt').style.display='flex'" />
+        <span id="logo-txt" class="font-cormorant text-[22px] italic text-[#9e7550] leading-none flex flex-col">
+          Handy crafts
+          <span class="text-[8px] not-italic tracking-widest3 uppercase text-brown-light font-sans mt-0.5">Gift Shop</span>
+        </span>
+      </a>
+
+      <!-- Nav links -->
+      <div class="flex items-center gap-6">
+        <a href="products.html" class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition duration-200 hidden sm:block">Shop</a>
+        <a href="order.html" id="nav-order-btn"
+           class="flex items-center gap-1.5 text-[11px] tracking-widest uppercase text-brown-mid hover:text-brown-dark transition duration-200">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+          </svg>
+          Order
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════ -->
+  <section class="max-w-[520px] mx-auto px-6 pt-20 pb-16 text-center">
+
+    <!-- Pill label -->
+    <div class="anim-1 inline-flex items-center gap-2 bg-beige-warm border border-brown-pale rounded-full px-5 py-2 mb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-brown-light inline-block"></span>
+      <span class="text-[10px] tracking-widest2 uppercase text-brown-muted font-medium">Handmade · Customized · Gifted</span>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="anim-2 font-cormorant italic text-[clamp(46px,13vw,64px)] leading-[1.05] text-brown-dark mb-5">
+      Handmade<br />with love<br />
+      <span class="not-italic">🤎</span>
+    </h1>
+
+    <!-- Subline -->
+    <p class="anim-3 text-[13px] text-brown-light tracking-wider mb-10 leading-relaxed">
+      Every piece is made just for you —<br class="hidden sm:block" />with care, detail, and love.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="anim-4 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="products.html" class="btn-primary">Shop Categories</a>
+      <a href="order.html"    class="btn-ghost">Place Order</a>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SECTION LABEL
+  ════════════════════════════════════════════ -->
+  <div class="max-w-[520px] mx-auto px-6 mb-10 anim-5">
+    <div class="flex items-center gap-4">
+      <div class="flex-1 h-px bg-brown-pale/70"></div>
+      <p class="text-[10px] tracking-widest2 uppercase text-brown-light font-medium shrink-0">Our Collections</p>
+      <div class="flex-1 h-px bg-brown-pale/70"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CATEGORIES GRID
+  ════════════════════════════════════════════ -->
+  <section class="max-w-[520px] mx-auto px-6 pb-24">
+    <div class="grid grid-cols-2 gap-5">
+
+      <!-- Frames -->
+      <a href="products.html?cat=frames" id="cat-frames"
+         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
+        <div class="overflow-hidden aspect-[4/3]">
+          <img src="images/frames.png" alt="Frames" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Frames</p>
+        </div>
+      </a>
+
+      <!-- Books -->
+      <a href="products.html?cat=books" id="cat-books"
+         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
+        <div class="overflow-hidden aspect-[4/3]">
+          <img src="images/books.png" alt="Books" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Books</p>
+        </div>
+      </a>
+
+      <!-- Birthday -->
+      <a href="products.html?cat=birthday" id="cat-birthday"
+         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
+        <div class="overflow-hidden aspect-[4/3]">
+          <img src="images/birthday.png" alt="Birthday" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Birthday</p>
+        </div>
+      </a>
+
+      <!-- Baby -->
+      <a href="products.html?cat=baby" id="cat-baby"
+         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
+        <div class="overflow-hidden aspect-[4/3]">
+          <img src="images/baby.png" alt="Baby" class="w-full h-full object-cover" />
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Baby</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Promise strip -->
+    <div class="mt-10 grid grid-cols-3 gap-4 py-8 border-y border-brown-pale/60">
+      <div class="text-center">
+        <p class="text-xl mb-1.5">✦</p>
+        <p class="text-[10px] tracking-widest uppercase text-brown-light">Handmade</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xl mb-1.5">🤎</p>
+        <p class="text-[10px] tracking-widest uppercase text-brown-light">Made to order</p>
+      </div>
+      <div class="text-center">
+        <p class="text-xl mb-1.5">✦</p>
+        <p class="text-[10px] tracking-widest uppercase text-brown-light">Custom gift</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════ -->
+  <footer class="bg-beige-soft border-t border-brown-pale/60 py-12">
+    <div class="max-w-[520px] mx-auto px-6 text-center flex flex-col items-center">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-24 w-auto mb-2" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+      <p class="font-cormorant italic text-2xl text-brown-mid mb-2">Handy Crafts</p>
+      <p class="text-[10px] tracking-widest2 uppercase text-brown-light mb-6">Gift Shop · Made with love</p>
+      <div class="flex justify-center gap-6">
+        <a href="products.html" class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Shop</a>
+        <a href="order.html"    class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Order</a>
+        <a href="https://instagram.com/handycrafts" target="_blank" class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Instagram</a>
+      </div>
+      <p class="text-[10px] text-brown-pale mt-8">© 2026 Handy Crafts</p>
+    </div>
+  </footer>
+
+  <!-- Instagram FAB -->
+  <a href="https://instagram.com/handycrafts" target="_blank" id="instagram-fab" aria-label="Visit our Instagram"
+     class="fixed bottom-6 right-5 z-50 w-[52px] h-[52px] bg-brown-mid rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(158,117,80,0.4)] hover:scale-110 hover:shadow-[0_8px_28px_rgba(158,117,80,0.5)] transition-all duration-300">
+    <svg class="w-[26px] h-[26px] fill-white" viewBox="0 0 24 24">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+  </a>
+
+  <!-- Temporary Admin Button -->
+  <a href="admin.html"
+     class="fixed bottom-6 left-5 z-50 bg-brown-muted text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 hover:bg-brown-dark hover:scale-105 transition-all text-[11px] tracking-widest uppercase border border-brown-light/30">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+    Admin Dashboard
+  </a>
+
+</body>
+</html>
+

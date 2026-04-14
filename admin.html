@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Admin Dashboard - Handy Crafts" />
+  <title>Admin Dashboard · Handy Crafts</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc', muted:'#b59070' },
+            beige: { warm:'#f5ede3', soft:'#faf5ef', cream:'#fffdf9' },
+          },
+        },
+      },
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+    body { font-family: 'Jost', system-ui, sans-serif; font-weight: 300; background: #faf5ef; color: #6b4f35; }
+    .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c4a882; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9e7550; }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.4s ease forwards; }
+
+    /* Filter tabs transition */
+    .filter-tab { transition: all 0.2s ease; }
+    .filter-tab.active { background: #6b4f35; color: #fffdf9; border-color: #6b4f35; }
+
+    /* Status Badges */
+    .status-pending { background: #fff5e6; color: #b8860b; border: 1px solid #ffe4b5; }
+    .status-paid { background: #e6f3ff; color: #4682b4; border: 1px solid #b0d4ff; }
+    .status-completed { background: #eaf5ea; color: #2e8b57; border: 1px solid #bce3bc; }
+  </style>
+</head>
+<body class="min-h-screen pb-12">
+
+  <!-- ═══════ NAVBAR ═══════ -->
+  <nav class="sticky top-0 z-40 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/70 shadow-sm">
+    <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Handy Crafts" class="h-10 w-auto" onerror="this.style.display='none'" />
+        <span class="font-cormorant text-[24px] italic text-[#9e7550] leading-none">
+          Handy crafts
+        </span>
+        <span class="text-[10px] tracking-[0.2em] uppercase text-[#c4a882] bg-[#f5ede3] px-2 py-0.5 rounded">Admin</span>
+      </div>
+      <a href="index.html" class="text-[12px] tracking-[0.15em] uppercase text-[#9e7550] hover:text-[#6b4f35] transition">
+        Storefront →
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-[1200px] mx-auto px-6 pt-10">
+    
+    <!-- ═══════ TOP STATS ═══════ -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 shadow-sm fade-in" style="animation-delay: 0s;">
+        <p class="text-[11px] tracking-[0.15em] uppercase text-[#c4a882] mb-1">Total Orders</p>
+        <p class="text-3xl font-cormorant text-[#6b4f35]" id="stat-total">0</p>
+      </div>
+      <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 shadow-sm fade-in" style="animation-delay: 0.1s;">
+        <p class="text-[11px] tracking-[0.15em] uppercase text-[#c4a882] mb-1">Pending</p>
+        <p class="text-3xl font-cormorant text-[#b8860b]" id="stat-pending">0</p>
+      </div>
+      <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 shadow-sm fade-in" style="animation-delay: 0.2s;">
+        <p class="text-[11px] tracking-[0.15em] uppercase text-[#c4a882] mb-1">Paid</p>
+        <p class="text-3xl font-cormorant text-[#4682b4]" id="stat-paid">0</p>
+      </div>
+      <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 shadow-sm fade-in" style="animation-delay: 0.3s;">
+        <p class="text-[11px] tracking-[0.15em] uppercase text-[#c4a882] mb-1">Completed</p>
+        <p class="text-3xl font-cormorant text-[#2e8b57]" id="stat-completed">0</p>
+      </div>
+    </div>
+
+    <!-- ═══════ FILTER TABS ═══════ -->
+    <div class="flex flex-wrap items-center gap-3 mb-8 fade-in" style="animation-delay: 0.3s;">
+      <button class="filter-tab active px-5 py-2 rounded-full border border-[#c4a882] text-[13px] text-[#6b4f35] bg-white hover:bg-[#f5ede3]" data-filter="All">All</button>
+      <button class="filter-tab px-5 py-2 rounded-full border border-[#c4a882] text-[13px] text-[#6b4f35] bg-white hover:bg-[#f5ede3]" data-filter="Pending">Pending</button>
+      <button class="filter-tab px-5 py-2 rounded-full border border-[#c4a882] text-[13px] text-[#6b4f35] bg-white hover:bg-[#f5ede3]" data-filter="Paid">Paid</button>
+      <button class="filter-tab px-5 py-2 rounded-full border border-[#c4a882] text-[13px] text-[#6b4f35] bg-white hover:bg-[#f5ede3]" data-filter="Completed">Completed</button>
+    </div>
+
+    <!-- ═══════ ORDERS LIST (CARDS) ═══════ -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" style="animation-delay: 0.4s;" id="orders-container">
+      <!-- Order cards injected via JS -->
+    </div>
+
+  </main>
+
+  <!-- ═══════ ORDER DETAILS MODAL ═══════ -->
+  <div id="order-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-[#6b4f35]/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-[#fffdf9] w-full max-w-[600px] max-h-[90vh] rounded-3xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300 m-4">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-[#ecdccc] flex items-center justify-between shrink-0">
+        <h2 class="font-cormorant italic text-[28px] text-[#6b4f35]" id="modal-title">Order Details</h2>
+        <button id="close-modal" class="p-2 text-[#c4a882] hover:text-[#6b4f35] transition bg-[#f5ede3] rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1" id="modal-body">
+        <!-- Content injected via JS -->
+      </div>
+      
+      <!-- Modal Footer (Actions) -->
+      <div class="px-6 py-4 border-t border-[#ecdccc] bg-[#faf5ef] rounded-b-3xl flex items-center justify-end gap-3 shrink-0">
+        <button class="px-5 py-2 rounded-full text-[12px] uppercase tracking-wider text-[#6b4f35] border border-[#ecdccc] hover:bg-[#f5ede3] transition" id="modal-reject-btn">Reject</button>
+        <button class="px-5 py-2 rounded-full text-[12px] uppercase tracking-wider text-white bg-[#9e7550] hover:bg-[#6b4f35] transition" id="modal-accept-btn">Accept Order</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════ LIGHTBOX FOR FULL IMAGE ═══════ -->
+  <div id="lightbox-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition" onclick="closeLightbox(event)">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="Preview" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()" />
+  </div>
+
+  <!-- ═══════ JAVASCRIPT ═══════ -->
+  <script>
+    // Dummy Data to emulate orders
+    let ordersData = [
+      {
+        id: 'HC-3891',
+        status: 'Pending',
+        customerName: 'Sarah Ahmed',
+        phone: '01001234567',
+        instagram: '@sarah.crafts',
+        category: "Valentine's Book",
+        messages: "Happy Valentine's day my love. You are the best thing that ever happened to me.",
+        images: [
+          'https://images.unsplash.com/photo-1544928147-79a2dbc1f389?w=400',
+          'https://images.unsplash.com/photo-1606788075764-59e863363362?w=400',
+          'https://images.unsplash.com/photo-1518621736915-f3b1c41bf100?w=400',
+          'https://images.unsplash.com/photo-1494959764136-6be9eb3c261e?w=400',
+          'https://images.unsplash.com/photo-1581456495146-65a71b2c8e52?w=400'
+        ],
+        extraDetails: "Year: 2024, Song: Perfect by Ed Sheeran",
+        paymentMethod: 'Vodafone Cash',
+        paymentScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
+        date: '2026-04-14'
+      },
+      {
+        id: 'HC-9204',
+        status: 'Paid',
+        customerName: 'Omar Khaled',
+        phone: '01123456789',
+        instagram: '@omar.k',
+        category: "Custom Album",
+        messages: "Happy Anniversary!",
+        images: [
+          'https://images.unsplash.com/photo-1536551608675-01e4a413d3cc?w=400',
+          'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400'
+        ],
+        extraDetails: "Cover color: Dark Brown",
+        paymentMethod: 'InstaPay',
+        paymentScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
+        date: '2026-04-13'
+      },
+      {
+        id: 'HC-1142',
+        status: 'Completed',
+        customerName: 'Nour El Din',
+        phone: '01234567890',
+        instagram: '@nourella',
+        category: "Memory Box",
+        messages: "Welcome to the world little one.",
+        images: [
+          'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400',
+          'https://images.unsplash.com/photo-1555239088-34f37803a6e9?w=400',
+          'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400',
+          'https://images.unsplash.com/photo-1535948950803-125d0c75cc46?w=400'
+        ],
+        extraDetails: "Baby name: Lina, Add ribbon",
+        paymentMethod: 'Vodafone Cash',
+        paymentScreenshot: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80',
+        date: '2026-04-10'
+      }
+    ];
+
+    let currentFilter = 'All';
+
+    // Lightbox logic
+    const lightboxModal = document.getElementById('lightbox-modal');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(e, src) {
+      if (e) e.stopPropagation();
+      lightboxImg.src = src;
+      lightboxModal.classList.remove('opacity-0', 'pointer-events-none');
+      lightboxImg.classList.remove('scale-95');
+    }
+
+    function closeLightbox(e) {
+      if (e) e.stopPropagation();
+      lightboxModal.classList.add('opacity-0', 'pointer-events-none');
+      lightboxImg.classList.add('scale-95');
+    }
+
+    // Helper: format status badge
+    function getStatusBadge(status) {
+      const base = "inline-block px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-medium";
+      if (status === 'Pending') return `<span class="${base} status-pending">Pending</span>`;
+      if (status === 'Paid') return `<span class="${base} status-paid">Paid</span>`;
+      if (status === 'Completed') return `<span class="${base} status-completed">Completed</span>`;
+      return `<span class="${base} bg-gray-100 text-gray-600">${status}</span>`;
+    }
+
+    function renderStats() {
+      document.getElementById('stat-total').textContent = ordersData.length;
+      document.getElementById('stat-pending').textContent = ordersData.filter(o => o.status === 'Pending').length;
+      document.getElementById('stat-paid').textContent = ordersData.filter(o => o.status === 'Paid').length;
+      document.getElementById('stat-completed').textContent = ordersData.filter(o => o.status === 'Completed').length;
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = '';
+
+      const filtered = currentFilter === 'All' ? ordersData : ordersData.filter(o => o.status === currentFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-12 text-center text-[#c4a882] text-[15px]">No orders found for this filter.</div>`;
+        return;
+      }
+
+      filtered.forEach(order => {
+        const tr = document.createElement('div');
+        tr.className = "bg-white border border-[#ecdccc] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full";
+        tr.onclick = () => openModal(order);
+
+        tr.innerHTML = `
+          <!-- Header -->
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <span class="text-[14px] font-medium text-[#6b4f35]">${order.id}</span>
+              <p class="text-[11px] text-[#c4a882] mt-0.5">${order.date}</p>
+            </div>
+            ${getStatusBadge(order.status)}
+          </div>
+          
+          <!-- Customer & Category -->
+          <div class="mb-4">
+            <p class="text-[15px] text-[#6b4f35] mb-1">${order.customerName}</p>
+            <div class="flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-[#9e7550]">
+              <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>${order.phone}</span>
+              <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" /></svg>${order.instagram}</span>
+            </div>
+          </div>
+
+          <!-- Divider -->
+          <hr class="border-[#ecdccc] my-3">
+
+          <!-- Order Details Preview -->
+          <div class="flex-1 text-[13px] text-[#6b4f35]">
+            <p class="mb-2"><span class="text-[#c4a882] tracking-wider uppercase text-[10px]">Product:</span> ${order.category}</p>
+            <p class="mb-2 line-clamp-2"><span class="text-[#c4a882] tracking-wider uppercase text-[10px]">Message:</span> ${order.messages}</p>
+            <div class="flex items-center justify-between mt-3 text-[12px]">
+              <div class="flex items-center gap-1">
+                ${order.images.slice(0, 3).map(img => `
+                  <img src="${img}" class="w-8 h-8 rounded-md object-cover border border-[#ecdccc]" alt="Upload preview" />
+                `).join('')}
+                ${order.images.length > 3 ? `<div class="w-8 h-8 rounded-md bg-[#faf5ef] border border-[#ecdccc] flex items-center justify-center text-[#9e7550] text-[10px] font-medium">+${order.images.length - 3}</div>` : ''}
+              </div>
+              <span class="bg-[#faf5ef] px-2 py-1 rounded-lg"><span class="text-[#c4a882]">Pay:</span> ${order.paymentMethod}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-4 pt-3 flex items-center justify-between border-t border-[#ecdccc] gap-2">
+            <div class="flex gap-2">
+              <button onclick="updateStatus(event, '${order.id}', 'Paid')" class="bg-[#f5ede3] hover:bg-[#e6f3ff] text-[#9e7550] hover:text-[#4682b4] transition px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider ${order.status !== 'Pending' ? 'hidden' : ''}">Mark Paid</button>
+              <button onclick="updateStatus(event, '${order.id}', 'Completed')" class="bg-[#f5ede3] hover:bg-[#eaf5ea] text-[#9e7550] hover:text-[#2e8b57] transition px-3 py-1.5 rounded-full text-[11px] uppercase tracking-wider ${order.status === 'Completed' ? 'hidden' : ''}">Complete</button>
+            </div>
+            <a href="https://instagram.com/${order.instagram.replace('@','')}" target="_blank" onclick="event.stopPropagation()" class="text-[#c4a882] hover:text-[#9e7550] p-1.5 rounded-full hover:bg-[#f5ede3] transition" title="Contact on Instagram">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            </a>
+          </div>
+        `;
+        container.appendChild(tr);
+      });
+    }
+
+    // Tab Filtering
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        currentFilter = e.target.dataset.filter;
+        renderOrders();
+      });
+    });
+
+    // Status Update Action
+    function updateStatus(event, id, newStatus) {
+      event.stopPropagation(); // prevent modal
+      const orderIndex = ordersData.findIndex(o => o.id === id);
+      if (orderIndex > -1) {
+        ordersData[orderIndex].status = newStatus;
+        renderStats();
+        renderOrders();
+      }
+    }
+
+    // Modal Logic
+    const modal = document.getElementById('order-modal');
+    const modalContainer = modal.querySelector('div');
+    
+    function openModal(order) {
+      document.getElementById('modal-title').textContent = `Order ${order.id}`;
+      
+      const body = document.getElementById('modal-body');
+      body.innerHTML = `
+        <div class="mb-6 flex justify-between items-center">
+          ${getStatusBadge(order.status)}
+          <span class="text-[12px] text-[#c4a882]">${order.date}</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Customer Info -->
+          <div class="bg-[#faf5ef] rounded-xl p-4 border border-[#ecdccc]/50">
+            <h3 class="text-[10px] tracking-[0.2em] uppercase text-[#c4a882] mb-3">Customer</h3>
+            <p class="text-[15px] text-[#6b4f35] mb-2">${order.customerName}</p>
+            <p class="text-[13px] text-[#9e7550] mb-1">Phone: ${order.phone}</p>
+            <p class="text-[13px] text-[#9e7550]"><a href="https://instagram.com/${order.instagram.replace('@','')}" target="_blank" class="underline hover:text-[#6b4f35]">Instagram: ${order.instagram}</a></p>
+          </div>
+
+          <!-- Payment Info -->
+          <div class="bg-[#faf5ef] rounded-xl p-4 border border-[#ecdccc]/50">
+            <h3 class="text-[10px] tracking-[0.2em] uppercase text-[#c4a882] mb-3">Payment</h3>
+            <p class="text-[13px] text-[#6b4f35] mb-3"><span class="text-[#9e7550]">Method:</span> ${order.paymentMethod}</p>
+            <img src="${order.paymentScreenshot}" alt="Receipt" class="w-full max-w-[120px] rounded-lg border border-[#ecdccc] cursor-pointer hover:opacity-90 transition" onclick="openLightbox(event, this.src)" />
+          </div>
+        </div>
+
+        <!-- Product Details -->
+        <div>
+          <h3 class="text-[10px] tracking-[0.2em] uppercase text-[#c4a882] mb-3 border-b border-[#ecdccc] pb-2">Order Details</h3>
+          <p class="text-[14px] text-[#6b4f35] mb-4"><span class="text-[#9e7550] font-medium mr-2">Product:</span> ${order.category}</p>
+          
+          <div class="mb-4">
+            <span class="text-[#9e7550] text-[14px] font-medium mr-2">Customer Images (${order.images.length}):</span>
+            <div class="mt-2 grid grid-cols-3 sm:grid-cols-4 gap-2">
+              ${order.images.map(img => `
+                <img src="${img}" class="w-full h-20 object-cover rounded-lg border border-[#ecdccc] cursor-pointer hover:opacity-90 transition" alt="Customer Upload" onclick="openLightbox(event, this.src)" />
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <span class="text-[#9e7550] text-[14px] font-medium mr-2">Messages:</span>
+            <div class="mt-1 bg-[#fffdf9] border border-[#ecdccc] rounded-lg p-3 text-[13px] text-[#6b4f35] italic">"${order.messages}"</div>
+          </div>
+          <div>
+            <span class="text-[#9e7550] text-[14px] font-medium mr-2">Extra Config:</span>
+            <div class="mt-1 bg-[#fffdf9] border border-[#ecdccc] rounded-lg p-3 text-[13px] text-[#6b4f35]">${order.extraDetails || 'None'}</div>
+          </div>
+        </div>
+      `;
+
+      // Setup Modal actions based on state
+      const btnAccept = document.getElementById('modal-accept-btn');
+      const btnReject = document.getElementById('modal-reject-btn');
+      
+      btnAccept.onclick = () => {
+        updateStatus({stopPropagation:()=>{}}, order.id, 'Completed');
+        closeModal();
+      };
+      btnReject.onclick = () => {
+        updateStatus({stopPropagation:()=>{}}, order.id, 'Pending'); // Or rejected state
+        closeModal();
+      };
+
+      if(order.status === 'Completed') {
+        btnAccept.style.display = 'none';
+        btnReject.style.display = 'none';
+      } else {
+        btnAccept.style.display = 'block';
+        btnAccept.textContent = order.status === 'Pending' ? 'Mark as Paid' : 'Complete Order';
+        btnAccept.onclick = () => {
+             updateStatus({stopPropagation:()=>{}}, order.id, order.status === 'Pending' ? 'Paid' : 'Completed');
+             closeModal();
+        };
+        btnReject.style.display = 'block';
+      }
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modalContainer.classList.remove('scale-95');
+    }
+
+    function closeModal() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modalContainer.classList.add('scale-95');
+    }
+
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Init
+    renderStats();
+    renderOrders();
+  </script>
+
+</body>
+</html>
+
