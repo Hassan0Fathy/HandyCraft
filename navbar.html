@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout | Handy Crafts</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>body{font-family:'Jost',sans-serif;background-color:#fffdf9;color:#6b4f35}.font-cormorant{font-family:'Cormorant Garamond',serif}</style>
-</head>
-<body class="bg-[#fffdf9] min-h-screen pb-20">
 
 <!-- NAVBAR & DRAWER -->
 <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
@@ -115,135 +102,80 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 </script>
 
 
-<main class="max-w-[520px] mx-auto px-5 pt-8">
-  <div class="mb-8">
-    <div class="flex items-center justify-between text-[11px] text-[#c4a882] tracking-widest uppercase mb-4">
-      <span class="text-[#9e7550] font-medium">1. Details</span>
-      <span class="px-2">→</span>
-      <span>2. Payment</span>
+<div class="w-2/4 flex justify-center">
+        <a href="index.html" class="flex flex-col items-center group">
+          <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
+            onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
+          <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
+            Handy crafts
+          </span>
+        </a>
+      </div>
+
+      <!-- Right: IG + Cart -->
+      <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+        <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" aria-label="Instagram" class="text-brown-light hover:text-brown-mid transition-colors hidden sm:block">
+          <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+
+        <a href="cart.html" aria-label="Cart" class="relative text-brown-mid hover:text-brown-dark transition-colors p-1 -mr-1">
+          <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          <span id="cart-badge-nav" class="absolute top-0 right-0 bg-brown-dark text-white text-[9px] font-medium w-[18px] h-[18px] rounded-full flex items-center justify-center translate-x-1.5 -translate-y-1 shadow-sm hidden">
+            0
+          </span>
+        </a>
+      </div>
+
     </div>
-    <h1 class="font-cormorant text-4xl italic text-[#6b4f35]">Order Details</h1>
-    <p class="text-[#9e7550] mt-2 text-sm leading-relaxed">Tell us who you are and customize your items.</p>
+  </nav>
+
+  <!-- Drawer Menu -->
+  <div id="mobile-drawer-wrapper" class="fixed inset-0 z-[60] pointer-events-none">
+    <div id="drawer-backdrop" class="absolute inset-0 bg-text-dark/20 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
+    <div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-beige-soft shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col pointer-events-auto">
+      <div class="p-6 flex items-center justify-between border-b border-brown-pale/50">
+        <span class="font-cormorant text-2xl italic text-brown-dark">Menu</span>
+        <button onclick="closeDrawer()" class="text-brown-light hover:text-brown-dark p-1">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div class="p-6 flex flex-col gap-6 text-[12px] tracking-widest uppercase font-medium">
+        <a href="index.html" class="flex items-center gap-3 text-brown-mid hover:text-brown-dark transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.592 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg> Home</a>
+        <a href="products.html" class="flex items-center gap-3 text-brown-mid hover:text-brown-dark transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg> Shop Products</a>
+        <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" class="flex items-center gap-3 text-brown-mid hover:text-brown-dark transition-colors sm:hidden"><svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg> Instagram</a>
+      </div>
+    </div>
   </div>
 
-  <form id="orderForm" action="payment.html" method="GET" class="flex flex-col gap-6">
-    <!-- Dynamic Cart Customization UI -->
-    <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
-      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Customize Items</h2>
-      <div id="dynamic-items" class="flex flex-col gap-5"></div>
-      <p id="empty-warning" class="text-sm text-[#c4a882] hidden pb-2">Your cart is empty. <a href="products.html" class="underline text-[#9e7550]">Go back to shop</a>.</p>
-    </div>
+  <script>
+    function openDrawer() {
+      document.getElementById('mobile-drawer-wrapper').classList.remove('pointer-events-none');
+      document.getElementById('drawer-backdrop').classList.remove('opacity-0');
+      document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+    }
+    function closeDrawer() {
+      document.getElementById('drawer-backdrop').classList.add('opacity-0');
+      document.getElementById('drawer-panel').classList.add('-translate-x-full');
+      setTimeout(() => document.getElementById('mobile-drawer-wrapper').classList.add('pointer-events-none'), 300);
+    }
+    document.getElementById('menu-open-btn')?.addEventListener('click', openDrawer);
     
-    <div class="mt-2">
-      <button type="submit" class="w-full bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition shadow-md font-medium" style="padding-top:1.1rem; padding-bottom:1.1rem;">Continue to Payment</button>
-    </div>
-  </form>
-</main>
-
-<script>
-  const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
-  const container = document.getElementById("dynamic-items");
-  if(cart.length === 0) { 
-      document.getElementById("empty-warning").classList.remove("hidden");
-  } else {
-      cart.forEach((it, i) => {
-        const html = `
-        <div class="pb-6 border-b border-[#e8d8c8]/50 last:border-0 last:pb-0">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="w-7 h-7 rounded-full bg-[#faf5ef] text-[#9e7550] text-[12px] flex items-center justify-center font-medium shadow-sm">${it.qty}</span>
-            <h3 class="font-medium text-[#6b4f35] text-[15px]">${it.name}</h3>
-          </div>
-          <div class="flex flex-col gap-4 pl-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input type="text" placeholder="Love message..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Love message">
-              <input type="text" placeholder="How it started..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="How it started">
-              <input type="text" placeholder="Proud message..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Proud message">
-              <input type="text" placeholder="Favorite song..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Favorite song">
-            </div>
-            <div>
-              <p class="text-[11px] text-[#9e7550] mb-2 uppercase tracking-wide">Attach Reference Images</p>
-              <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-[#c4a882]/70 bg-[#faf5ef]/50 rounded-xl px-4 py-5 space-y-1 text-sm text-[#9e7550] hover:bg-[#faf5ef] cursor-pointer transition">
-                <svg class="w-5 h-5 text-[#c4a882]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path></svg>
-                <div class="text-center">
-                  <span class="font-medium text-[#6b4f35]">Click to Upload</span> 
-                  <span class="block text-xs mt-1">(Multiple allowed. Max 5MB)</span>
-                </div>
-                <input type="file" id="files_${i}" multiple accept="image/*" class="hidden" onchange="handleImagePreview(event, ${i})">
-              </label>
-              <div id="preview_${i}" class="flex flex-wrap gap-3 mt-3 empty:hidden"></div>
-            </div>
-          </div>
-        </div>`;
-        container.insertAdjacentHTML("beforeend", html);
-      });
-  }
-
-  function handleImagePreview(event, index) {
-      const container = document.getElementById(`preview_${index}`);
-      container.innerHTML = '';
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
-      Array.from(files).slice(0, 5).forEach(file => {
-          const reader = new FileReader();
-          reader.onload = e => {
-              const wrapper = document.createElement('div');
-              wrapper.className = 'w-16 h-16 rounded-xl overflow-hidden border border-[#e8d8c8]/80 relative group shadow-sm bg-white item-img-wrapper';
-              wrapper.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover item-uploaded-img">
-                 <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition"></div>`;
-              container.appendChild(wrapper);
-          };
-          reader.readAsDataURL(file);
-      });
-  }
-
-  const badge = document.getElementById('cart-badge-nav');
-  if(badge) {
-    const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    if(count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
-  }
-
-  document.getElementById('orderForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      if(cart.length === 0) { alert('Your cart is empty!'); return; }
-      
-      let hasAtLeastOneMsg = false;
-      const msgs = cart.map((it, i) => {
-        const inputs = document.querySelectorAll(`.custom-msg-${i}`);
-        const itemMessages = [];
-        inputs.forEach(input => {
-            if(input.value.trim()) {
-                itemMessages.push({ type: input.getAttribute('data-type'), text: input.value.trim() });
-                hasAtLeastOneMsg = true;
+    // Cart Badge logic
+    function updateCartBadge() {
+        try {
+            const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+            const count = cart.reduce((sum, item) => sum + (item.quantity||1), 0);
+            const badge = document.getElementById("cart-badge-nav");
+            if(badge) {
+                if(count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+                else badge.classList.add('hidden');
             }
-        });
-        
-        const previewImgs = document.querySelectorAll(`#preview_${i} .item-uploaded-img`);
-        const itemImages = Array.from(previewImgs).map(img => img.src);
-        
-        return { messages: itemMessages, images: itemImages };
-      });
-
-      if(!hasAtLeastOneMsg) {
-          const errorMsg = document.getElementById('msg-error');
-          if(!errorMsg) {
-              const err = document.createElement('div');
-              err.id = 'msg-error';
-              err.className = 'text-red-500 text-xs mt-2 font-medium tracking-wide animate-fade-in bg-red-50 p-2 rounded-lg border border-red-100';
-              err.innerText = 'Please provide at least ONE detail message for any item before continuing.';
-              document.getElementById('dynamic-items').appendChild(err);
-          }
-          return;
-      }
-
-      const totalUploads = msgs.reduce((sum, m) => sum + m.images.length, 0);
-
-      // In a real app we'd save the form data, for now they just transition to payment.
-      localStorage.setItem('hc_order_temp', JSON.stringify({
-          itemDetails: msgs,
-          uploads: totalUploads
-      }));
-      window.location.href = 'payment.html';
-  });
-</script>
-</body>
-</html>
+        } catch(e){}
+    }
+    updateCartBadge();
+  </script>

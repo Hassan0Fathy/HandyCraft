@@ -48,34 +48,115 @@
       border-color: #9e7550 !important;
     }
   </style>
+  <script src="data.js"></script>
 </head>
 <body class="min-h-screen bg-[#fffdf9] text-[#6b4f35]">
 
-  <!-- ═══════ NAVBAR ═══════ -->
-  <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/70">
-    <div class="max-w-[520px] mx-auto px-6 h-16 flex items-center justify-between">
+  <!-- NAVBAR & DRAWER -->
+<nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
+<div class="max-w-[520px] mx-auto px-5 h-16 flex items-center justify-between">
+  
+  <div class="flex items-center w-1/4">
+    <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+  </div>
 
-      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
-        <img src="images/logo.png" alt="Handy Crafts" class="h-14 scale-[1.3] origin-left w-auto"
-          onerror="this.style.display='none';document.getElementById('ltxt').style.display='flex'" />
-        <span id="ltxt" class="font-cormorant text-[22px] italic text-[#9e7550] leading-none flex flex-col">
-          Handy crafts
-          <span class="text-[8px] not-italic tracking-[0.28em] uppercase text-[#c4a882] font-sans mt-0.5">Gift Shop</span>
-        </span>
-      </a>
+  <div class="w-2/4 flex justify-center">
+    <a href="index.html" class="flex flex-col items-center group">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
+        onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
+      <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
+        Handy crafts
+      </span>
+    </a>
+  </div>
 
-      <a href="order.html" id="nav-order-btn"
-         class="flex items-center gap-1.5 text-[11px] tracking-[0.22em] uppercase text-[#9e7550] hover:text-[#6b4f35] transition duration-200">
-        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-        </svg>
-        Order
-      </a>
-    </div>
-  </nav>
+  <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+    <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
+      <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </a>
+    <a href="cart.html" aria-label="Cart" class="relative text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -mr-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+      <span id="cart-badge-nav" class="absolute top-0 right-0 bg-[#6b4f35] text-white text-[9px] font-medium w-[18px] h-[18px] rounded-full flex items-center justify-center translate-x-1.5 -translate-y-1 shadow-sm hidden">
+        0
+      </span>
+    </a>
+  </div>
+</div>
+</nav>
 
-  <!-- ═══════ PAGE HEADER ═══════ -->
+<div id="mobile-drawer-wrapper" class="fixed inset-0 z-[60] pointer-events-none">
+<div id="drawer-backdrop" class="absolute inset-0 bg-black/20 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-[#fffdf9] shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col pointer-events-auto">
+  <div class="p-6 flex items-center justify-between border-b border-[#ecdccc]/50">
+    <span class="font-cormorant text-2xl italic text-[#6b4f35]">Menu</span>
+    <button onclick="closeDrawer()" class="text-[#c4a882] hover:text-[#6b4f35] p-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+    </button>
+  </div>
+  <div class="p-6 flex flex-col gap-6 text-[12px] tracking-widest uppercase font-medium">
+    <a href="index.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.592 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg> Home</a>
+    <a href="products.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg> Shop Products</a>
+    <a href="https://wa.me/201012345678" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.595-5.236-3.935-6.831-6.831l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"></path></svg> Contact Us</a>
+    <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg> Instagram</a>
+  </div>
+</div>
+</div>
+
+<script>
+window.openDrawer = function() {
+  const w = document.getElementById('mobile-drawer-wrapper');
+  if(!w) return;
+  w.classList.remove('pointer-events-none');
+  document.getElementById('drawer-backdrop').classList.remove('opacity-0');
+  document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+};
+window.closeDrawer = function() {
+  document.getElementById('drawer-backdrop').classList.add('opacity-0');
+  document.getElementById('drawer-panel').classList.add('-translate-x-full');
+  setTimeout(() => {
+    const w = document.getElementById('mobile-drawer-wrapper');
+    if(w) w.classList.add('pointer-events-none');
+  }, 300);
+};
+
+// Use event delegation or check if DOM is ready because scripts might run before DOM loads if placed in head, but here it's in body
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.getElementById('menu-open-btn');
+    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
+});
+
+window.updateCartBadge = function() {
+    try {
+        const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+        const count = cart.reduce((sum, item) => sum + (item.qty||item.quantity||1), 0);
+        const badges = document.querySelectorAll("#cart-badge-nav");
+        badges.forEach(b => {
+            if(count > 0) { b.textContent = count; b.classList.remove('hidden'); }
+            else b.classList.add('hidden');
+        });
+    } catch(e){}
+};
+
+document.addEventListener("DOMContentLoaded", window.updateCartBadge);
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    const menuBtn = document.getElementById('menu-open-btn');
+    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
+    window.updateCartBadge();
+}
+</script>
+
+
+
+<!-- ═══════ PAGE HEADER ═══════ -->
   <div class="max-w-[520px] mx-auto px-6 pt-12 pb-2 anim-1">
     <a href="index.html" id="back-btn"
        class="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition mb-7">
@@ -108,28 +189,28 @@
     <div class="grid grid-cols-2 gap-5" id="product-grid">
 
       <!-- ── Frames ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames" cursor-pointer" onclick="window.location.href='product-details.html?id=frame-1'">
         <div class="overflow-hidden aspect-square">
           <img src="images/frames.png" alt="Custom Photo Frame" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Photo Frame</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Personalized & handmade</p>
-          <a href="order.html?cat=frames"
+          <a href="product-details.html?id=frame-1"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
         </div>
       </div>
 
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames" cursor-pointer" onclick="window.location.href='product-details.html?id=frame-2'">
         <div class="overflow-hidden aspect-square">
           <img src="images/frames.png" alt="Memory Frame" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Memory Frame</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Rustic & warm design</p>
-          <a href="order.html?cat=frames"
+          <a href="product-details.html?id=frame-2"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
@@ -137,28 +218,28 @@
       </div>
 
       <!-- ── Books ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books" cursor-pointer" onclick="window.location.href='product-details.html?id=book-1'">
         <div class="overflow-hidden aspect-square">
           <img src="images/books.png" alt="Custom Journal" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Journal</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Handcrafted & unique</p>
-          <a href="order.html?cat=books"
+          <a href="product-details.html?id=book-1"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
         </div>
       </div>
 
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books" cursor-pointer" onclick="window.location.href='product-details.html?id=book-2'">
         <div class="overflow-hidden aspect-square">
           <img src="images/books.png" alt="Scrapbook" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Scrapbook</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Your memories, bound</p>
-          <a href="order.html?cat=books"
+          <a href="product-details.html?id=book-2"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
@@ -166,28 +247,28 @@
       </div>
 
       <!-- ── Birthday ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday" cursor-pointer" onclick="window.location.href='product-details.html?id=birth-1'">
         <div class="overflow-hidden aspect-square">
           <img src="images/birthday.png" alt="Birthday Gift Box" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Birthday Gift Box</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Curated with love</p>
-          <a href="order.html?cat=birthday"
+          <a href="product-details.html?id=birth-1"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
         </div>
       </div>
 
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday" cursor-pointer" onclick="window.location.href='product-details.html?id=birth-2'">
         <div class="overflow-hidden aspect-square">
           <img src="images/birthday.png" alt="Custom Wrap Set" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Wrap Set</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Kraft & dried flowers</p>
-          <a href="order.html?cat=birthday"
+          <a href="product-details.html?id=birth-2"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
@@ -195,28 +276,28 @@
       </div>
 
       <!-- ── Baby ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby" cursor-pointer" onclick="window.location.href='product-details.html?id=baby-1'">
         <div class="overflow-hidden aspect-square">
           <img src="images/baby.png" alt="Baby Gift Set" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Baby Gift Set</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Gentle & sweet</p>
-          <a href="order.html?cat=baby"
+          <a href="product-details.html?id=baby-1"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>
         </div>
       </div>
 
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby">
+      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby" cursor-pointer" onclick="window.location.href='product-details.html?id=baby-2'">
         <div class="overflow-hidden aspect-square">
           <img src="images/baby.png" alt="Name Tag Gift" class="w-full h-full object-cover" />
         </div>
         <div class="px-4 pt-4 pb-5">
           <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Name Tag Gift</p>
           <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Personalized keepsake</p>
-          <a href="order.html?cat=baby"
+          <a href="product-details.html?id=baby-2"
              class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
             Order Now
           </a>

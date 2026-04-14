@@ -3,262 +3,329 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Complete your custom order with Handy Crafts." />
-  <title>Payment · Handy Crafts</title>
-
+  <title>Payment | Handy Crafts</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc', muted:'#b59070' },
-            beige: { warm:'#f5ede3', soft:'#faf5ef', cream:'#fffdf9' },
-          },
-          letterSpacing: { widest2:'0.22em', widest3:'0.28em' },
-        },
-      },
-    }
-  </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
-
-  <style>
-    * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
-    body { font-family: 'Jost', system-ui, sans-serif; font-weight: 300; background: #fffdf9; color: #6b4f35; }
-    .font-cormorant { font-family: 'Cormorant Garamond', Georgia, serif; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .anim-1 { animation: fadeUp .6s ease both; }
-    .anim-2 { animation: fadeUp .6s .1s ease both; }
-
-    /* Upload zone */
-    .upload-zone {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      background: #faf5ef;
-      border: 1.5px dashed #ecdccc;
-      border-radius: 14px;
-      padding: 28px 20px;
-      cursor: pointer;
-      text-align: center;
-      transition: background .2s, border-color .2s;
-      position: relative;
-    }
-    .upload-zone:hover { background: #f5ede3; border-color: #c4a882; }
-    .upload-zone input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-
-    .preview-single {
-      margin-top: 10px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1.5px solid #ecdccc;
-      max-width: 200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .preview-single img {
-      width: 100%;
-      display: block;
-    }
-
-    /* Copy Button */
-    .copy-btn {
-      color: #9e7550;
-      transition: color 0.2s, transform 0.2s;
-    }
-    .copy-btn:hover { color: #6b4f35; }
-    .copy-btn:active { transform: scale(0.95); }
-  </style>
+  <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>body{font-family:'Jost',sans-serif;background-color:#fffdf9;color:#6b4f35}.font-cormorant{font-family:'Cormorant Garamond',serif}</style>
 </head>
-<body class="min-h-screen">
+<body class="bg-[#fffdf9] min-h-screen pb-20">
 
-  <!-- ═══════ NAVBAR ═══════ -->
-  <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/70">
-    <div class="max-w-[520px] mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2.5 shrink-0">
-        <img src="images/logo.png" alt="Handy Crafts" class="h-14 scale-[1.3] origin-left w-auto"
-          onerror="this.style.display='none';document.getElementById('ltxt').style.display='flex'" />
-        <span id="ltxt" class="font-cormorant text-[22px] italic text-[#9e7550] leading-none flex flex-col">
-          Handy crafts
-          <span class="text-[8px] not-italic tracking-[0.28em] uppercase text-[#c4a882] font-sans mt-0.5">Gift Shop</span>
-        </span>
-      </a>
-      <a href="javascript:history.back()"
-         class="flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-        </svg>
-        Back
-      </a>
-    </div>
-  </nav>
 
-  <!-- ═══════ PAGE HEADER ═══════ -->
-  <div class="max-w-[520px] mx-auto px-6 pt-12 pb-6 text-center anim-1">
-    <div class="inline-flex items-center gap-2 bg-[#f5ede3] border border-[#ecdccc] rounded-full px-5 py-2 mb-6">
-      <span class="w-1.5 h-1.5 rounded-full bg-[#c4a882] inline-block"></span>
-      <span class="text-[10px] tracking-[0.22em] uppercase text-[#b59070]">Step 2</span>
-    </div>
-    <h1 class="font-cormorant italic text-[40px] leading-tight text-[#6b4f35] mb-3">
-      Complete Your Order
-    </h1>
-    <p class="text-[13px] text-[#c4a882] leading-relaxed max-w-[320px] mx-auto mb-2">
-      To confirm your order, please send a 50% deposit using one of the following methods.
-    </p>
+<!-- NAVBAR & DRAWER -->
+<nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
+<div class="max-w-[520px] mx-auto px-5 h-16 flex items-center justify-between">
+  
+  <div class="flex items-center w-1/4">
+    <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
   </div>
 
-  <!-- ═══════ PAYMENT METHODS ═══════ -->
-  <div class="max-w-[420px] mx-auto px-6 pb-24 anim-2">
-    
-    <!-- Vodafone Cash -->
-    <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 mb-4 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 bg-[#f5ede3] rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-5 h-5 text-[#9e7550]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/>
-          </svg>
-        </div>
-        <div>
-          <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-1">Vodafone Cash</p>
-          <p class="text-[15px] font-medium text-[#6b4f35] tracking-wide" id="v-cash-num">0100 123 4567</p>
-        </div>
-      </div>
-      <button type="button" class="copy-btn p-2" onclick="copyToClipboard('01001234567')" title="Copy Number">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- InstaPay -->
-    <div class="bg-white border border-[#ecdccc] rounded-2xl p-5 mb-8 flex items-center justify-between shadow-sm">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 bg-[#f5ede3] rounded-full flex items-center justify-center shrink-0">
-          <svg class="w-5 h-5 text-[#9e7550]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
-          </svg>
-        </div>
-        <div>
-          <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-1">InstaPay</p>
-          <p class="text-[15px] font-medium text-[#6b4f35] tracking-wide" id="instapay-user">handycrafts@instapay</p>
-        </div>
-      </div>
-      <button type="button" class="copy-btn p-2" onclick="copyToClipboard('handycrafts@instapay')" title="Copy Handle">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/>
-        </svg>
-      </button>
-    </div>
-
-    <form id="payment-form" novalidate>
-      <!-- Upload Section -->
-      <div class="mb-8">
-        <label class="block text-[10px] tracking-[0.22em] uppercase text-[#c4a882] mb-3 text-center">
-          Upload screenshot after transfer to confirm your order
-        </label>
-        <label for="f-payment" class="upload-zone">
-          <input type="file" id="f-payment" accept="image/*" required />
-          <svg class="w-7 h-7 text-[#c4a882]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
-          </svg>
-          <span class="text-[12px] text-[#c4a882]">Upload transfer receipt</span>
-          <span id="pay-name" class="text-[11px] text-[#9e7550] hidden mt-1"></span>
-        </label>
-        <p id="form-error" class="text-center text-[12px] text-red-400 mt-2 hidden">Please upload your payment screenshot.</p>
-        <!-- Payment preview -->
-        <div id="pay-preview" class="preview-single hidden"></div>
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" id="submit-btn"
-              class="w-full bg-[#9e7550] text-white py-4 rounded-full
-                     text-[11px] tracking-[0.22em] uppercase font-normal
-                     hover:bg-[#6b4f35] hover:shadow-xl
-                     transition-all duration-300 active:scale-[0.98]">
-        Confirm Order
-      </button>
-    </form>
-    
-    <!-- Temporary success toast for copy -->
-    <div id="copy-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#6b4f35] text-white text-[11px] tracking-widest uppercase px-6 py-3 rounded-full opacity-0 pointer-events-none transition-opacity duration-300">
-      Copied!
-    </div>
-
+  <div class="w-2/4 flex justify-center">
+    <a href="index.html" class="flex flex-col items-center group">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
+        onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
+      <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
+        Handy crafts
+      </span>
+    </a>
   </div>
 
-  <script>
-    // Copy helper
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const toast = document.getElementById('copy-toast');
-        toast.style.opacity = '1';
-        setTimeout(() => toast.style.opacity = '0', 2000);
-      });
-    }
+  <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+    <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
+      <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </a>
+    <a href="cart.html" aria-label="Cart" class="relative text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -mr-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+      <span id="cart-badge-nav" class="absolute top-0 right-0 bg-[#6b4f35] text-white text-[9px] font-medium w-[18px] h-[18px] rounded-full flex items-center justify-center translate-x-1.5 -translate-y-1 shadow-sm hidden">
+        0
+      </span>
+    </a>
+  </div>
+</div>
+</nav>
 
-    // Payment upload preview
-    let paymentDataUrl = null;
-    document.getElementById('f-payment').addEventListener('change', function () {
-      const nameEl    = document.getElementById('pay-name');
-      const previewEl = document.getElementById('pay-preview');
-      const err       = document.getElementById('form-error');
+<div id="mobile-drawer-wrapper" class="fixed inset-0 z-[60] pointer-events-none">
+<div id="drawer-backdrop" class="absolute inset-0 bg-black/20 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-[#fffdf9] shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col pointer-events-auto">
+  <div class="p-6 flex items-center justify-between border-b border-[#ecdccc]/50">
+    <span class="font-cormorant text-2xl italic text-[#6b4f35]">Menu</span>
+    <button onclick="closeDrawer()" class="text-[#c4a882] hover:text-[#6b4f35] p-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+    </button>
+  </div>
+  <div class="p-6 flex flex-col gap-6 text-[12px] tracking-widest uppercase font-medium">
+    <a href="index.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.592 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg> Home</a>
+    <a href="products.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg> Shop Products</a>
+    <a href="https://wa.me/201012345678" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.595-5.236-3.935-6.831-6.831l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"></path></svg> Contact Us</a>
+    <a href="https://www.instagram.com/handy_crafts1_/?__pwa=1" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg> Instagram</a>
+  </div>
+</div>
+</div>
 
-      if (!this.files.length) {
-        nameEl.classList.add('hidden');
-        previewEl.classList.add('hidden');
-        previewEl.innerHTML = '';
-        paymentDataUrl = null;
-        return;
-      }
+<script>
+window.openDrawer = function() {
+  const w = document.getElementById('mobile-drawer-wrapper');
+  if(!w) return;
+  w.classList.remove('pointer-events-none');
+  document.getElementById('drawer-backdrop').classList.remove('opacity-0');
+  document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+};
+window.closeDrawer = function() {
+  document.getElementById('drawer-backdrop').classList.add('opacity-0');
+  document.getElementById('drawer-panel').classList.add('-translate-x-full');
+  setTimeout(() => {
+    const w = document.getElementById('mobile-drawer-wrapper');
+    if(w) w.classList.add('pointer-events-none');
+  }, 300);
+};
 
-      err.classList.add('hidden');
-      nameEl.textContent = this.files[0].name;
-      nameEl.classList.remove('hidden');
+// Use event delegation or check if DOM is ready because scripts might run before DOM loads if placed in head, but here it's in body
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.getElementById('menu-open-btn');
+    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
+});
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        paymentDataUrl = e.target.result;
-        previewEl.innerHTML = `<img src="${e.target.result}" alt="Payment receipt" />`;
-        previewEl.classList.remove('hidden');
-      };
-      reader.readAsDataURL(this.files[0]);
-    });
+window.updateCartBadge = function() {
+    try {
+        const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+        const count = cart.reduce((sum, item) => sum + (item.qty||item.quantity||1), 0);
+        const badges = document.querySelectorAll("#cart-badge-nav");
+        badges.forEach(b => {
+            if(count > 0) { b.textContent = count; b.classList.remove('hidden'); }
+            else b.classList.add('hidden');
+        });
+    } catch(e){}
+};
 
-    // Form submission
-    document.getElementById('payment-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const err = document.getElementById('form-error');
+document.addEventListener("DOMContentLoaded", window.updateCartBadge);
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    const menuBtn = document.getElementById('menu-open-btn');
+    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
+    window.updateCartBadge();
+}
+</script>
+
+
+<main class="max-w-[520px] mx-auto px-5 pt-8">
+  <div class="mb-8">
+    <div class="flex items-center justify-between text-[11px] text-[#c4a882] tracking-widest uppercase mb-4">
+      <span class="text-[#9e7550]">1. Details</span><span class="px-2">→</span><span class="font-medium">2. Payment</span>
+    </div>
+    <h1 class="font-cormorant text-4xl italic text-[#6b4f35]">Complete Payment</h1>
+    <p class="text-[#9e7550] mt-2 text-sm leading-relaxed">Secure your order by completing the transfer steps.</p>
+  </div>
+
+  <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50 text-center mb-8">
+    <p class="text-[11px] uppercase tracking-widest text-[#9e7550] font-medium mb-1 relative inline-block">Amount to Pay</p>
+    <div class="font-cormorant text-5xl text-[#6b4f35] font-medium mt-1 mb-2">EGP <span id="final-amount">0</span></div>
+  </div>
+
+  <form id="paymentForm" action="success.html" method="GET" class="flex flex-col gap-6">
+
+    <!-- 1. Contact & Delivery Info -->
+    <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Contact & Delivery Info</h2>
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Full Name <span class="text-red-400">*</span></label>
+          <input type="text" required class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-none outline-none focus:ring-1 focus:ring-[#c4a882] transition" placeholder="Your name" name="name" />
+        </div>
+        <div>
+          <label class="flex items-center gap-1 text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">
+            Phone Number <span class="text-red-400">*</span>
+            <svg class="w-3.5 h-3.5 text-[#25D366]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.41-5.296-3.81-6.706-6.706l1.293-.97c.362-.271.527-.733.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"></path></svg>
+          </label>
+          <input type="tel" required class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-none outline-none focus:ring-1 focus:ring-[#c4a882] transition" placeholder="010..." name="phone" />
+        </div>
+        <div>
+          <label class="flex items-center gap-1 text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">
+            Instagram Username
+            <svg class="w-3.5 h-3.5 text-[#E1306C]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </label>
+          <input type="text" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-none outline-none focus:ring-1 focus:ring-[#c4a882] transition" placeholder="@username (Optional)" name="ig" />
+        </div>
+        <div>
+          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Delivery Address (Optional)</label>
+          <input type="text" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-none outline-none focus:ring-1 focus:ring-[#c4a882] transition" placeholder="City, Area, Street..." name="address" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Payment Method -->
+    <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Select Payment Method</h2>
+      <div class="flex flex-col gap-3">
+        <label class="flex items-center p-4 border border-[#c4a882] bg-[#faf5ef] rounded-xl cursor-pointer transition relative gap-3">
+          <input type="radio" name="payment_method" value="Vodafone Cash" checked class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('01012345678', 'Vodafone Cash')">
+          <span class="font-medium text-[#6b4f35] text-sm">Vodafone Cash</span>
+        </label>
+        <label class="flex items-center p-4 border border-transparent hover:border-[#e8d8c8] hover:bg-[#faf5ef]/50 rounded-xl cursor-pointer transition relative gap-3">
+          <input type="radio" name="payment_method" value="InstaPay" class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('handycrafts@instapay', 'InstaPay')">
+          <span class="font-medium text-[#6b4f35] text-sm">InstaPay</span>
+        </label>
+        <label class="flex items-center p-4 border border-transparent hover:border-[#e8d8c8] hover:bg-[#faf5ef]/50 rounded-xl cursor-pointer transition relative gap-3">
+          <input type="radio" name="payment_method" value="WE Pay" class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('01512345678', 'WE Pay')">
+          <span class="font-medium text-[#6b4f35] text-sm">WE Pay</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 3. Steps UI -->
+    <div class="bg-[#faf5ef] rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">How to Pay</h2>
+      <div class="flex flex-col gap-5">
+        <div class="flex items-start gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#c4a882] text-white flex items-center justify-center font-cormorant text-xl shrink-0 leading-none">1</div>
+          <div class="w-full">
+            <h3 class="font-medium text-[#6b4f35] text-sm">Transfer money</h3>
+            <p class="text-[#9e7550] text-sm mt-1 mb-3">Send the exact amount to our <span id="method-text" class="font-medium">Vodafone Cash</span> account:</p>
+            <div class="bg-white rounded-xl p-3 border border-[#e8d8c8] flex justify-between items-center group w-full">
+              <span class="font-medium text-[#4a3728] tracking-widest text-[15px]" id="phone-num">01012345678</span>
+              <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('phone-num').innerText); this.innerText='Copied!'; setTimeout(()=>this.innerText='Copy', 2000)" class="text-[#c4a882] hover:text-[#9e7550] text-xs font-medium uppercase tracking-widest px-2 py-1 transition bg-[#faf5ef] rounded flex items-center gap-1 group-hover:bg-[#e8d8c8]/30">Copy</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#c4a882] text-white flex items-center justify-center font-cormorant text-xl shrink-0 leading-none pt-0.5">2</div>
+          <div>
+            <h3 class="font-medium text-[#6b4f35] text-sm">Upload screenshot</h3>
+            <p class="text-[#9e7550] text-sm mt-1">Capture the transfer receipt clearly.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#c4a882] text-white flex items-center justify-center font-cormorant text-xl shrink-0 leading-none pt-0.5">3</div>
+          <div class="w-full">
+            <h3 class="font-medium text-[#6b4f35] text-sm">Upload Screenshot</h3>
+            <p class="text-[#9e7550] text-sm mt-1">Upload payment confirmation screenshot.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Payment Details -->
+    <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Payment Details</h2>
+      <div class="flex flex-col gap-5">
+        
+        <div>
+          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Screenshot (Optional)</label>
+          <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-[#c4a882]/70 bg-[#faf5ef]/30 rounded-xl px-4 py-6 text-sm text-[#9e7550] hover:bg-[#faf5ef] cursor-pointer transition">
+            <svg class="w-6 h-6 mb-1 text-[#c4a882]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path></svg>
+            <span class="font-medium text-[#6b4f35]">Upload Receipt Image</span>
+            <span class="text-xs text-[#c4a882]">(Max 5MB)</span>
+            <input type="file" accept="image/*" class="hidden" name="screenshot" onchange="document.getElementById('file-status').innerText=this.files[0]?this.files[0].name:'';document.getElementById('file-status').classList.remove('hidden')">
+          </label>
+          <p id="file-status" class="mt-2 text-xs text-green-600 font-medium hidden text-center"></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-4 flex flex-col items-center gap-4">
+      <div class="w-full bg-[#faf5ef] rounded-xl p-4 border border-[#e8d8c8]/60 flex flex-col items-center text-center gap-2 transition hover:shadow-sm">
+        <div class="flex items-center justify-center gap-2 text-[#6b4f35]">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="font-medium text-[13px] tracking-wide uppercase">Secure & Verified</span>
+        </div>
+        <p class="text-[#9e7550] text-[11px] leading-snug max-w-[80%]">
+          Your payment will be manually reviewed before confirmation. Your data is encrypted and safe.
+        </p>
+      </div>
+      <button id="pay-btn" type="submit" class="w-full relative group overflow-hidden bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition-all duration-300 shadow-md hover:shadow-lg font-medium active:scale-[0.99]" style="padding-top:1.1rem; padding-bottom:1.1rem;">
+        <span class="relative z-10">Confirm Payment & Order</span>
+        <div class="absolute inset-0 h-full w-0 bg-white/20 transition-all duration-300 ease-out group-hover:w-full z-0"></div>
+      </button>
+    </div>
+  </form>
+</main>
+
+<script>
+  const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+  if(cart.length === 0) location.href="products.html";
+  
+  const total = cart.reduce((s, c) => s + (c.price * c.qty), 0);
+  document.getElementById("final-amount").innerText = total;
+
+  function updatePaymentInstructions(detail, method) {
+      document.getElementById('method-text').innerText = method;
+      document.getElementById('phone-num').innerText = detail;
       
-      if (!paymentDataUrl) {
-        err.classList.remove('hidden');
-        return;
+      const radios = document.querySelectorAll('input[name="payment_method"]');
+      radios.forEach(r => {
+        if(r.checked) {
+          r.parentElement.classList.add('border-[#c4a882]', 'bg-[#faf5ef]');
+          r.parentElement.classList.remove('border-transparent');
+        } else {
+          r.parentElement.classList.remove('border-[#c4a882]', 'bg-[#faf5ef]');
+          r.parentElement.classList.add('border-transparent');
+        }
+      });
+  }
+
+  document.getElementById('paymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if(cart.length === 0) return;
+      
+      const btn = document.getElementById('pay-btn');
+      btn.innerText = 'Processing...';
+      btn.style.opacity = '0.7';
+
+      // Read screenshot logic
+      const fileInput = document.querySelector('[name="screenshot"]');
+      let receiptImg = '';
+      if(fileInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+           receiptImg = ev.target.result;
+           finalizeOrder(receiptImg);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        finalizeOrder('');
       }
+      
+      function finalizeOrder(receiptBase64) {
+          const existingOrders = JSON.parse(localStorage.getItem('hc_orders') || '[]');
+          const tempUser = JSON.parse(localStorage.getItem('hc_order_temp') || '{}');
+          
+          let paymentMethod = 'Vodafone Cash';
+          document.querySelectorAll('input[name="payment_method"]').forEach(r => { if(r.checked) paymentMethod = r.value; });
 
-      const btn = document.getElementById('submit-btn');
-      btn.textContent = 'Confirming…';
-      btn.disabled = true;
-      btn.style.opacity = '.65';
-
-      // Keep original orderId if it exists in URL
-      const params = new URLSearchParams(window.location.search);
-      const orderId = params.get('orderId') || ('HC-' + Math.floor(1000 + Math.random() * 9000));
-
-      // Simulate small delay then redirect to success
-      setTimeout(() => {
-        window.location.href = `success.html?orderId=${orderId}`;
-      }, 600);
-    });
-  </script>
-
+          const newOrder = {
+              id: '#' + Math.floor(1000 + Math.random() * 9000),
+              customer: document.querySelector('[name="name"]').value,
+              phone: document.querySelector('[name="phone"]').value,
+              ig: document.querySelector('[name="ig"]').value,
+              address: document.querySelector('[name="address"]').value || 'N/A',
+              items: cart,
+              total: total,
+              txid: 'N/A',
+              status: 'Pending',
+              date: new Date().toISOString(),
+              itemDetails: tempUser.itemDetails || [],
+              paymentMethod: paymentMethod,
+              receiptImg: receiptImg || null
+          };
+          existingOrders.push(newOrder);
+          localStorage.setItem('hc_orders', JSON.stringify(existingOrders));
+          
+          // Clear cart
+          localStorage.removeItem('hc_cart');
+          localStorage.removeItem('hc_order_temp');
+          
+          setTimeout(() => {
+            window.location.href = 'success.html?orderId=' + encodeURIComponent(newOrder.id);
+          }, 600);
+      }
+  });
+</script>
 </body>
 </html>
-

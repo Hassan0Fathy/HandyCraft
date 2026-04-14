@@ -3,15 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout | Handy Crafts</title>
+  <title>Product Details · Handy Crafts</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc' },
+            beige: { soft:'#faf5ef', cream:'#fffdf9' },
+          },
+        },
+      },
+    }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>body{font-family:'Jost',sans-serif;background-color:#fffdf9;color:#6b4f35}.font-cormorant{font-family:'Cormorant Garamond',serif}</style>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Jost', sans-serif; background-color: #fffdf9; color: #6b4f35; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+    
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim-1 { animation: fadeUp .5s ease both; }
+    .anim-2 { animation: fadeUp .5s .1s ease both; }
+    
+    /* Thumbnail active state */
+    .thumb-active {
+        border-color: #9e7550 !important;
+        opacity: 1 !important;
+    }
+  </style>
 </head>
-<body class="bg-[#fffdf9] min-h-screen pb-20">
+<body class="min-h-screen flex flex-col">
+  <script src="data.js"></script>
 
+  <!-- NAVBAR -->
+  
 <!-- NAVBAR & DRAWER -->
 <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
 <div class="max-w-[520px] mx-auto px-5 h-16 flex items-center justify-between">
@@ -115,135 +144,56 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 </script>
 
 
-<main class="max-w-[520px] mx-auto px-5 pt-8">
-  <div class="mb-8">
-    <div class="flex items-center justify-between text-[11px] text-[#c4a882] tracking-widest uppercase mb-4">
-      <span class="text-[#9e7550] font-medium">1. Details</span>
-      <span class="px-2">→</span>
-      <span>2. Payment</span>
-    </div>
-    <h1 class="font-cormorant text-4xl italic text-[#6b4f35]">Order Details</h1>
-    <p class="text-[#9e7550] mt-2 text-sm leading-relaxed">Tell us who you are and customize your items.</p>
-  </div>
+<main class="flex-grow max-w-[520px] mx-auto w-full px-6 py-8" id="product-container">
+    <!-- Dynamic content -->
 
-  <form id="orderForm" action="payment.html" method="GET" class="flex flex-col gap-6">
-    <!-- Dynamic Cart Customization UI -->
-    <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
-      <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Customize Items</h2>
-      <div id="dynamic-items" class="flex flex-col gap-5"></div>
-      <p id="empty-warning" class="text-sm text-[#c4a882] hidden pb-2">Your cart is empty. <a href="products.html" class="underline text-[#9e7550]">Go back to shop</a>.</p>
-    </div>
-    
-    <div class="mt-2">
-      <button type="submit" class="w-full bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition shadow-md font-medium" style="padding-top:1.1rem; padding-bottom:1.1rem;">Continue to Payment</button>
-    </div>
-  </form>
-</main>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const product = products.find(p => p.id === productId);
 
-<script>
-  const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
-  const container = document.getElementById("dynamic-items");
-  if(cart.length === 0) { 
-      document.getElementById("empty-warning").classList.remove("hidden");
-  } else {
-      cart.forEach((it, i) => {
-        const html = `
-        <div class="pb-6 border-b border-[#e8d8c8]/50 last:border-0 last:pb-0">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="w-7 h-7 rounded-full bg-[#faf5ef] text-[#9e7550] text-[12px] flex items-center justify-center font-medium shadow-sm">${it.qty}</span>
-            <h3 class="font-medium text-[#6b4f35] text-[15px]">${it.name}</h3>
-          </div>
-          <div class="flex flex-col gap-4 pl-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input type="text" placeholder="Love message..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Love message">
-              <input type="text" placeholder="How it started..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="How it started">
-              <input type="text" placeholder="Proud message..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Proud message">
-              <input type="text" placeholder="Favorite song..." class="custom-msg-${i} w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] outline-none border border-transparent focus:border-[#c4a882] transition-colors" data-type="Favorite song">
+    if(!product) {
+      document.getElementById('product-container').innerHTML = '<div class="text-center py-20 text-brown-light">Product not found.</div>';
+    } else {
+      let thumbsHtml = product.images.map((img, idx) => `
+        <img src="${img}" onclick="setMainImage('${img}', this)" class="thumbnail w-16 h-16 object-cover rounded-xl border-2 border-transparent opacity-70 cursor-pointer hover:opacity-100 transition-all ${idx === 0 ? 'thumb-active' : ''}" />
+      `).join('');
+
+      document.getElementById('product-container').innerHTML = `
+        <div class="anim-1">
+            <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc]">
+                <img id="main-image" src="${product.images[0]}" class="w-full h-full object-cover transition-opacity duration-300" />
             </div>
-            <div>
-              <p class="text-[11px] text-[#9e7550] mb-2 uppercase tracking-wide">Attach Reference Images</p>
-              <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-[#c4a882]/70 bg-[#faf5ef]/50 rounded-xl px-4 py-5 space-y-1 text-sm text-[#9e7550] hover:bg-[#faf5ef] cursor-pointer transition">
-                <svg class="w-5 h-5 text-[#c4a882]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path></svg>
-                <div class="text-center">
-                  <span class="font-medium text-[#6b4f35]">Click to Upload</span> 
-                  <span class="block text-xs mt-1">(Multiple allowed. Max 5MB)</span>
-                </div>
-                <input type="file" id="files_${i}" multiple accept="image/*" class="hidden" onchange="handleImagePreview(event, ${i})">
-              </label>
-              <div id="preview_${i}" class="flex flex-wrap gap-3 mt-3 empty:hidden"></div>
+            
+            ${product.images.length > 1 ? `<div class="flex gap-3 mb-8 overflow-x-auto pb-2">${thumbsHtml}</div>` : '<div class="mb-8"></div>'}
+            
+            <div class="flex justify-between items-start mb-2">
+                <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name}</h1>
+                <span class="text-lg font-medium text-[#9e7550]">${product.price} EGP</span>
             </div>
-          </div>
-        </div>`;
-        container.insertAdjacentHTML("beforeend", html);
-      });
-  }
+            
+            <p class="text-[10px] tracking-[0.2em] uppercase text-[#c4a882] mb-6">${product.category}</p>
+            
+            <div class="bg-[#faf5ef] rounded-2xl p-5 border border-[#ecdccc]/50 mb-8">
+                <h3 class="text-[10px] uppercase tracking-widest text-brown-light mb-2">Description</h3>
+                <p class="text-[14px] leading-relaxed text-[#6b4f35]">${product.description}</p>
+            </div>
+            
+            <button onclick="addToCart(event, '${product.id}'); " class="w-full bg-[#9e7550] text-white py-4 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] transition duration-300 font-medium">Add to Cart & Customize</button>
+        </div>
+      `;
+    }
 
-  function handleImagePreview(event, index) {
-      const container = document.getElementById(`preview_${index}`);
-      container.innerHTML = '';
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
-      Array.from(files).slice(0, 5).forEach(file => {
-          const reader = new FileReader();
-          reader.onload = e => {
-              const wrapper = document.createElement('div');
-              wrapper.className = 'w-16 h-16 rounded-xl overflow-hidden border border-[#e8d8c8]/80 relative group shadow-sm bg-white item-img-wrapper';
-              wrapper.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover item-uploaded-img">
-                 <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition"></div>`;
-              container.appendChild(wrapper);
-          };
-          reader.readAsDataURL(file);
-      });
-  }
-
-  const badge = document.getElementById('cart-badge-nav');
-  if(badge) {
-    const count = cart.reduce((sum, item) => sum + item.qty, 0);
-    if(count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
-  }
-
-  document.getElementById('orderForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      if(cart.length === 0) { alert('Your cart is empty!'); return; }
-      
-      let hasAtLeastOneMsg = false;
-      const msgs = cart.map((it, i) => {
-        const inputs = document.querySelectorAll(`.custom-msg-${i}`);
-        const itemMessages = [];
-        inputs.forEach(input => {
-            if(input.value.trim()) {
-                itemMessages.push({ type: input.getAttribute('data-type'), text: input.value.trim() });
-                hasAtLeastOneMsg = true;
-            }
-        });
-        
-        const previewImgs = document.querySelectorAll(`#preview_${i} .item-uploaded-img`);
-        const itemImages = Array.from(previewImgs).map(img => img.src);
-        
-        return { messages: itemMessages, images: itemImages };
-      });
-
-      if(!hasAtLeastOneMsg) {
-          const errorMsg = document.getElementById('msg-error');
-          if(!errorMsg) {
-              const err = document.createElement('div');
-              err.id = 'msg-error';
-              err.className = 'text-red-500 text-xs mt-2 font-medium tracking-wide animate-fade-in bg-red-50 p-2 rounded-lg border border-red-100';
-              err.innerText = 'Please provide at least ONE detail message for any item before continuing.';
-              document.getElementById('dynamic-items').appendChild(err);
-          }
-          return;
-      }
-
-      const totalUploads = msgs.reduce((sum, m) => sum + m.images.length, 0);
-
-      // In a real app we'd save the form data, for now they just transition to payment.
-      localStorage.setItem('hc_order_temp', JSON.stringify({
-          itemDetails: msgs,
-          uploads: totalUploads
-      }));
-      window.location.href = 'payment.html';
-  });
-</script>
+    function setMainImage(src, el) {
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('thumb-active'));
+        el.classList.add('thumb-active');
+        const mainImg = document.getElementById('main-image');
+        mainImg.style.opacity = 0;
+        setTimeout(() => {
+            mainImg.src = src;
+            mainImg.style.opacity = 1;
+        }, 150);
+    }
+  </script>
 </body>
 </html>
