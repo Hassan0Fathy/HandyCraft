@@ -54,6 +54,37 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: #e0cfc0; border-radius: 99px; }
 
+    /* Logo animations (Combined & Enhanced) */
+    @keyframes logoIn {
+      0% { opacity: 0; scale: 0.8; }
+      100% { opacity: 1; scale: 1; }
+    }
+    @keyframes logoFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -5px; }
+    }
+    
+    .logo-hero {
+      /* Base state ensures the image reverts to scale 1 / opacity 1 naturally after logoIn */
+      opacity: 1;
+      scale: 1;
+      translate: 0 0;
+      
+      /* Play intro backwards to hold start state during delay, then infinite float */
+      animation: 
+        logoIn 1.2s ease-out 0.2s backwards, 
+        logoFloat 3s ease-in-out 1.4s infinite;
+        
+      /* Smooth transitions for hover effects, independent of translate/opacity animations */
+      transition: scale 0.3s ease-out, filter 0.3s ease-out;
+      filter: drop-shadow(0 2px 6px rgba(158, 117, 80, 0.1));
+    }
+    
+    .logo-hero:hover {
+      scale: 1.05;
+      filter: drop-shadow(0 4px 12px rgba(158, 117, 80, 0.25));
+    }
+
     /* Fade-up animation */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -67,6 +98,7 @@
 
     /* Category card hover image zoom */
     .cat-card img { transition: transform .55s cubic-bezier(.4,0,.2,1); }
+
     .cat-card:hover img { transform: scale(1.06); }
   </style>
 </head>
@@ -190,14 +222,13 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       <span class="text-[10px] tracking-widest2 uppercase text-brown-muted font-medium">Handmade · Customized · Gifted</span>
     </div>
 
-    <!-- Headline -->
-    <h1 class="anim-2 font-cormorant italic text-[clamp(46px,13vw,64px)] leading-[1.05] text-brown-dark mb-5">
-      Handmade<br />with love<br />
-      <span class="not-italic">🤎</span>
-    </h1>
+    <!-- Animated Logo replacing Headline -->
+    <img src="images/logo.png" 
+         alt="Handy Crafts Logo" 
+         class="logo-hero mx-auto w-[200px] h-auto mb-6" />
 
     <!-- Subline -->
-    <p class="anim-3 text-[13px] text-brown-light tracking-wider mb-10 leading-relaxed">
+    <p class="anim-3 text-[13px] text-brown-light tracking-wider mb-10 leading-relaxed font-light">
       Every piece is made just for you —<br class="hidden sm:block" />with care, detail, and love.
     </p>
 

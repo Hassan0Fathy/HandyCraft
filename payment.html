@@ -164,17 +164,14 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     <div class="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(158,117,80,0.05)] border border-[#e8d8c8]/50">
       <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-5">Select Payment Method</h2>
       <div class="flex flex-col gap-3">
-        <label class="flex items-center p-4 border border-[#c4a882] bg-[#faf5ef] rounded-xl cursor-pointer transition relative gap-3">
-          <input type="radio" name="payment_method" value="Vodafone Cash" checked class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('01012345678', 'Vodafone Cash')">
-          <span class="font-medium text-[#6b4f35] text-sm">Vodafone Cash</span>
-        </label>
+        
         <label class="flex items-center p-4 border border-transparent hover:border-[#e8d8c8] hover:bg-[#faf5ef]/50 rounded-xl cursor-pointer transition relative gap-3">
           <input type="radio" name="payment_method" value="InstaPay" class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('handycrafts@instapay', 'InstaPay')">
           <span class="font-medium text-[#6b4f35] text-sm">InstaPay</span>
         </label>
-        <label class="flex items-center p-4 border border-transparent hover:border-[#e8d8c8] hover:bg-[#faf5ef]/50 rounded-xl cursor-pointer transition relative gap-3">
-          <input type="radio" name="payment_method" value="WE Pay" class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('01512345678', 'WE Pay')">
-          <span class="font-medium text-[#6b4f35] text-sm">WE Pay</span>
+        <label class="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition">
+          <input type="radio" name="payment_method" value="Telda" class="w-4 h-4 text-[#9e7550] accent-[#9e7550] focus:ring-[#9e7550] border-gray-300" onchange="updatePaymentInstructions('@handycrafts_telda', 'Telda')">
+          <span class="font-medium text-gray-700">Telda</span>
         </label>
       </div>
     </div>
@@ -294,7 +291,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       
       function finalizeOrder(receiptBase64) {
           const existingOrders = JSON.parse(localStorage.getItem('hc_orders') || '[]');
-          const tempUser = JSON.parse(localStorage.getItem('hc_order_temp') || '{}');
+          const tempUser = {};
           
           let paymentMethod = 'Vodafone Cash';
           document.querySelectorAll('input[name="payment_method"]').forEach(r => { if(r.checked) paymentMethod = r.value; });
@@ -310,7 +307,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
               txid: 'N/A',
               status: 'Pending',
               date: new Date().toISOString(),
-              itemDetails: tempUser.itemDetails || [],
+              itemDetails: cart.map(i => ({ id: i.id, messages: i.messages, images: i.images })),
               paymentMethod: paymentMethod,
               receiptImg: receiptImg || null
           };

@@ -41,8 +41,8 @@
       <span id="cart-total"></span>
     </div>
     <div class="flex flex-col gap-3">
-      <button onclick="location.href='order.html'" class="w-full relative group overflow-hidden bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition-all duration-300 shadow-md hover:shadow-lg font-medium active:scale-[0.99]" style="padding-top:1.1rem; padding-bottom:1.1rem;">
-        <span class="relative z-10">Checkout & Details</span>
+      <button onclick="location.href='payment.html'" class="w-full relative group overflow-hidden bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition-all duration-300 shadow-md hover:shadow-lg font-medium active:scale-[0.99]" style="padding-top:1.1rem; padding-bottom:1.1rem;">
+        <span class="relative z-10">Checkout</span>
         <div class="absolute inset-0 h-full w-0 bg-white/20 transition-all duration-300 ease-out group-hover:w-full z-0"></div>
       </button>
       <button onclick="location.href='products.html'" class="w-full border-2 border-[#e8d8c8] text-[#9e7550] text-[12px] tracking-[0.22em] uppercase py-4 rounded-xl hover:bg-[#faf5ef] hover:border-[#c4a882] transition-colors font-medium">Continue Shopping</button>
@@ -82,6 +82,19 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg>
             </button>
           </div>
+          ${it.messages ? `
+          <div class="text-[10px] text-[#9e7550] mt-1.5 space-y-0.5 line-clamp-2">
+            <span class="font-medium">Love:</span> ${it.messages.love} | 
+            <span class="font-medium">Story:</span> ${it.messages.story} | 
+            <span class="font-medium">Proud:</span> ${it.messages.proud} | 
+            <span class="font-medium">Song:</span> ${it.messages.song}
+          </div>
+          ` : ''}
+          ${it.images && it.images.length ? `
+          <div class="flex gap-1 mt-1.5 overflow-x-auto pb-1">
+            ${it.images.map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded-md border border-[#e8d8c8]" />`).join('')}
+          </div>
+          ` : (it.message ? `<div class="text-[10px] text-[#9e7550] mt-1.5 truncate">${it.message}</div>` : '')}
           <div class="flex justify-between items-center mt-2">
             <div class="flex items-center bg-[#faf5ef] rounded-[10px] px-1 py-1 border border-[#e8d8c8]">
               <button onclick="updateQty(${i},-1)" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">-</button>
