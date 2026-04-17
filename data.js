@@ -4,56 +4,83 @@ const products = [
     name: 'Custom Photo Frame',
     description: 'Personalized & handmade photo frame. Display your lovely memories with style.',
     price: 350,
-    images: ['images/frames.png']
+    images: [
+      'images/Frames_(1).jpg',
+      'images/Frames_(2).jpg'
+    ]
   },
   {
     id: 'frame-2',
     name: 'Memory Frame',
-    description: 'Rustic & warm design.',
+    description: 'Rustic & warm design. Perfect for treasured moments.',
     price: 380,
-    images: ['images/frames.png']
+    images: [
+      'images/MemoryCards_(1).jpg',
+      'images/MemoryCards_(2).jpg'
+    ]
   },
   {
     id: 'book-1',
     name: 'Custom Journal',
-    description: 'Handcrafted & unique journal.',
+    description: 'Handcrafted & unique journal. Capture your thoughts beautifully.',
     price: 450,
-    images: ['images/books.png']
+    images: [
+      'images/ValentineBook_(1).jpg',
+      'images/ValentineBook_(2).jpg',
+      'images/ValentineBook_(3).jpg',
+      'images/ValentineBook_(4).jpg'
+    ]
   },
   {
     id: 'book-2',
     name: 'Scrapbook',
-    description: 'Your memories, bound.',
+    description: 'Your memories, bound. A timeless keepsake of special moments.',
     price: 400,
-    images: ['images/books.png']
+    images: [
+      'images/GradutionCap_(1).jpg',
+      'images/GradutionCap_(2).jpg',
+      'images/GradutionCap_(3).jpg'
+    ]
   },
   {
     id: 'birth-1',
     name: 'Birthday Gift Box',
-    description: 'Curated with love.',
+    description: 'Curated with love. Premium handmade gift packaging.',
     price: 200,
-    images: ['images/birthday.png']
+    images: [
+      'images/GradutionCap_(4).jpg',
+      'images/GradutionCap_(5).jpg'
+    ]
   },
   {
     id: 'birth-2',
     name: 'Custom Wrap Set',
-    description: 'Kraft & dried flowers.',
+    description: 'Kraft & dried flowers. Eco-friendly gift wrapping.',
     price: 220,
-    images: ['images/birthday.png']
+    images: [
+      'images/GradutionCap_(6).jpg',
+      'images/GradutionCap_(7).jpg'
+    ]
   },
   {
     id: 'baby-1',
     name: 'Baby Gift Set',
-    description: 'Gentle & sweet.',
+    description: 'Gentle & sweet. Perfect for new arrivals and celebrations.',
     price: 250,
-    images: ['images/baby.png']
+    images: [
+      'images/MemoryCards_(1).jpg',
+      'images/MemoryCards_(2).jpg'
+    ]
   },
   {
     id: 'baby-2',
     name: 'Name Tag Gift',
-    description: 'Personalized keepsake.',
+    description: 'Personalized keepsake. A special memento for little ones.',
     price: 150,
-    images: ['images/baby.png']
+    images: [
+      'images/ValentineBook_(3).jpg',
+      'images/ValentineBook_(4).jpg'
+    ]
   }
 ];
 

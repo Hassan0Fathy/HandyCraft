@@ -41,6 +41,45 @@
     .prod-card img { transition: transform .5s cubic-bezier(.4,0,.2,1); }
     .prod-card:hover img { transform: scale(1.07); }
 
+    /* Hover Image Effect */
+    .prod-image-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .prod-image-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .prod-image-main {
+      opacity: 1;
+      z-index: 20;
+    }
+
+    .prod-image-hover {
+      opacity: 0;
+      z-index: 10;
+    }
+
+    @media (hover: hover) {
+      .prod-card:hover .prod-image-main {
+        opacity: 0;
+        z-index: 10;
+      }
+
+      .prod-card:hover .prod-image-hover {
+        opacity: 1;
+        z-index: 20;
+      }
+    }
+
     /* Tab active state */
     .tab-active {
       background-color: #9e7550 !important;
@@ -185,125 +224,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </div>
 
   <!-- ═══════ PRODUCT GRID ═══════ -->
-  <section class="max-w-[520px] mx-auto px-6 pb-28 anim-3">
-    <div class="grid grid-cols-2 gap-5" id="product-grid">
-
-      <!-- ── Frames ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames" cursor-pointer" onclick="window.location.href='product-details.html?id=frame-1'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/frames.png" alt="Custom Photo Frame" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Photo Frame</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Personalized & handmade</p>
-          <a href="product-details.html?id=frame-1"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="frames" cursor-pointer" onclick="window.location.href='product-details.html?id=frame-2'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/frames.png" alt="Memory Frame" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Memory Frame</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Rustic & warm design</p>
-          <a href="product-details.html?id=frame-2"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <!-- ── Books ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books" cursor-pointer" onclick="window.location.href='product-details.html?id=book-1'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/books.png" alt="Custom Journal" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Journal</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Handcrafted & unique</p>
-          <a href="product-details.html?id=book-1"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="books" cursor-pointer" onclick="window.location.href='product-details.html?id=book-2'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/books.png" alt="Scrapbook" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Scrapbook</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Your memories, bound</p>
-          <a href="product-details.html?id=book-2"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <!-- ── Birthday ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday" cursor-pointer" onclick="window.location.href='product-details.html?id=birth-1'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/birthday.png" alt="Birthday Gift Box" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Birthday Gift Box</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Curated with love</p>
-          <a href="product-details.html?id=birth-1"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="birthday" cursor-pointer" onclick="window.location.href='product-details.html?id=birth-2'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/birthday.png" alt="Custom Wrap Set" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Custom Wrap Set</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Kraft & dried flowers</p>
-          <a href="product-details.html?id=birth-2"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <!-- ── Baby ── -->
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby" cursor-pointer" onclick="window.location.href='product-details.html?id=baby-1'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/baby.png" alt="Baby Gift Set" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Baby Gift Set</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Gentle & sweet</p>
-          <a href="product-details.html?id=baby-1"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
-      <div class="prod-card group bg-white rounded-2xl overflow-hidden ring-1 ring-[#ecdccc]/60 hover:ring-[#c4a882] hover:shadow-lg transition-all duration-300" data-cat="baby" cursor-pointer" onclick="window.location.href='product-details.html?id=baby-2'">
-        <div class="overflow-hidden aspect-square">
-          <img src="images/baby.png" alt="Name Tag Gift" class="w-full h-full object-cover" />
-        </div>
-        <div class="px-4 pt-4 pb-5">
-          <p class="text-[13px] font-medium text-[#6b4f35] mb-1 leading-snug">Name Tag Gift</p>
-          <p class="text-[11px] text-[#c4a882] mb-4 tracking-wide">Personalized keepsake</p>
-          <a href="product-details.html?id=baby-2"
-             class="block text-center bg-[#9e7550] text-white text-[10px] tracking-[0.22em] uppercase py-2.5 rounded-full hover:bg-[#6b4f35] transition duration-200">
-            Order Now
-          </a>
-        </div>
-      </div>
-
+  <section class="max-w-7xl mx-auto px-6 pb-28 anim-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="product-grid">
+      <!-- Products will be rendered here by JavaScript -->
     </div>
   </section>
 
@@ -331,10 +254,86 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </a>
 
   <script>
+    // ── Category mapping for filtering ──
+    const categoryMap = {
+      'frame-1': 'frames', 'frame-2': 'frames',
+      'book-1': 'books', 'book-2': 'books',
+      'birth-1': 'birthday', 'birth-2': 'birthday',
+      'baby-1': 'baby', 'baby-2': 'baby'
+    };
+
+    // ── Render products dynamically from data.js ──
+    function renderProducts() {
+      if (typeof products === 'undefined' || !Array.isArray(products)) {
+        console.error('[HandyCraft] Products data not available');
+        return;
+      }
+
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
+
+      products.forEach((product) => {
+        const mainImage = product.images && product.images[0] ? product.images[0] : 'images/placeholder.png';
+        const hoverImage = product.images && product.images[1] ? product.images[1] : mainImage;
+        const category = categoryMap[product.id] || 'all';
+
+        const card = document.createElement('div');
+        card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
+        card.dataset.cat = category;
+        card.onclick = () => window.location.href = `product-details.html?id=${product.id}`;
+
+        card.innerHTML = `
+          <div class="aspect-square overflow-hidden bg-[#f5ede3]">
+            <div class="prod-image-container">
+              <img src="${mainImage}" alt="${product.name}" class="prod-image-main" />
+              ${hoverImage !== mainImage ? `<img src="${hoverImage}" alt="${product.name} hover" class="prod-image-hover" />` : ''}
+            </div>
+          </div>
+          <div class="p-4 md:p-5 flex flex-col h-[140px]">
+            <h3 class="text-sm md:text-base font-medium text-[#6b4f35] mb-1 line-clamp-2">
+              ${product.name}
+            </h3>
+            <p class="text-xs md:text-sm text-[#9e7550] mb-3 line-clamp-1 flex-grow">
+              ${product.description.split('.')[0] || product.description}
+            </p>
+            <div class="flex items-center justify-between mt-auto">
+              <span class="text-sm md:text-base font-medium text-[#6b4f35]">
+                ${product.price} EGP
+              </span>
+              <button onclick="event.stopPropagation(); addToCart(event, '${product.id}');"
+                      class="px-3 md:px-4 py-2 bg-[#9e7550] text-white text-xs md:text-sm rounded-full hover:bg-[#6b4f35] transition-colors duration-200">
+                Add
+              </button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      console.log('[HandyCraft] Rendered ' + products.length + ' products');
+    }
+
     // ── Read category from URL & init ──
     const params  = new URLSearchParams(window.location.search);
     const initCat = params.get('cat') || 'all';
-    filterCat(initCat);
+
+    // Wait for products data to load
+    function waitForProducts() {
+      if (typeof products !== 'undefined' && Array.isArray(products) && products.length > 0) {
+        renderProducts();
+        filterCat(initCat);
+      } else {
+        setTimeout(waitForProducts, 100);
+      }
+    }
+
+    // Start waiting if DOM is ready, otherwise wait for DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', waitForProducts);
+    } else {
+      waitForProducts();
+    }
 
     function filterCat(cat) {
       // Update title
@@ -343,6 +342,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
       // Reset all tabs
       document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.remove('tab-active');
         t.style.backgroundColor = '';
         t.style.color = '#c4a882';
         t.style.borderColor = '#ecdccc';
@@ -351,6 +351,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       // Activate selected tab
       const active = document.getElementById('tab-' + cat);
       if (active) {
+        active.classList.add('tab-active');
         active.style.backgroundColor = '#9e7550';
         active.style.color = '#ffffff';
         active.style.borderColor = '#9e7550';

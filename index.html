@@ -110,7 +110,7 @@
   
 <!-- NAVBAR & DRAWER -->
 <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
-<div class="max-w-[520px] mx-auto px-5 h-16 flex items-center justify-between">
+<div class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
   
   <div class="flex items-center w-1/4">
     <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
@@ -214,7 +214,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 <!-- ═══════════════════════════════════════════
        HERO
   ════════════════════════════════════════════ -->
-  <section class="max-w-[520px] mx-auto px-6 pt-20 pb-16 text-center">
+  <section class="max-w-[520px] md:max-w-4xl mx-auto px-6 pt-20 md:pt-24 pb-16 md:pb-20 text-center">
 
     <!-- Pill label (ENHANCED: reduced text size) -->
     <div class="anim-1 inline-flex items-center gap-2 bg-beige-warm border border-brown-pale rounded-full px-5 py-2 mb-8">
@@ -241,104 +241,201 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </section>
 
   <!-- ═══════════════════════════════════════════
-       SECTION LABEL
+       SHOP ALL PRODUCTS SECTION
   ════════════════════════════════════════════ -->
-  <div class="max-w-[520px] mx-auto px-6 mb-10 anim-5">
-    <div class="flex items-center gap-4">
-      <div class="flex-1 h-px bg-brown-pale/70"></div>
-      <p class="text-[10px] tracking-widest2 uppercase text-brown-light font-medium shrink-0">Our Collections</p>
-      <div class="flex-1 h-px bg-brown-pale/70"></div>
+  <section class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-6 pb-24">
+    
+    <!-- Section Header: Clean Shop All Layout -->
+    <div class="mb-12 md:mb-16 flex items-baseline justify-between">
+      <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">Shop All</h2>
+      <a href="products.html" class="text-[10px] md:text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition font-medium">
+        View more →
+      </a>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════
-       CATEGORIES GRID
-  ════════════════════════════════════════════ -->
-  <section class="max-w-[520px] mx-auto px-6 pb-24">
-    <div class="grid grid-cols-2 gap-5">
-
-      <!-- Frames -->
-      <a href="products.html?cat=frames" id="cat-frames"
-         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
-        <div class="overflow-hidden aspect-[4/3]">
-          <img src="images/frames.png" alt="Frames" class="w-full h-full object-cover" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Frames</p>
-        </div>
-      </a>
-
-      <!-- Books -->
-      <a href="products.html?cat=books" id="cat-books"
-         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
-        <div class="overflow-hidden aspect-[4/3]">
-          <img src="images/books.png" alt="Books" class="w-full h-full object-cover" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Books</p>
-        </div>
-      </a>
-
-      <!-- Birthday -->
-      <a href="products.html?cat=birthday" id="cat-birthday"
-         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
-        <div class="overflow-hidden aspect-[4/3]">
-          <img src="images/birthday.png" alt="Birthday" class="w-full h-full object-cover" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Birthday</p>
-        </div>
-      </a>
-
-      <!-- Baby -->
-      <a href="products.html?cat=baby" id="cat-baby"
-         class="cat-card group relative rounded-2xl overflow-hidden shadow-sm ring-1 ring-brown-pale/50 hover:shadow-xl hover:ring-brown-light/60 transition-all duration-300">
-        <div class="overflow-hidden aspect-[4/3]">
-          <img src="images/baby.png" alt="Baby" class="w-full h-full object-cover" />
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-brown-dark/40 via-transparent to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <p class="text-white text-[11px] tracking-widest uppercase font-medium">Baby</p>
-        </div>
-      </a>
-
+    <!-- Products Grid: Responsive Layout -->
+    <div id="featured-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-16 md:mb-24 overflow-x-auto md:overflow-x-visible">
+      <!-- Dynamic content will be inserted here -->
     </div>
 
     <!-- Promise strip -->
-    <div class="mt-10 grid grid-cols-3 gap-4 py-8 border-y border-brown-pale/60">
+    <div class="mt-16 md:mt-20 grid grid-cols-3 gap-4 md:gap-8 py-8 md:py-12 border-y border-brown-pale/60">
       <div class="text-center">
-        <p class="text-xl mb-1.5">✦</p>
-        <p class="text-[10px] tracking-widest uppercase text-brown-light">Handmade</p>
+        <p class="text-xl md:text-2xl mb-1.5">✦</p>
+        <p class="text-[10px] md:text-[11px] tracking-widest uppercase text-brown-light">Handmade</p>
       </div>
       <div class="text-center">
-        <p class="text-xl mb-1.5">🤎</p>
-        <p class="text-[10px] tracking-widest uppercase text-brown-light">Made to order</p>
+        <p class="text-xl md:text-2xl mb-1.5">🤎</p>
+        <p class="text-[10px] md:text-[11px] tracking-widest uppercase text-brown-light">Made to order</p>
       </div>
       <div class="text-center">
-        <p class="text-xl mb-1.5">✦</p>
-        <p class="text-[10px] tracking-widest uppercase text-brown-light">Custom gift</p>
+        <p class="text-xl md:text-2xl mb-1.5">✦</p>
+        <p class="text-[10px] md:text-[11px] tracking-widest uppercase text-brown-light">Custom gift</p>
       </div>
     </div>
 
   </section>
 
+  <!-- Styles for Product Grid -->
+  <style>
+    .product-card-link {
+      @apply text-decoration-none block no-underline;
+    }
+
+    .featured-product-card {
+      @apply bg-white rounded-lg overflow-hidden transition-all duration-300
+             flex flex-col h-full border border-beige-dark/15 hover:border-beige-dark/40;
+    }
+
+    /* FIXED: Product Image Container */
+    .featured-product-image {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background-color: #f5ede3;
+      display: block;
+    }
+
+    /* FIXED: Image overlay positioning */
+    .featured-product-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease-out;
+    }
+
+    .featured-product-image-main {
+      opacity: 1;
+      z-index: 20;
+    }
+
+    .featured-product-image-hover {
+      opacity: 0;
+      z-index: 10;
+    }
+
+    /* Premium hover image fade effect (desktop only) */
+    @media (hover: hover) {
+      .featured-product-card:hover .featured-product-image-main {
+        opacity: 0;
+        z-index: 10;
+      }
+
+      .featured-product-card:hover .featured-product-image-hover {
+        opacity: 1;
+        z-index: 20;
+      }
+
+      .featured-product-card:hover .featured-product-image img {
+        transform: scale(1.02);
+      }
+    }
+
+    /* Mobile: disable hover effects completely */
+    @media (max-width: 768px) {
+      .featured-product-image-hover {
+        display: none;
+      }
+
+      .featured-product-card:hover .featured-product-image img {
+        transform: scale(1);
+      }
+    }
+
+    .featured-product-badge {
+      @apply absolute top-3 left-3 bg-brown-mid text-white text-[8px] tracking-widest uppercase 
+             px-2.5 py-1 rounded-full font-medium z-10 shadow-sm;
+    }
+
+    .featured-product-content {
+      @apply p-5 md:p-6 flex flex-col justify-start gap-3 md:gap-4;
+    }
+
+    .featured-product-name {
+      @apply font-cormorant text-sm md:text-base italic text-brown-dark leading-snug line-clamp-1 font-medium;
+    }
+
+    .featured-product-desc {
+      @apply text-[11px] md:text-[12px] text-brown-light leading-snug line-clamp-1;
+    }
+
+    .featured-product-price {
+      @apply text-brown-dark font-medium text-[12px] md:text-[13px] tracking-wide;
+    }
+
+    /* Stagger animation for cards */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .product-card-animate {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .product-card-animate:nth-child(1) { animation-delay: 0.1s; }
+    .product-card-animate:nth-child(2) { animation-delay: 0.2s; }
+    .product-card-animate:nth-child(3) { animation-delay: 0.3s; }
+    .product-card-animate:nth-child(4) { animation-delay: 0.4s; }
+    .product-card-animate:nth-child(5) { animation-delay: 0.5s; }
+    .product-card-animate:nth-child(6) { animation-delay: 0.6s; }
+    .product-card-animate:nth-child(7) { animation-delay: 0.7s; }
+    .product-card-animate:nth-child(8) { animation-delay: 0.8s; }
+
+    /* Mobile horizontal scroll slider for small screens */
+    @media (max-width: 576px) {
+      #featured-products-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding-bottom: 8px;
+        margin-bottom: 2rem;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      #featured-products-grid .product-card-link {
+        flex: 0 0 calc(100vw - 3rem);
+        max-width: 300px;
+        scroll-snap-align: start;
+      }
+
+      /* Hide scrollbar but keep functionality */
+      #featured-products-grid::-webkit-scrollbar {
+        height: 3px;
+      }
+
+      #featured-products-grid::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      #featured-products-grid::-webkit-scrollbar-thumb {
+        background: #d4c4b0;
+        border-radius: 99px;
+      }
+    }
+  </style>
+
   <!-- ═══════════════════════════════════════════
        FOOTER
   ════════════════════════════════════════════ -->
-  <footer class="bg-beige-soft border-t border-brown-pale/60 py-12">
-    <div class="max-w-[520px] mx-auto px-6 text-center flex flex-col items-center">
-      <img src="images/logo.png" alt="Handy Crafts" class="h-24 w-auto mb-2" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
-      <p class="font-cormorant italic text-2xl text-brown-mid mb-2">Handy Crafts</p>
-      <p class="text-[10px] tracking-widest2 uppercase text-brown-light mb-6">Gift Shop · Made with love</p>
-      <div class="flex justify-center gap-6">
-        <a href="products.html" class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Shop</a>
-        <a href="order.html"    class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Order</a>
-        <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="text-[11px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Instagram</a>
+  <footer class="bg-beige-soft border-t border-brown-pale/60 py-12 md:py-16">
+    <div class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-6 text-center flex flex-col items-center">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-24 md:h-28 w-auto mb-2" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+      <p class="font-cormorant italic text-2xl md:text-3xl text-brown-mid mb-2">Handy Crafts</p>
+      <p class="text-[10px] md:text-[11px] tracking-widest2 uppercase text-brown-light mb-6">Gift Shop · Made with love</p>
+      <div class="flex justify-center gap-6 md:gap-8">
+        <a href="products.html" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Shop</a>
+        <a href="order.html"    class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Order</a>
+        <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Instagram</a>
       </div>
-      <p class="text-[10px] text-brown-pale mt-8">© 2026 Handy Crafts</p>
+      <p class="text-[10px] md:text-[11px] text-brown-pale mt-8">© 2026 Handy Crafts</p>
     </div>
   </footer>
 
@@ -346,10 +443,130 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
   <!-- Temporary Admin Button -->
   <a href="admin.html"
-     class="fixed bottom-6 left-5 z-50 bg-brown-muted text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 hover:bg-brown-dark hover:scale-105 transition-all text-[11px] tracking-widest uppercase border border-brown-light/30">
+     class="fixed bottom-6 left-5 z-50 bg-brown-muted text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 hover:bg-brown-dark hover:scale-105 transition-all text-[11px] tracking-widest uppercase border border-brown-light/30 hidden md:flex">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
     Admin Dashboard
   </a>
+
+  <script src="data.js"></script>
+  <script>
+    // Featured products configuration
+    const featuredProductConfig = {
+      'frame-1': { badge: 'Best Seller' },
+      'frame-2': { badge: null },
+      'book-1': { badge: 'New' },
+      'book-2': { badge: null },
+      'birth-1': { badge: 'Popular' },
+      'birth-2': { badge: null },
+      'baby-1': { badge: null },
+      'baby-2': { badge: null }
+    };
+
+    // Placeholder image fallback
+    const FALLBACK_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"%3E%3Crect fill="%23f5ede3" width="400" height="400"/%3E%3Ctext x="50%" y="50%" font-size="14" fill="%239e7550" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif"%3EImage not available%3C/text%3E%3C/svg%3E';
+
+    function renderFeaturedProducts() {
+      const grid = document.getElementById('featured-products-grid');
+      if (!grid) {
+        console.error('[HandyCraft] Grid container not found');
+        return;
+      }
+
+      // Check if products data is available
+      if (typeof products === 'undefined') {
+        console.error('[HandyCraft] Products data not loaded. Ensure data.js is properly included.');
+        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">No products available</p></div>';
+        return;
+      }
+
+      // Check if products array is empty
+      if (!Array.isArray(products) || products.length === 0) {
+        console.warn('[HandyCraft] Products array is empty');
+        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">No products available</p></div>';
+        return;
+      }
+
+      console.log(`[HandyCraft] Loading ${Math.min(8, products.length)} products from ${products.length} total`);
+
+      // Show first 8 products
+      const featuredProducts = products.slice(0, 8);
+
+      grid.innerHTML = featuredProducts.map((product, index) => {
+        try {
+          const badge = featuredProductConfig[product.id]?.badge || null;
+          const hasMultipleImages = product.images && product.images.length > 1;
+          const mainImage = (product.images && product.images[0]) ? product.images[0] : FALLBACK_IMAGE;
+          const hoverImage = (hasMultipleImages && product.images[1]) ? product.images[1] : mainImage;
+          const shortDesc = product.description ? product.description.split('•')[0].trim().split('.')[0].trim() : 'Premium handmade item';
+          
+          // Debug logging
+          if (index < 2) {
+            console.log(`[HandyCraft] Product ${index}: ${product.name} - ${hasMultipleImages ? 'Has hover image ✓' : 'Single image only'}`);
+          }
+          
+          return `
+            <a href="products.html" class="product-card-link product-card-animate">
+              <div class="featured-product-card">
+                <div class="featured-product-image">
+                  <img src="${mainImage}" alt="${product.name}" class="featured-product-image-main" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'" />
+                  ${hasMultipleImages ? `<img src="${hoverImage}" alt="${product.name} alternate" class="featured-product-image-hover" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'" />` : ''}
+                  ${badge ? `<span class="featured-product-badge">${badge}</span>` : ''}
+                </div>
+                <div class="featured-product-content">
+                  <h3 class="featured-product-name">${product.name || 'Unnamed Product'}</h3>
+                  <p class="featured-product-desc">${shortDesc}</p>
+                  <p class="featured-product-price">EGP ${product.price || 'N/A'}</p>
+                </div>
+              </div>
+            </a>
+          `;
+        } catch (error) {
+          console.error(`[HandyCraft] Error rendering product ${index}:`, error);
+          return '';
+        }
+      }).join('');
+
+      const hoverCount = featuredProducts.filter(p => p.images && p.images.length > 1).length;
+      console.log(`[HandyCraft] Products rendered: ${featuredProducts.length} total | ${hoverCount} with hover images`);
+    }
+
+    // Robust loading strategy: wait for both DOM and data
+    function initializeProducts() {
+      // Check if data is already loaded
+      if (typeof products !== 'undefined' && products.length > 0) {
+        console.log('[HandyCraft] Data already available, rendering products...');
+        renderFeaturedProducts();
+        return;
+      }
+
+      // If data not ready, wait for it
+      let attempts = 0;
+      const maxAttempts = 20;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        if (typeof products !== 'undefined' && products.length > 0) {
+          console.log('[HandyCraft] Data loaded successfully after ' + attempts + ' checks');
+          clearInterval(checkInterval);
+          renderFeaturedProducts();
+        } else if (attempts >= maxAttempts) {
+          console.error('[HandyCraft] Products data failed to load after ' + maxAttempts + ' attempts');
+          clearInterval(checkInterval);
+          const grid = document.getElementById('featured-products-grid');
+          if (grid) {
+            grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">Unable to load products</p></div>';
+          }
+        }
+      }, 100);
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeProducts);
+    } else {
+      // DOM already loaded, initialize immediately
+      initializeProducts();
+    }
+  </script>
 
 </body>
 </html>
