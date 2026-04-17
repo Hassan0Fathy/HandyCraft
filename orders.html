@@ -265,7 +265,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
               </span>
               <div>
                 <p class="text-[13px] font-medium text-[#6b4f35]">${escapeHtml(order.name || '—')}</p>
-                <p class="text-[10px] text-[#c4a882] tracking-wider">${escapeHtml(order.date || '')}</p>
+                <p class="text-[10px] text-[#c4a882] tracking-wider">${(() => { const d = new Date(order.date || ''); return isNaN(d.getTime()) ? '' : `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; })()}</p>
               </div>
             </div>
             <div class="flex items-center gap-3">

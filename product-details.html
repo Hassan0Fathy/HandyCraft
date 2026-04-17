@@ -247,6 +247,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
             </div>
             ` : ''}
             <button id="add-to-cart-btn" onclick="addToCartDetail(event)" class="mt-auto w-full bg-[#ecdccc] text-[#9e7550] py-4 rounded-xl text-[12px] uppercase tracking-widest transition duration-300 font-medium cursor-not-allowed" disabled>Add to Cart</button>
+            <button id="buy-now-btn" onclick="buyNow(event)" class="w-full bg-[#9e7550] text-white py-4 rounded-xl text-[12px] uppercase tracking-widest transition duration-300 font-medium hover:bg-[#6b4f35] mt-3 cursor-not-allowed" disabled>Buy Now</button>
         </div>
       `;
       
@@ -389,6 +390,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         const songInput = document.getElementById('song-msg');
         
         const btn = document.getElementById('add-to-cart-btn');
+        const buyNowBtn = document.getElementById('buy-now-btn');
         const uploadBox = document.getElementById('upload-box');
         
         let isValid = loveInput.value.trim() && storyInput.value.trim() && proudInput.value.trim() && songInput.value.trim() && uploadedBase64Images.length > 0;
@@ -401,10 +403,16 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
             btn.disabled = true;
             btn.classList.add('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
             btn.classList.remove('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
+            buyNowBtn.disabled = true;
+            buyNowBtn.classList.add('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
+            buyNowBtn.classList.remove('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
         } else {
             btn.disabled = false;
             btn.classList.remove('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
             btn.classList.add('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
+            buyNowBtn.disabled = false;
+            buyNowBtn.classList.remove('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
+            buyNowBtn.classList.add('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
             
             [loveInput, storyInput, proudInput, songInput, uploadBox].forEach(el => el.classList.remove('border-red-400'));
         }
@@ -464,6 +472,62 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         setTimeout(() => {
            window.location.href = 'cart.html';
         }, 800);
+    }
+
+    function buyNow(e) {
+        e.preventDefault();
+        
+        const loveInput = document.getElementById('love-msg');
+        const storyInput = document.getElementById('story-msg');
+        const proudInput = document.getElementById('proud-msg');
+        const songInput = document.getElementById('song-msg');
+        const uploadBox = document.getElementById('upload-box');
+        
+        const love = loveInput.value.trim();
+        const story = storyInput.value.trim();
+        const proud = proudInput.value.trim();
+        const song = songInput.value.trim();
+        
+        if (!love || !story || !proud || !song || uploadedBase64Images.length === 0) {
+            if(!love) loveInput.classList.add('border-red-400');
+            if(!story) storyInput.classList.add('border-red-400');
+            if(!proud) proudInput.classList.add('border-red-400');
+            if(!song) songInput.classList.add('border-red-400');
+            if(uploadedBase64Images.length === 0) uploadBox.classList.add('border-red-400');
+            return;
+        }
+        
+        let cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
+        
+        const cartItem = {
+             id: product.id + '-' + Date.now(), 
+             baseId: product.id,
+             name: product.name, 
+             price: product.price, 
+             qty: 1, 
+             quantity: 1, 
+             img: product.images[0],
+             messages: {
+                 love,
+                 story,
+                 proud,
+                 song
+             },
+             customization: product.id.startsWith('frame') ? { ...customization } : undefined,
+             images: [...uploadedBase64Images]
+        };
+        
+        cart.push(cartItem);
+        localStorage.setItem('hc_cart', JSON.stringify(cart));
+        
+        if(typeof updateCartBadge !== 'undefined') updateCartBadge();
+        const btn = document.getElementById('buy-now-btn');
+        btn.innerText = 'Redirecting...'; 
+        btn.style.backgroundColor = '#7a5c3e'; 
+        
+        setTimeout(() => {
+           window.location.href = 'payment.html';
+        }, 500);
     }
   </script>
 

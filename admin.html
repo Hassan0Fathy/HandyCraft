@@ -250,7 +250,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           <div>
             <div class="flex justify-between items-start mb-4">
               <div>
-                <span class="text-xs text-brown-light tracking-widest font-medium block mb-1 uppercase">${new Date(o.date).toLocaleDateString()}</span>
+                <span class="text-xs text-brown-light tracking-widest font-medium block mb-1 uppercase">${(() => { const d = new Date(o.date); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; })()}</span>
                 <span class="font-cormorant text-2xl text-brown-dark italic font-semibold leading-none">${o.id}</span>
               </div>
               <span class="text-[10px] uppercase tracking-widest font-medium py-1 px-3 rounded-md status-${o.status}">${o.status}</span>
@@ -275,7 +275,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
             </div>
             
             <div class="bg-beige-soft/50 rounded-xl p-3 border border-brown-pale/40 mb-4 whitespace-nowrap overflow-hidden text-ellipsis text-xs text-brown-dark">
-              💳 <span class="tracking-wide">${o.txid}</span> <span class="text-brown-light">(${o.paymentMethod || 'Transfer'})</span>
+              💳 <span class="tracking-wide">${o.transactionRef || (o.txid || 'N/A')}</span> <span class="text-brown-light">(${o.paymentMethod || 'InstaPay'})</span>
             </div>
           </div>
           
@@ -308,6 +308,12 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
   function viewDetails(idx) {
     const o = orders[idx];
+    
+    // Validate that order exists
+    if (!o) {
+      alert('Order details not available');
+      return;
+    }
 
     let msgsHtml = '';
     let hasImages = false;
@@ -315,17 +321,33 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
     if (o.itemDetails && o.itemDetails.length > 0) {
       o.itemDetails.forEach((item, i) => {
-        let msgBlocks = item.messages.map(m => `<div class="mb-2"><span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${m.type}</span><p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${m.text}</p></div>`).join('');
+        // Handle both old format (text field) and new format (messages object)
+        let msgBlocks = '';
+        if (item.messages) {
+          if (Array.isArray(item.messages)) {
+            msgBlocks = item.messages.map(m => {
+              const msgType = m.type || 'Message';
+              const msgText = m.text || '';
+              return `<div class="mb-2"><span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${msgType}</span><p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${msgText}</p></div>`;
+            }).join('');
+          } else {
+            // Handle object format
+            msgBlocks = Object.entries(item.messages).map(([key, value]) => {
+              return `<div class="mb-2"><span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${key}</span><p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${value || 'N/A'}</p></div>`;
+            }).join('');
+          }
+        }
+        
         if(item.images && item.images.length > 0) {
           hasImages = true;
-          let imgsHtml = item.images.map(img => `<img src="${img}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" onclick="window.open('${img}', '_blank')">`).join('');
+          let imgsHtml = item.images.map(img => `<img src="${img}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" onclick="window.open('${img}', '_blank')" alt="Item ${i+1}">`).join('');
           imagesGalleryHtml += `<div class="mb-3"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Item ${i+1} Images</span><div class="flex flex-wrap gap-2">${imgsHtml}</div></div>`;
         }
         
         msgsHtml += `
           <div class="bg-white p-4 rounded-xl border border-brown-pale/40 shadow-sm mb-4">
             <h4 class="font-cormorant text-lg italic text-[#6b4f35] mb-3 border-b border-[#e8d8c8]/50 pb-2">Item ${i+1} Details</h4>
-            ${msgBlocks || '<span class="text-xs text-brown-light italic">No text messages provided.</span>'}
+            ${msgBlocks || '<span class="text-xs text-brown-light italic">No custom details provided.</span>'}
           </div>
         `;
       });
@@ -335,10 +357,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
     let receiptHtml = '';
     if(o.receiptImg) {
-      receiptHtml = `<div class="mt-4"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Payment Receipt</span><img src="${o.receiptImg}" class="w-full max-h-48 object-cover rounded-xl border border-brown-pale shadow-sm cursor-pointer" onclick="window.open('${o.receiptImg}', '_blank')" onerror="this.style.display='none'"></div>`;
+      receiptHtml = `<div class="mt-4"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Payment Receipt</span><img src="${o.receiptImg}" class="w-full max-h-48 object-cover rounded-xl border border-brown-pale shadow-sm cursor-pointer" onclick="window.open('${o.receiptImg}', '_blank')" onerror="this.style.display='none'" alt="Payment Receipt"></div>`;
     }
 
     const downloadBtn = hasImages ? `<button onclick="alert('In a real app, this would zip and download all item images.')" class="mt-2 w-full border border-[#c4a882] text-[#9e7550] text-[10px] tracking-[0.1em] uppercase py-2 rounded-lg hover:bg-[#faf5ef] transition font-medium">Download All Images</button>` : '';
+
+    // Format order date
+    const orderDate = (() => {
+      if (!o.date) return 'N/A';
+      const d = new Date(o.date);
+      if (isNaN(d.getTime())) return 'N/A';
+      return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    })();
 
     const body = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -347,13 +377,26 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           <div class="bg-beige-soft rounded-xl p-5 border border-[#e8d8c8]/40 shadow-sm">
             <div class="flex items-center gap-2 mb-3 border-b border-[#e8d8c8] pb-2">
                <svg class="w-4 h-4 text-brown-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+               <h3 class="font-cormorant text-xl italic text-brown-mid">Order Info</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Order ID</span><span class="font-medium text-brown-dark">${o.id || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Date</span><span class="font-medium text-brown-dark">${orderDate}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="font-medium text-brown-dark">${o.status || 'Pending'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Total</span><span class="font-medium text-brown-dark">EGP ${o.total || '0'}</span></div>
+            </div>
+          </div>
+
+          <div class="bg-beige-soft rounded-xl p-5 border border-[#e8d8c8]/40 shadow-sm">
+            <div class="flex items-center gap-2 mb-3 border-b border-[#e8d8c8] pb-2">
+               <svg class="w-4 h-4 text-brown-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                <h3 class="font-cormorant text-xl italic text-brown-mid">Customer Info</h3>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Name</span><span class="font-medium text-brown-dark">${o.customer}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Phone</span><span class="font-medium text-brown-dark">${o.phone}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Instagram</span><a href="https://instagram.com/${o.ig.replace('@','')}" target="_blank" class="text-blue-500 hover:underline">${o.ig}</a></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Delivery Addr.</span><span class="text-brown-dark">${o.address || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Name</span><span class="font-medium text-brown-dark">${o.customer || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Phone</span><span class="font-medium text-brown-dark">${o.phone || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Instagram</span><span class="font-medium text-brown-dark">${o.ig ? '@' + (o.ig.replace('@', '')) : 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Address</span><span class="text-brown-dark">${o.address || 'N/A'}</span></div>
             </div>
           </div>
           
@@ -363,9 +406,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                <h3 class="font-cormorant text-xl italic text-brown-mid">Payment Info</h3>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Total</span><span class="font-medium text-brown-dark">EGP ${o.total}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Method</span><span class="text-brown-dark">${o.paymentMethod || 'Vodafone Cash'}</span></div>
-              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">TX ID</span><span class="font-medium tracking-wider text-brown-dark">${o.txid}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Method</span><span class="text-brown-dark">${o.paymentMethod || 'InstaPay'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="text-brown-dark">${o.status || 'Pending'}</span></div>
+              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Transaction Reference Number</span><span class="font-medium tracking-wider text-brown-dark">${o.transactionRef || (o.txid || 'N/A')}</span></div>
             </div>
             ${receiptHtml}
           </div>
@@ -376,7 +419,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           <div class="bg-beige-soft rounded-xl p-5 border border-[#e8d8c8]/40 shadow-sm h-full">
             <div class="flex items-center gap-2 mb-3 border-b border-[#e8d8c8] pb-2">
                <svg class="w-4 h-4 text-brown-light" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-               <h3 class="font-cormorant text-xl italic text-brown-mid">Customization</h3>
+               <h3 class="font-cormorant text-xl italic text-brown-mid">Product Details</h3>
             </div>
             <div class="max-h-[300px] overflow-y-auto pr-1">
               ${msgsHtml}

@@ -38,16 +38,7 @@
       <span id="succ-order-id" class="font-cormorant text-2xl font-medium text-[#6b4f35] italic tracking-wider">#---------</span>
     </div>
 
-    <div class="bg-white rounded-xl px-6 py-4 w-full border border-[#c4a882]/40 mb-6 animate-slide-up flex flex-col gap-2" style="animation-delay: 0.45s; opacity: 0;">
-      <div class="flex items-center justify-between">
-        <span class="text-[10px] uppercase tracking-[0.25em] text-[#9e7550] font-medium">Transaction ID</span>
-        <button onclick="copyToClipboard(document.getElementById('succ-transaction-id').innerText)" class="text-[10px] uppercase tracking-[0.15em] text-[#c4a882] hover:text-[#9e7550] transition font-medium px-2 py-1 hover:bg-[#faf5ef] rounded">Copy</button>
-      </div>
-      <span id="succ-transaction-id" class="font-mono text-sm font-semibold text-[#6b4f35] tracking-wider break-all">TXN-PENDING</span>
-      <span class="text-[11px] text-[#9e7550] mt-1">Use this ID to track your order status</span>
-    </div>
-
-    <div class="flex flex-col gap-4 w-full animate-slide-up" style="animation-delay: 0.5s; opacity: 0;">
+    <div class="flex flex-col gap-4 w-full animate-slide-up" style="animation-delay: 0.45s; opacity: 0;">
       <a href="index.html" class="w-full bg-[#9e7550] text-white text-[12px] tracking-[0.22em] uppercase py-4.5 rounded-xl hover:bg-[#7a5c3e] transition shadow-md hover:shadow-lg font-medium" style="padding-top:1.1rem; padding-bottom:1.1rem; display:block;">Back to Home</a>
       <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="w-full border-2 border-[#e8d8c8] text-[#9e7550] text-[12px] tracking-[0.22em] uppercase py-4 rounded-xl hover:bg-[#faf5ef] hover:border-[#c4a882] transition font-medium" style="display:block;">Visit our Instagram</a>
     </div>
@@ -66,22 +57,12 @@
 
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('orderId');
-    const transactionId = params.get('transactionId') || sessionStorage.getItem('hc_last_transaction_id');
     
     // Display Order ID
     if (orderId) {
       document.getElementById('succ-order-id').innerText = orderId;
     } else {
       document.getElementById('succ-order-id').innerText = '#' + Math.floor(1000 + Math.random() * 9000);
-    }
-    
-    // Display Transaction ID
-    if (transactionId) {
-      document.getElementById('succ-transaction-id').innerText = transactionId;
-    } else {
-      // Fallback: generate one if not available
-      const randomTxn = 'TXN-' + new Date().toISOString().replace(/[^0-9]/g, '').slice(2, 14) + '-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-      document.getElementById('succ-transaction-id').innerText = randomTxn;
     }
   </script>
 </body>
