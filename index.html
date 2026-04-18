@@ -441,75 +441,75 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       }
     }
 
-    .reviews-carousel {
-      position: relative;
-      overflow: hidden;
-      user-select: none;
-      touch-action: pan-y;
+    .reviews-section-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
     }
 
-    .reviews-track {
-      display: flex;
-      will-change: transform;
+    .reviews-static-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
     }
 
-    .reviews-card {
-      background: #fff;
-      border: 1px solid rgba(236, 220, 204, 0.7);
+    .review-static-card {
+      background: #faf5ef;
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(107, 79, 53, 0.08);
-      padding: 1.25rem;
-      margin-right: 1rem;
-      flex: 0 0 calc((100% - 2rem) / 3);
+      padding: 1.25rem 1.15rem;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .reviews-card:last-child {
-      margin-right: 0;
+    .review-static-stars {
+      color: #c4a882;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      line-height: 1;
+      margin-bottom: 0.7rem;
     }
 
-    .reviews-avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 999px;
-      object-fit: cover;
-      border: 2px solid #f5ede3;
-      flex-shrink: 0;
+    .review-static-text {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #7a5c3e;
+      max-width: 27ch;
+      margin: 0 auto;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    .reviews-arrow {
-      width: 38px;
-      height: 38px;
-      border-radius: 999px;
-      border: 1px solid rgba(236, 220, 204, 0.8);
-      background: rgba(255, 253, 249, 0.95);
+    .review-static-author {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       color: #9e7550;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 14px rgba(107, 79, 53, 0.1);
-    }
-
-    .reviews-arrow:hover {
-      color: #6b4f35;
-      border-color: rgba(158, 117, 80, 0.6);
+      border-top: 1px solid rgba(236, 220, 204, 0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     @media (max-width: 1023px) {
-      .reviews-card {
-        flex: 0 0 calc((100% - 1rem) / 2);
+      .reviews-static-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 639px) {
-      .reviews-card {
-        margin-right: 0.75rem;
-        flex: 0 0 100%;
+      .reviews-static-grid {
+        grid-template-columns: 1fr;
       }
 
-      .reviews-arrow {
-        width: 34px;
-        height: 34px;
+      .review-static-card {
+        min-height: 155px;
       }
     }
   </style>
@@ -518,79 +518,10 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
        CUSTOMER REVIEWS
   ════════════════════════════════════════════ -->
   <section class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-6 pb-24">
-    <div class="mb-12 md:mb-14 flex items-baseline justify-between">
+    <div class="reviews-section-wrap">
       <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">Customer Reviews</h2>
-      <div class="flex items-center gap-2">
-        <button id="reviews-prev" class="reviews-arrow" aria-label="Previous review">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <button id="reviews-next" class="reviews-arrow" aria-label="Next review">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <div id="reviews-carousel" class="reviews-carousel">
-      <div id="reviews-track" class="reviews-track">
-        <article class="reviews-card">
-          <div class="flex items-center gap-3 mb-4">
-            <img class="reviews-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Customer Amina" loading="lazy" />
-            <div>
-              <h3 class="text-[14px] tracking-wide text-brown-dark font-medium">Amina Khaled</h3>
-              <p class="text-[11px] tracking-widest uppercase text-brown-light">Cairo</p>
-            </div>
-          </div>
-          <p class="text-[13px] leading-relaxed text-brown-muted">Beautiful finishing and exactly like the photos. The gift wrapping looked premium and arrived on time.</p>
-        </article>
-
-        <article class="reviews-card">
-          <div class="flex items-center gap-3 mb-4">
-            <img class="reviews-avatar" src="https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&w=120&q=80" alt="Customer Omar" loading="lazy" />
-            <div>
-              <h3 class="text-[14px] tracking-wide text-brown-dark font-medium">Omar Hany</h3>
-              <p class="text-[11px] tracking-widest uppercase text-brown-light">Alexandria</p>
-            </div>
-          </div>
-          <p class="text-[13px] leading-relaxed text-brown-muted">I asked for a custom birthday frame and they handled every detail perfectly. Super smooth ordering process.</p>
-        </article>
-
-        <article class="reviews-card">
-          <div class="flex items-center gap-3 mb-4">
-            <img class="reviews-avatar" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=120&q=80" alt="Customer Salma" loading="lazy" />
-            <div>
-              <h3 class="text-[14px] tracking-wide text-brown-dark font-medium">Salma Adel</h3>
-              <p class="text-[11px] tracking-widest uppercase text-brown-light">Giza</p>
-            </div>
-          </div>
-          <p class="text-[13px] leading-relaxed text-brown-muted">The baby memory book is amazing quality. Soft colors, neat print, and the handwritten note was a lovely touch.</p>
-        </article>
-
-        <article class="reviews-card">
-          <div class="flex items-center gap-3 mb-4">
-            <img class="reviews-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" alt="Customer Karim" loading="lazy" />
-            <div>
-              <h3 class="text-[14px] tracking-wide text-brown-dark font-medium">Karim Samir</h3>
-              <p class="text-[11px] tracking-widest uppercase text-brown-light">Mansoura</p>
-            </div>
-          </div>
-          <p class="text-[13px] leading-relaxed text-brown-muted">Great communication and quick updates while customizing. The final product looked even better in real life.</p>
-        </article>
-
-        <article class="reviews-card">
-          <div class="flex items-center gap-3 mb-4">
-            <img class="reviews-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" alt="Customer Dina" loading="lazy" />
-            <div>
-              <h3 class="text-[14px] tracking-wide text-brown-dark font-medium">Dina Mostafa</h3>
-              <p class="text-[11px] tracking-widest uppercase text-brown-light">Tanta</p>
-            </div>
-          </div>
-          <p class="text-[13px] leading-relaxed text-brown-muted">Ordered twice already. Consistent quality, elegant style, and packaging that feels special every single time.</p>
-        </article>
-      </div>
+      <p class="text-[11px] tracking-widest uppercase text-brown-light mt-2">Loved by our customers</p>
+      <div id="reviews-track" class="reviews-static-grid"></div>
     </div>
   </section>
 
@@ -740,151 +671,49 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     }
 
     function initializeReviewsCarousel() {
-      const carousel = document.getElementById('reviews-carousel');
       const track = document.getElementById('reviews-track');
-      const prevBtn = document.getElementById('reviews-prev');
-      const nextBtn = document.getElementById('reviews-next');
-      if (!carousel || !track || !prevBtn || !nextBtn) return;
+      if (!track) return;
 
-      const baseCards = Array.from(track.children);
-      if (baseCards.length < 2) return;
-
-      let visibleCards = 3;
-      let cardStep = 0;
-      let currentIndex = 0;
-      let autoTimer = null;
-      let isDragging = false;
-      let dragMoved = false;
-      let dragStartX = 0;
-      let dragStartTranslate = 0;
-
-      const getVisibleCards = () => {
-        if (window.innerWidth < 640) return 1;
-        if (window.innerWidth < 1024) return 2;
-        return 3;
-      };
-
-      const getTranslateX = () => -currentIndex * cardStep;
-
-      const setTranslate = (value, useTransition = true) => {
-        track.style.transition = useTransition ? 'transform 500ms ease' : 'none';
-        track.style.transform = `translate3d(${value}px,0,0)`;
-      };
-
-      const rebuildTrack = () => {
-        visibleCards = getVisibleCards();
-        track.innerHTML = '';
-
-        const headClones = baseCards.slice(-visibleCards).map((card) => card.cloneNode(true));
-        const tailClones = baseCards.slice(0, visibleCards).map((card) => card.cloneNode(true));
-
-        headClones.forEach((card) => track.appendChild(card));
-        baseCards.forEach((card) => track.appendChild(card.cloneNode(true)));
-        tailClones.forEach((card) => track.appendChild(card));
-
-        const firstCard = track.children[0];
-        cardStep = firstCard.getBoundingClientRect().width + parseFloat(getComputedStyle(firstCard).marginRight || '0');
-        currentIndex = visibleCards;
-        setTranslate(getTranslateX(), false);
-      };
-
-      const goTo = (index) => {
-        currentIndex = index;
-        setTranslate(getTranslateX(), true);
-      };
-
-      const goNext = () => goTo(currentIndex + 1);
-      const goPrev = () => goTo(currentIndex - 1);
-
-      const normalizeIndex = () => {
-        const maxIndex = visibleCards + baseCards.length;
-        if (currentIndex >= maxIndex) {
-          currentIndex = visibleCards;
-          setTranslate(getTranslateX(), false);
-        } else if (currentIndex < visibleCards) {
-          currentIndex = visibleCards + baseCards.length - 1;
-          setTranslate(getTranslateX(), false);
+      const reviewsData = [
+        {
+          stars: 5,
+          text: 'Beautiful quality and exactly like the photos.',
+          name: 'Salma',
+          location: 'Cairo'
+        },
+        {
+          stars: 5,
+          text: 'Elegant finishing and fast delivery. Perfect gift.',
+          name: 'Karim',
+          location: 'Mansoura'
+        },
+        {
+          stars: 5,
+          text: 'Great communication and lovely packaging details.',
+          name: 'Dina',
+          location: 'Alexandria'
         }
-      };
+      ];
 
-      const stopAuto = () => {
-        if (!autoTimer) return;
-        clearInterval(autoTimer);
-        autoTimer = null;
-      };
+      const toSafeText = (value) => String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 
-      const startAuto = () => {
-        stopAuto();
-        autoTimer = setInterval(goNext, 3500);
-      };
+      const validItems = reviewsData.filter((item) => item && item.text && item.name).slice(0, 3);
+      if (!validItems.length) return;
 
-      nextBtn.addEventListener('click', () => {
-        goNext();
-        startAuto();
-      });
-
-      prevBtn.addEventListener('click', () => {
-        goPrev();
-        startAuto();
-      });
-
-      track.addEventListener('transitionend', normalizeIndex);
-
-      const onDragStart = (clientX) => {
-        isDragging = true;
-        dragMoved = false;
-        dragStartX = clientX;
-        dragStartTranslate = getTranslateX();
-        stopAuto();
-        track.style.transition = 'none';
-      };
-
-      const onDragMove = (clientX) => {
-        if (!isDragging) return;
-        const delta = clientX - dragStartX;
-        if (Math.abs(delta) > 4) dragMoved = true;
-        setTranslate(dragStartTranslate + delta, false);
-      };
-
-      const onDragEnd = (clientX) => {
-        if (!isDragging) return;
-        const delta = clientX - dragStartX;
-        isDragging = false;
-
-        const threshold = cardStep * 0.22;
-        if (delta <= -threshold) goNext();
-        else if (delta >= threshold) goPrev();
-        else setTranslate(getTranslateX(), true);
-
-        startAuto();
-      };
-
-      carousel.addEventListener('mousedown', (event) => onDragStart(event.clientX));
-      window.addEventListener('mousemove', (event) => onDragMove(event.clientX));
-      window.addEventListener('mouseup', (event) => onDragEnd(event.clientX));
-      carousel.addEventListener('mouseleave', (event) => onDragEnd(event.clientX));
-
-      carousel.addEventListener('touchstart', (event) => onDragStart(event.touches[0].clientX), { passive: true });
-      carousel.addEventListener('touchmove', (event) => onDragMove(event.touches[0].clientX), { passive: true });
-      carousel.addEventListener('touchend', (event) => onDragEnd((event.changedTouches[0] && event.changedTouches[0].clientX) || dragStartX), { passive: true });
-
-      carousel.addEventListener('click', (event) => {
-        if (!dragMoved) return;
-        event.preventDefault();
-        event.stopPropagation();
-      }, true);
-
-      carousel.addEventListener('mouseenter', stopAuto);
-      carousel.addEventListener('mouseleave', startAuto);
-
-      let resizeTimeout = null;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(rebuildTrack, 120);
-      });
-
-      rebuildTrack();
-      startAuto();
+      track.innerHTML = validItems.map((item) => `
+        <article class="review-static-card">
+          <div>
+            ${item.stars ? `<p class="review-static-stars" aria-label="${Number(item.stars)} out of 5 stars">${'★'.repeat(Math.max(0, Math.min(5, Number(item.stars))))}</p>` : ''}
+            <p class="review-static-text">"${toSafeText(item.text)}"</p>
+          </div>
+          <p class="review-static-author">— ${toSafeText(item.name)}${item.location ? `, ${toSafeText(item.location)}` : ''}</p>
+        </article>
+      `).join('');
     }
 
     if (document.readyState === 'loading') {
