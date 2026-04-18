@@ -441,87 +441,162 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       }
     }
 
-    .reviews-section-wrap {
-      max-width: 900px;
+    .stories-section-wrap {
+      max-width: 1100px;
       margin: 0 auto;
-      text-align: center;
     }
 
-    .reviews-static-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      margin-top: 1.25rem;
+    .stories-carousel-wrap {
+      position: relative;
+      margin-top: 1.5rem;
     }
 
-    .review-static-card {
-      background: #faf5ef;
-      border-radius: 20px;
-      padding: 1.25rem 1.15rem;
-      min-height: 170px;
+    .stories-track {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.6rem;
+      touch-action: pan-y;
+      cursor: grab;
     }
 
-    .review-static-stars {
-      color: #c4a882;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      line-height: 1;
-      margin-bottom: 0.7rem;
+    .stories-track:active {
+      cursor: grabbing;
     }
 
-    .review-static-text {
-      font-size: 13px;
-      line-height: 1.65;
-      color: #7a5c3e;
-      max-width: 27ch;
-      margin: 0 auto;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    .stories-track::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .stories-track::-webkit-scrollbar-thumb {
+      background: #d6c3ae;
+      border-radius: 999px;
+    }
+
+    .story-card {
+      position: relative;
+      flex: 0 0 calc((100% - 1rem) / 1.2);
+      aspect-ratio: 4 / 5;
+      border-radius: 30px;
       overflow: hidden;
+      scroll-snap-align: start;
+      background: #ede1d4;
+      isolation: isolate;
     }
 
-    .review-static-author {
-      margin-top: 1rem;
-      padding-top: 0.75rem;
+    .story-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(107, 79, 53, 0.26), rgba(107, 79, 53, 0));
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .story-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .story-card-caption {
+      position: absolute;
+      left: 0.9rem;
+      right: 0.9rem;
+      bottom: 0.9rem;
+      z-index: 2;
+      text-align: center;
       font-size: 11px;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
+      color: #7a5c3e;
+      background: rgba(250, 245, 239, 0.92);
+      border: 1px solid rgba(236, 220, 204, 0.7);
+      border-radius: 999px;
+      padding: 0.42rem 0.8rem;
+      backdrop-filter: blur(1px);
+    }
+
+    .stories-arrow {
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 4;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(196, 168, 130, 0.5);
+      background: rgba(255, 253, 249, 0.95);
       color: #9e7550;
-      border-top: 1px solid rgba(236, 220, 204, 0.6);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 18px rgba(107, 79, 53, 0.08);
     }
 
-    @media (max-width: 1023px) {
-      .reviews-static-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .stories-arrow:hover {
+      color: #6b4f35;
+      border-color: rgba(158, 117, 80, 0.75);
+    }
+
+    .stories-arrow:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .stories-arrow.prev {
+      left: -0.35rem;
+    }
+
+    .stories-arrow.next {
+      right: -0.35rem;
+    }
+
+    @media (min-width: 640px) {
+      .story-card {
+        flex-basis: calc((100% - 1rem) / 2);
       }
     }
 
-    @media (max-width: 639px) {
-      .reviews-static-grid {
-        grid-template-columns: 1fr;
+    @media (min-width: 1024px) {
+      .story-card {
+        flex-basis: calc((100% - 2rem) / 3);
       }
 
-      .review-static-card {
-        min-height: 155px;
+      .stories-arrow {
+        display: inline-flex;
+      }
+
+      .stories-track {
+        padding-inline: 0.35rem;
       }
     }
   </style>
 
   <!-- ═══════════════════════════════════════════
-       CUSTOMER REVIEWS
+       CUSTOMER STORIES
   ════════════════════════════════════════════ -->
   <section class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-6 pb-24">
-    <div class="reviews-section-wrap">
-      <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">Customer Reviews</h2>
-      <p class="text-[11px] tracking-widest uppercase text-brown-light mt-2">Loved by our customers</p>
-      <div id="reviews-track" class="reviews-static-grid"></div>
+    <div class="stories-section-wrap">
+      <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">Customer Stories</h2>
+      <p class="text-[11px] tracking-widest uppercase text-brown-light mt-2">Real moments from our customers</p>
+
+      <div class="stories-carousel-wrap">
+        <button type="button" class="stories-arrow prev" id="stories-prev" aria-label="Previous stories">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+        </button>
+
+        <div id="stories-track" class="stories-track" aria-label="Customer stories slider"></div>
+
+        <button type="button" class="stories-arrow next" id="stories-next" aria-label="Next stories">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -670,29 +745,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       initializeProducts();
     }
 
-    function initializeReviewsCarousel() {
-      const track = document.getElementById('reviews-track');
+    function initializeCustomerStories() {
+      const track = document.getElementById('stories-track');
+      const prevBtn = document.getElementById('stories-prev');
+      const nextBtn = document.getElementById('stories-next');
       if (!track) return;
 
-      const reviewsData = [
-        {
-          stars: 5,
-          text: 'Beautiful quality and exactly like the photos.',
-          name: 'Salma',
-          location: 'Cairo'
-        },
-        {
-          stars: 5,
-          text: 'Elegant finishing and fast delivery. Perfect gift.',
-          name: 'Karim',
-          location: 'Mansoura'
-        },
-        {
-          stars: 5,
-          text: 'Great communication and lovely packaging details.',
-          name: 'Dina',
-          location: 'Alexandria'
-        }
+      const storiesData = [
+        { image: 'images/Frames_(1).jpg', caption: 'Gift Unboxing Moment' },
+        { image: 'images/ValentineBook_(4).jpg', caption: 'Date Night Surprise' },
+        { image: 'images/MemoryCards_(2).jpg', caption: 'Memory Wall Ready' },
+        { image: 'images/GradutionCap_(1).jpg', caption: 'Graduation Happiness' },
+        { image: 'images/R__21_pics__price__360.jpg', caption: 'Our Handmade Details' }
       ];
 
       const toSafeText = (value) => String(value || '')
@@ -702,24 +766,73 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 
-      const validItems = reviewsData.filter((item) => item && item.text && item.name).slice(0, 3);
+      const validItems = storiesData.filter((item) => item && item.image);
       if (!validItems.length) return;
 
-      track.innerHTML = validItems.map((item) => `
-        <article class="review-static-card">
-          <div>
-            ${item.stars ? `<p class="review-static-stars" aria-label="${Number(item.stars)} out of 5 stars">${'★'.repeat(Math.max(0, Math.min(5, Number(item.stars))))}</p>` : ''}
-            <p class="review-static-text">"${toSafeText(item.text)}"</p>
-          </div>
-          <p class="review-static-author">— ${toSafeText(item.name)}${item.location ? `, ${toSafeText(item.location)}` : ''}</p>
+      track.innerHTML = validItems.map((item, index) => `
+        <article class="story-card" aria-label="Customer story ${index + 1}">
+          <img src="${toSafeText(item.image)}" alt="Customer story ${index + 1}" loading="lazy" decoding="async" onerror="this.src='${FALLBACK_IMAGE}'" />
+          ${item.caption ? `<p class="story-card-caption">${toSafeText(item.caption)}</p>` : ''}
         </article>
       `).join('');
+
+      const getScrollAmount = () => {
+        const firstCard = track.querySelector('.story-card');
+        if (!firstCard) return track.clientWidth;
+        const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '16') || 16;
+        return firstCard.getBoundingClientRect().width + gap;
+      };
+
+      const updateArrowState = () => {
+        if (!prevBtn || !nextBtn) return;
+        const maxScrollLeft = track.scrollWidth - track.clientWidth;
+        prevBtn.disabled = track.scrollLeft <= 4;
+        nextBtn.disabled = track.scrollLeft >= maxScrollLeft - 4;
+      };
+
+      const scrollByCard = (direction) => {
+        track.scrollBy({ left: getScrollAmount() * direction, behavior: 'smooth' });
+      };
+
+      if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => scrollByCard(-1));
+        nextBtn.addEventListener('click', () => scrollByCard(1));
+      }
+
+      let isPointerDown = false;
+      let startX = 0;
+      let startScrollLeft = 0;
+
+      track.addEventListener('pointerdown', (event) => {
+        isPointerDown = true;
+        startX = event.clientX;
+        startScrollLeft = track.scrollLeft;
+        track.setPointerCapture(event.pointerId);
+      });
+
+      track.addEventListener('pointermove', (event) => {
+        if (!isPointerDown) return;
+        const walk = event.clientX - startX;
+        track.scrollLeft = startScrollLeft - walk;
+      });
+
+      const endPointerDrag = () => {
+        isPointerDown = false;
+      };
+
+      track.addEventListener('pointerup', endPointerDrag);
+      track.addEventListener('pointercancel', endPointerDrag);
+      track.addEventListener('pointerleave', endPointerDrag);
+      track.addEventListener('scroll', updateArrowState, { passive: true });
+      window.addEventListener('resize', updateArrowState);
+
+      updateArrowState();
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeReviewsCarousel);
+      document.addEventListener('DOMContentLoaded', initializeCustomerStories);
     } else {
-      initializeReviewsCarousel();
+      initializeCustomerStories();
     }
   </script>
 
