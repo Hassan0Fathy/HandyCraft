@@ -1,0 +1,30 @@
+const express = require("express");
+const cloudinary = require("../config/cloudinary");
+const { verifyAuth } = require("../middleware/auth");
+const multer = require("multer");
+
+const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post("/image", verifyAuth, upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "handycraft/products",
+      timeout: 120000
+    });
+
+    return res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    console.error("Upload error:", err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+module.exports = router;

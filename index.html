@@ -131,6 +131,10 @@
   </div>
 
   <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+    <a href="admin-login.html" aria-label="Admin" class="inline-flex items-center gap-1.5 text-[#9e7550] hover:text-[#6b4f35] border border-[#ecdccc] rounded-full px-3 py-1.5 text-[10px] tracking-widest uppercase transition">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422A12.083 12.083 0 0112 20.055 12.083 12.083 0 015.84 10.578L12 14z"></path></svg>
+      Admin
+    </a>
     <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
       <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -244,7 +248,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     </div>
 
     <!-- Animated Logo replacing Headline (ENHANCED: logo size increased by 25%) -->
-    <img src="images/logo.png" 
+    <img id="logo-hero" src="images/logo.png" 
          alt="Handy Crafts Logo" 
          class="logo-hero mx-auto w-[250px] h-auto mb-6" />
 
@@ -536,6 +540,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       <div class="flex justify-center gap-6 md:gap-8">
         <a href="products.html" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Shop</a>
         <a href="order.html"    class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Order</a>
+        <a href="admin-login.html" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Admin</a>
         <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Instagram</a>
       </div>
       <p class="text-[10px] md:text-[11px] text-brown-pale mt-8">© 2026 Handy Crafts</p>
@@ -543,13 +548,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </footer>
 
   
-
-  <!-- Temporary Admin Button -->
-  <a href="admin.html"
-     class="fixed bottom-6 left-5 z-50 bg-brown-muted text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 hover:bg-brown-dark hover:scale-105 transition-all text-[11px] tracking-widest uppercase border border-brown-light/30 hidden md:flex">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
-    Admin Dashboard
-  </a>
 
   <script src="data.js"></script>
   <script>
@@ -720,6 +718,33 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       document.addEventListener('DOMContentLoaded', initializeReviewsCarousel);
     } else {
       initializeReviewsCarousel();
+    }
+
+    // Secret admin access: 5 clicks on logo in 3 seconds
+    let logoClickCount = 0;
+    let logoClickTimeout = null;
+
+    const logoElement = document.getElementById('logo-hero');
+    if (logoElement) {
+      logoElement.style.cursor = 'pointer';
+      logoElement.addEventListener('click', function() {
+        logoClickCount++;
+
+        // Clear existing timeout and set new one
+        if (logoClickTimeout) clearTimeout(logoClickTimeout);
+        
+        // Reset counter after 3 seconds
+        logoClickTimeout = setTimeout(() => {
+          logoClickCount = 0;
+        }, 3000);
+
+        // Check if reached 5 clicks
+        if (logoClickCount === 5) {
+          logoClickCount = 0;
+          clearTimeout(logoClickTimeout);
+          window.location.href = 'admin-login.html';
+        }
+      });
     }
   </script>
 

@@ -159,376 +159,307 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
   
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-    const product = products.find(p => p.id === productId);
+    const productContainer = document.getElementById('product-container');
+    const params = new URLSearchParams(window.location.search);
+    const productId = (params.get('id') || '').trim();
+    const API_BASE_URL = 'http://localhost:5000/api';
 
-    let uploadedBase64Images = [];
-    let customization = { pattern: null, shapes: [] };
-
-    if(!product) {
-      document.getElementById('product-container').innerHTML = '<div class="text-center py-20 text-brown-light">Product not found.</div>';
-    } else {
-      let thumbsHtml = (product.images || []).map((img, idx) => `
-        <img src="${img}" onclick="setMainImage('${img}', this)" class="thumbnail w-16 h-16 object-cover rounded-xl border-2 border-transparent opacity-70 cursor-pointer hover:opacity-100 transition-all ${idx === 0 ? 'border-[#9e7550] opacity-100' : ''}" />
-      `).join('');
-
-      document.getElementById('product-container').innerHTML = `
-        <div class="anim-1 flex flex-col min-h-screen pb-20">
-            <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc]">
-                <img id="main-image" src="${product.images[0]}" class="w-full h-full object-cover transition-opacity duration-300" />
-            </div>
-            
-            ${(product.images || []).length > 1 ? `<div class="flex gap-3 mb-8 overflow-x-auto pb-2">${thumbsHtml}</div>` : '<div class="mb-6"></div>'}
-            
-            <div class="flex justify-between items-start mb-2">
-                <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name}</h1>
-                <span class="text-lg font-medium text-[#9e7550]">${product.price} EGP</span>
-            </div>
-            
-            <p class="text-[10px] tracking-[0.2em] text-[#c4a882] mb-6">${product.category || 'Handmade Gift'}</p>
-            
-            <div class="bg-[#faf5ef] rounded-2xl p-5 border border-[#ecdccc]/50 mb-8">
-                <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-2">Description</h3>
-                <p class="text-[14px] leading-relaxed text-[#6b4f35]">${product.description}</p>
-            </div>
-
-            <!-- Customization Form -->
-            <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/70 mb-8 shadow-sm">
-                <h3 class="font-cormorant text-2xl italic text-[#6b4f35] mb-4">Required Customization</h3>
-                
-                
-                <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest mb-2">Love Message <span class="text-red-400">*</span></label>
-                <textarea id="love-msg" rows="2" placeholder="e.g. Our love is eternal..." class="w-full bg-[#faf5ef] border border-[#ecdccc] rounded-xl p-4 text-[13px] text-[#6b4f35] focus:outline-none focus:border-[#9e7550] transition-colors mb-4 resize-none placeholder-[#c4a882]"></textarea>
-
-                <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest mb-2">How it started <span class="text-red-400">*</span></label>
-                <textarea id="story-msg" rows="2" placeholder="e.g. It all started when we met at..." class="w-full bg-[#faf5ef] border border-[#ecdccc] rounded-xl p-4 text-[13px] text-[#6b4f35] focus:outline-none focus:border-[#9e7550] transition-colors mb-4 resize-none placeholder-[#c4a882]"></textarea>
-
-                <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest mb-2">Proud Message <span class="text-red-400">*</span></label>
-                <textarea id="proud-msg" rows="2" placeholder="e.g. I am so proud of you because..." class="w-full bg-[#faf5ef] border border-[#ecdccc] rounded-xl p-4 text-[13px] text-[#6b4f35] focus:outline-none focus:border-[#9e7550] transition-colors mb-4 resize-none placeholder-[#c4a882]"></textarea>
-
-                <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest mb-2">Favorite Song <span class="text-red-400">*</span></label>
-                <input type="text" id="song-msg" placeholder="e.g. Perfect - Ed Sheeran" class="w-full bg-[#faf5ef] border border-[#ecdccc] rounded-xl p-4 text-[13px] text-[#6b4f35] focus:outline-none focus:border-[#9e7550] transition-colors mb-6 placeholder-[#c4a882]">
-
-                
-                <div class="flex justify-between items-end mb-2">
-                    <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest">Upload Reference Images <span class="text-red-400">*</span></label>
-                    ${product.id.startsWith('frame') ? `<span id="upload-counter" class="text-[10px] text-[#c4a882] tracking-wider font-medium">0 / 6 uploaded</span>` : ''}
-                </div>
-                <div id="upload-box" class="w-full border-2 border-dashed border-[#ecdccc] rounded-xl p-6 text-center cursor-pointer hover:border-[#9e7550] transition-colors mb-4 relative" onclick="document.getElementById('img-upload').click()">
-                    <span class="text-[12px] text-[#9e7550] font-medium flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path></svg>
-                        Select Images
-                    </span>
-                    <input type="file" id="img-upload" multiple accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
-                </div>
-                
-                <div id="img-preview-container" class="flex flex-wrap gap-3 mb-2"></div>
-            </div>
-            
-                       <!-- Frame Builder Insert -->
-            ${product.id.startsWith('frame') ? `
-            <div id="frame-customization" class="bg-white rounded-2xl p-5 border border-[#ecdccc]/70 mb-8 shadow-sm">
-                <h3 class="font-cormorant text-2xl italic text-[#6b4f35] mb-4">Customize Your Frame</h3>
-                <div class="mb-5">
-                    <div class="flex justify-between items-end mb-2">
-                        <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest">1. Select Pattern <span class="text-red-400">*</span></label>
-                        <span id="pattern-status" class="text-[10px] text-[#c4a882] tracking-wider font-medium">Required</span>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3" id="pattern-grid"></div>
-                </div>
-                <div class="mb-2">
-                    <div class="flex justify-between items-end mb-2">
-                        <label class="block text-[11px] font-medium text-[#9e7550] uppercase tracking-widest">2. Choose Shapes <span class="text-red-400">*</span></label>
-                        <span id="shape-counter" class="text-[10px] text-[#c4a882] tracking-wider font-medium">0 / 6 selected</span>
-                    </div>
-                    <div class="flex flex-wrap gap-3" id="shape-grid"></div>
-                </div>
-            </div>
-            ` : ''}
-            <button id="add-to-cart-btn" onclick="addToCartDetail(event)" class="mt-auto w-full bg-[#ecdccc] text-[#9e7550] py-4 rounded-xl text-[12px] uppercase tracking-widest transition duration-300 font-medium cursor-not-allowed" disabled>Add to Cart</button>
-            <button id="buy-now-btn" onclick="buyNow(event)" class="w-full bg-[#9e7550] text-white py-4 rounded-xl text-[12px] uppercase tracking-widest transition duration-300 font-medium hover:bg-[#6b4f35] mt-3 cursor-not-allowed" disabled>Buy Now</button>
+    function renderError(title, message) {
+      productContainer.innerHTML = `
+        <div class="text-center py-20 text-brown-light">
+          <p class="font-cormorant text-3xl italic text-[#6b4f35] mb-3">${title}</p>
+          <p class="text-sm text-[#9e7550] mb-6">${message}</p>
+          <a href="products.html" class="inline-flex items-center justify-center bg-[#9e7550] text-white px-5 py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] transition">Back to products</a>
         </div>
       `;
+    }
+
+    function renderProduct(product) {
+      // Get images array - support both old (image) and new (images) formats
+      let images = [];
+      if (Array.isArray(product.images) && product.images.length > 0) {
+        images = product.images.filter(img => typeof img === 'string' && img.trim());
+      } else if (product.image && typeof product.image === 'string') {
+        images = [product.image];
+      }
       
-      // Bind input events to validation
-      ['love-msg', 'story-msg', 'proud-msg', 'song-msg'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('input', validateForm);
+      if (images.length === 0) {
+        images = ['images/placeholder.png'];
+      }
+
+      const mainImage = images[0];
+      const fields = Array.isArray(product.customFields) ? product.customFields : [];
+
+      // Build gallery thumbnails
+      const thumbnailsHtml = images.length > 1 ? `
+        <div class="flex gap-2 mt-3 overflow-x-auto">
+          ${images.map((img, idx) => `
+            <img 
+              src="${img}" 
+              class="thumbnail w-16 h-16 rounded-lg object-cover border-2 border-transparent opacity-70 cursor-pointer transition hover:opacity-100" 
+              onclick="window.setMainImage('${img}', this)"
+              onerror="this.src='images/placeholder.png'"
+            />
+          `).join('')}
+        </div>
+      ` : '';
+
+      const fieldsHtml = fields.length ? fields.map((f, idx) => {
+        const safeLabel = String(f.label || f.name || '').trim();
+        const safeType = String(f.type || '').trim();
+        if (!safeLabel || (safeType !== 'text' && safeType !== 'image')) return '';
+
+        const requiredMarker = f.required ? '<span class="text-red-500 ml-1">*</span>' : '';
+        const minImages = f.minImages || 1;
+        const maxImages = f.maxImages || 9;
+
+        if (safeType === 'image') {
+          return `
+            <div class="mb-4">
+              <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">
+                ${safeLabel}${requiredMarker}
+              </label>
+              <input type="file" accept="image/*" multiple data-field-type="image" data-field-name="${encodeURIComponent(safeLabel)}" 
+                data-required="${f.required}" data-min-images="${minImages}" data-max-images="${maxImages}"
+                class="w-full bg-[#fffdf9] rounded-xl px-4 py-3 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:border-[#9e7550] transition" />
+              <p class="text-[11px] text-[#c4a882] mt-1">Upload ${minImages} to ${maxImages} photos</p>
+              <p class="text-[10px] text-red-500 hidden error-msg-${idx}"></p>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="mb-4">
+            <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">
+              ${safeLabel}${requiredMarker}
+            </label>
+            <input type="text" data-field-type="text" data-field-name="${encodeURIComponent(safeLabel)}" 
+              data-required="${f.required}"
+              class="w-full bg-[#fffdf9] rounded-xl px-4 py-3 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:border-[#9e7550] transition" 
+              placeholder="Enter ${safeLabel}" />
+            <p class="text-[10px] text-red-500 hidden error-msg-${idx}"></p>
+          </div>
+        `;
+      }).join('') : `<p class="text-sm text-[#9e7550] italic">No customization required for this product.</p>`;
+
+      productContainer.innerHTML = `
+        <div class="anim-1">
+          <div class="aspect-square rounded-3xl overflow-hidden mb-5 border border-[#ecdccc] bg-[#f5ede3]">
+            <img id="main-image" src="${mainImage}" class="w-full h-full object-cover transition duration-300" onerror="this.src='images/placeholder.png'" />
+          </div>
+          ${thumbnailsHtml}
+          
+          <div class="flex justify-between items-start mb-2 mt-6">
+            <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name || 'Product'}</h1>
+            <span class="text-lg font-medium text-[#9e7550]">${product.price || 0} EGP</span>
+          </div>
+          <p class="text-[10px] tracking-[0.2em] text-[#c4a882] mb-6">${product.category || 'Handmade Gift'}</p>
+
+          <div class="bg-[#faf5ef] rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
+            <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-2">Description</h3>
+            <p class="text-[14px] leading-relaxed text-[#6b4f35]">${product.description || 'No description available.'}</p>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
+            <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Quantity</h3>
+            <div class="flex items-center bg-[#faf5ef] rounded-lg border border-[#ecdccc] w-fit overflow-hidden">
+              <button type="button" onclick="decreaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">−</button>
+              <input id="qty-input" type="number" min="1" value="1" class="w-12 text-center border-0 bg-[#faf5ef] focus:ring-0 outline-none text-[#6b4f35] font-medium" />
+              <button type="button" onclick="increaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">+</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
+            <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Customization</h3>
+            <div id="custom-fields-form">
+              ${fieldsHtml}
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button id="add-to-cart-btn" class="flex-1 bg-[#9e7550] text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
+              Add to cart
+            </button>
+            <a href="products.html" class="flex-1 bg-[#f5ede3] text-[#9e7550] py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#ebdccc] transition text-center border border-[#ecdccc]">
+              Back
+            </a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("add-to-cart-btn").addEventListener("click", () => addToCartWithCustomization(product));
+    }
+
+    async function fileToBase64(file) {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("Failed to read image"));
+        reader.readAsDataURL(file);
       });
-      if (product.id.startsWith('frame')) {
-        initFrameCustomization();
+    }
+
+    async function addToCartWithCustomization(product) {
+      const btn = document.getElementById("add-to-cart-btn");
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      try {
+        // Clear previous errors
+        document.querySelectorAll('.error-msg-0, .error-msg-1, .error-msg-2, .error-msg-3, .error-msg-4, .error-msg-5').forEach(el => {
+          el.classList.add('hidden');
+          el.textContent = '';
+        });
+
+        const customization = { images: [] };
+        const container = document.getElementById("custom-fields-form");
+        const inputs = container ? Array.from(container.querySelectorAll("[data-field-type]")) : [];
+        let hasError = false;
+
+        for (let fieldIdx = 0; fieldIdx < inputs.length; fieldIdx++) {
+          const el = inputs[fieldIdx];
+          const type = el.getAttribute("data-field-type");
+          const name = decodeURIComponent(el.getAttribute("data-field-name") || "");
+          const required = el.getAttribute("data-required") === "true";
+          const minImages = parseInt(el.getAttribute("data-min-images")) || 1;
+          const maxImages = parseInt(el.getAttribute("data-max-images")) || 9;
+          const errorMsg = document.querySelector(`.error-msg-${fieldIdx}`);
+          
+          if (!name) continue;
+
+          if (type === "text") {
+            const value = String(el.value || "").trim();
+            if (required && !value) {
+              if (errorMsg) {
+                errorMsg.textContent = `${name} is required`;
+                errorMsg.classList.remove('hidden');
+              }
+              hasError = true;
+            } else if (value) {
+              customization[name] = value;
+            }
+          } else if (type === "image") {
+            const files = el.files;
+            const fileCount = files.length;
+            
+            if (required && fileCount === 0) {
+              if (errorMsg) {
+                errorMsg.textContent = `Please upload at least ${minImages} photo(s)`;
+                errorMsg.classList.remove('hidden');
+              }
+              hasError = true;
+            } else if (fileCount > 0) {
+              if (fileCount < minImages || fileCount > maxImages) {
+                if (errorMsg) {
+                  errorMsg.textContent = `Please upload between ${minImages} and ${maxImages} photos (${fileCount} selected)`;
+                  errorMsg.classList.remove('hidden');
+                }
+                hasError = true;
+              } else {
+                for (const file of files) {
+                  const b64 = await fileToBase64(file);
+                  if (b64) customization.images.push(b64);
+                }
+              }
+            }
+          }
+        }
+
+        if (hasError) {
+          throw new Error('Please fix the errors above');
+        }
+
+        const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+        const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
+        
+        cart.push({
+          id: product._id + '_' + Date.now(),
+          baseId: product._id || product.id,
+          name: product.name,
+          price: Number(product.price) || 0,
+          qty: Math.max(1, qty),
+          img: product.images?.[0] || product.image || '',
+          customization
+        });
+        
+        localStorage.setItem("hc_cart", JSON.stringify(cart));
+        window.updateCartBadge && window.updateCartBadge();
+        
+        btn.textContent = '✓ Added to cart!';
+        btn.style.backgroundColor = '#2e8b57';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.backgroundColor = '';
+          btn.disabled = false;
+        }, 2000);
+      } catch (error) {
+        btn.textContent = 'Error - try again';
+        console.error('Add to cart error:', error);
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 2000);
       }
     }
 
-    function initFrameCustomization() {
-        const availablePatterns = [
-            { id: "pat1", name: "Classic Wood", img: "images/pattern1.jpg" },
-            { id: "pat2", name: "Dark Walnut", img: "images/pattern2.jpg" },
-            { id: "pat3", name: "White Oak", img: "images/pattern3.jpg" }
-        ];
-        const availableShapes = [
-            { id: "shp1", img: "images/shape-circle.png" },
-            { id: "shp2", img: "images/shape-square.png" },
-            { id: "shp3", img: "images/shape-hex.png" },
-            { id: "shp4", img: "images/shape-arch.png" },
-            { id: "shp5", img: "images/shape-star.png" },
-            { id: "shp6", img: "images/shape-heart.png" }
-        ];
-
-        const pGrid = document.getElementById('pattern-grid');
-        availablePatterns.forEach(pat => {
-            const el = document.createElement('div');
-            el.className = 'custom-option pattern-card bg-[#faf5ef]';
-            el.innerHTML = '<img src="' + pat.img + '" alt="' + pat.name + '" onerror="this.src=\'https://via.placeholder.com/150x80\'" />';
-            el.addEventListener('click', () => {
-                customization.pattern = pat.id;
-                pGrid.querySelectorAll('.pattern-card').forEach(c => c.classList.remove('selected'));
-                el.classList.add('selected');
-                document.getElementById('pattern-status').innerText = pat.name;
-                document.getElementById('pattern-status').className = 'text-[11px] text-[#6b4f35] font-bold';
-                validateForm();
-            });
-            pGrid.appendChild(el);
-        });
-
-        const sGrid = document.getElementById('shape-grid');
-        availableShapes.forEach(shp => {
-            const el = document.createElement('div');
-            el.className = 'custom-option shape-card bg-[#faf5ef] flex-shrink-0';
-            el.innerHTML = '<img src="' + shp.img + '" onerror="this.src=\'https://via.placeholder.com/60\'"/>';
-            el.addEventListener('click', () => {
-                const idx = customization.shapes.indexOf(shp.id);
-                if (idx > -1) {
-                    customization.shapes.splice(idx, 1);
-                    el.classList.remove('selected');
-                } else {
-                    if (customization.shapes.length >= 6) {
-                        alert('You can only select up to 6 shapes.');
-                        return;
-                    }
-                    customization.shapes.push(shp.id);
-                    el.classList.add('selected');
-                }
-                const cnt = document.getElementById('shape-counter');
-                cnt.innerText = customization.shapes.length + ' / 6 selected';
-                if(customization.shapes.length > 0) cnt.className = 'text-[10px] text-[#6b4f35] font-bold';
-                else cnt.className = 'text-[10px] text-[#c4a882] tracking-wider font-medium';
-                validateForm();
-            });
-            sGrid.appendChild(el);
-        });
-    }
-
     function setMainImage(src, el) {
-        document.querySelectorAll('.thumbnail').forEach(t => {
-           t.classList.remove('border-[#9e7550]'); 
-           t.classList.remove('opacity-100'); 
-           t.classList.add('border-transparent');
-           t.classList.add('opacity-70');
-        });
-        el.classList.remove('border-transparent');
-        el.classList.remove('opacity-70');
-        el.classList.add('border-[#9e7550]');
-        el.classList.add('opacity-100');
-        const mainImg = document.getElementById('main-image');
-        mainImg.style.opacity = 0;
-        setTimeout(() => {
-            mainImg.src = src;
-            mainImg.style.opacity = 1;
-        }, 150);
+      document.querySelectorAll('.thumbnail').forEach((thumb) => {
+        thumb.classList.remove('border-[#9e7550]', 'opacity-100');
+        thumb.classList.add('border-transparent', 'opacity-70');
+      });
+      el.classList.remove('border-transparent', 'opacity-70');
+      el.classList.add('border-[#9e7550]', 'opacity-100');
+      const mainImg = document.getElementById('main-image');
+      mainImg.style.opacity = 0;
+      setTimeout(() => {
+        mainImg.src = src;
+        mainImg.style.opacity = 1;
+      }, 120);
     }
 
-    function handleImageUpload(e) {
-        const files = Array.from(e.target.files);
-        if (!files.length) return;
-        if (product.id.startsWith('frame')) {
-            if (uploadedBase64Images.length + files.length > 6) {
-                alert('You can only upload up to 6 images.');
-                e.target.value = '';
-                return;
-            }
+    function decreaseQty() {
+      const input = document.getElementById('qty-input');
+      const val = parseInt(input.value) || 1;
+      input.value = Math.max(1, val - 1);
+    }
+
+    function increaseQty() {
+      const input = document.getElementById('qty-input');
+      const val = parseInt(input.value) || 1;
+      input.value = val + 1;
+    }
+
+    window.setMainImage = setMainImage;
+    window.decreaseQty = decreaseQty;
+    window.increaseQty = increaseQty;
+
+    async function loadProduct() {
+      if (!productId) {
+        renderError('Missing product ID.', "Please open this page using a valid product link like product-details.html?id=<productId>.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/products/${encodeURIComponent(productId)}`);
+        const result = await response.json();
+
+        if (response.status === 404) {
+          renderError('Product not found.', `We could not find a product matching id "${productId}".`);
+          return;
         }
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                uploadedBase64Images.push(ev.target.result);
-                renderPreviews();
-                validateForm();
-            };
-            reader.readAsDataURL(file);
-        });
-        e.target.value = ''; // reset so same files can be chosen again if needed
-    }
 
-    function removePreview(idx) {
-        uploadedBase64Images.splice(idx, 1);
-        renderPreviews();
-        validateForm();
-    }
-
-    function renderPreviews() {
-        const container = document.getElementById('img-preview-container');
-        container.innerHTML = '';
-        uploadedBase64Images.forEach((src, idx) => {
-            const div = document.createElement('div');
-            div.className = 'relative w-16 h-16 rounded-xl border border-[#ecdccc] overflow-hidden anim-1';
-            div.innerHTML = `
-                <img src="${src}" class="w-full h-full object-cover" />
-                <button onclick="removePreview(${idx})" class="absolute top-1 right-1 bg-white/80 rounded-full p-1 text-[#6b4f35] hover:text-red-500 transition shadow-sm">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function validateForm() {
-        const loveInput = document.getElementById('love-msg');
-        const storyInput = document.getElementById('story-msg');
-        const proudInput = document.getElementById('proud-msg');
-        const songInput = document.getElementById('song-msg');
-        
-        const btn = document.getElementById('add-to-cart-btn');
-        const buyNowBtn = document.getElementById('buy-now-btn');
-        const uploadBox = document.getElementById('upload-box');
-        
-        let isValid = loveInput.value.trim() && storyInput.value.trim() && proudInput.value.trim() && songInput.value.trim() && uploadedBase64Images.length > 0;
-        
-        if (product.id.startsWith('frame')) {
-            isValid = isValid && customization.pattern !== null && customization.shapes.length > 0;
+        if (!response.ok) {
+          throw new Error(result?.message || result?.error || 'Failed to load product');
         }
-        
-        if (!isValid) {
-            btn.disabled = true;
-            btn.classList.add('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
-            btn.classList.remove('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
-            buyNowBtn.disabled = true;
-            buyNowBtn.classList.add('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
-            buyNowBtn.classList.remove('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
-        } else {
-            btn.disabled = false;
-            btn.classList.remove('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
-            btn.classList.add('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
-            buyNowBtn.disabled = false;
-            buyNowBtn.classList.remove('cursor-not-allowed', 'bg-[#ecdccc]', 'text-[#9e7550]');
-            buyNowBtn.classList.add('bg-[#9e7550]', 'text-white', 'hover:bg-[#6b4f35]');
-            
-            [loveInput, storyInput, proudInput, songInput, uploadBox].forEach(el => el.classList.remove('border-red-400'));
-        }
+
+        renderProduct(result?.data || result);
+      } catch (error) {
+        renderError('Unable to load product.', error.message);
+      }
     }
 
-    function addToCartDetail(e) {
-        e.preventDefault();
-        
-        const loveInput = document.getElementById('love-msg');
-        const storyInput = document.getElementById('story-msg');
-        const proudInput = document.getElementById('proud-msg');
-        const songInput = document.getElementById('song-msg');
-        const uploadBox = document.getElementById('upload-box');
-        
-        const love = loveInput.value.trim();
-        const story = storyInput.value.trim();
-        const proud = proudInput.value.trim();
-        const song = songInput.value.trim();
-        
-        if (!love || !story || !proud || !song || uploadedBase64Images.length === 0) {
-            if(!love) loveInput.classList.add('border-red-400');
-            if(!story) storyInput.classList.add('border-red-400');
-            if(!proud) proudInput.classList.add('border-red-400');
-            if(!song) songInput.classList.add('border-red-400');
-            if(uploadedBase64Images.length === 0) uploadBox.classList.add('border-red-400');
-            return;
-        }
-        
-        let cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
-        
-        const cartItem = {
-             id: product.id + '-' + Date.now(), 
-             baseId: product.id,
-             name: product.name, 
-             price: product.price, 
-             qty: 1, 
-             quantity: 1, 
-             img: product.images[0],
-             messages: {
-                 love,
-                 story,
-                 proud,
-                 song
-             },
-             customization: product.id.startsWith('frame') ? { ...customization } : undefined,
-             images: [...uploadedBase64Images]
-        };
-        
-        cart.push(cartItem);
-        localStorage.setItem('hc_cart', JSON.stringify(cart));
-        
-        if(typeof updateCartBadge !== 'undefined') updateCartBadge();
-        const btn = document.getElementById('add-to-cart-btn');
-        btn.innerText = 'Added ✔'; 
-        btn.style.backgroundColor = '#7a5c3e'; 
-        
-        setTimeout(() => {
-           window.location.href = 'cart.html';
-        }, 800);
-    }
-
-    function buyNow(e) {
-        e.preventDefault();
-        
-        const loveInput = document.getElementById('love-msg');
-        const storyInput = document.getElementById('story-msg');
-        const proudInput = document.getElementById('proud-msg');
-        const songInput = document.getElementById('song-msg');
-        const uploadBox = document.getElementById('upload-box');
-        
-        const love = loveInput.value.trim();
-        const story = storyInput.value.trim();
-        const proud = proudInput.value.trim();
-        const song = songInput.value.trim();
-        
-        if (!love || !story || !proud || !song || uploadedBase64Images.length === 0) {
-            if(!love) loveInput.classList.add('border-red-400');
-            if(!story) storyInput.classList.add('border-red-400');
-            if(!proud) proudInput.classList.add('border-red-400');
-            if(!song) songInput.classList.add('border-red-400');
-            if(uploadedBase64Images.length === 0) uploadBox.classList.add('border-red-400');
-            return;
-        }
-        
-        let cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
-        
-        const cartItem = {
-             id: product.id + '-' + Date.now(), 
-             baseId: product.id,
-             name: product.name, 
-             price: product.price, 
-             qty: 1, 
-             quantity: 1, 
-             img: product.images[0],
-             messages: {
-                 love,
-                 story,
-                 proud,
-                 song
-             },
-             customization: product.id.startsWith('frame') ? { ...customization } : undefined,
-             images: [...uploadedBase64Images]
-        };
-        
-        cart.push(cartItem);
-        localStorage.setItem('hc_cart', JSON.stringify(cart));
-        
-        if(typeof updateCartBadge !== 'undefined') updateCartBadge();
-        const btn = document.getElementById('buy-now-btn');
-        btn.innerText = 'Redirecting...'; 
-        btn.style.backgroundColor = '#7a5c3e'; 
-        
-        setTimeout(() => {
-           window.location.href = 'payment.html';
-        }, 500);
-    }
+    loadProduct();
   </script>
 
 </body>

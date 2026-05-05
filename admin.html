@@ -48,14 +48,12 @@
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
       </svg>
     </a>
-    <a href="cart.html" aria-label="Cart" class="relative text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -mr-1">
-      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+    <button id="logout-btn" class="text-red-500 hover:text-red-700 transition-colors p-1 text-sm font-medium flex items-center gap-1" title="Logout">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
       </svg>
-      <span id="cart-badge-nav" class="absolute top-0 right-0 bg-[#6b4f35] text-white text-[9px] font-medium w-[18px] h-[18px] rounded-full flex items-center justify-center translate-x-1.5 -translate-y-1 shadow-sm hidden">
-        0
-      </span>
-    </a>
+      <span class="hidden sm:inline">Logout</span>
+    </button>
   </div>
 </div>
 </nav>
@@ -100,6 +98,16 @@ window.closeDrawer = function() {
 document.addEventListener("DOMContentLoaded", () => {
     const menuBtn = document.getElementById('menu-open-btn');
     if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
+    
+    // Add logout button event listener
+    const logoutBtn = document.getElementById('logout-btn');
+    if(logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminAuthenticated');
+        window.location.href = 'admin-login.html';
+      });
+    }
 });
 
 window.updateCartBadge = function() {
@@ -124,6 +132,59 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
 
 <main class="max-w-[1000px] mx-auto px-6 pt-10 pb-20">
+  <section class="bg-white rounded-2xl border border-[#e8d8c8]/50 shadow-sm p-6 mb-8">
+    <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-2">Add Product</h2>
+    <p class="text-sm text-[#9e7550] mb-5">Create new products and save them to MongoDB.</p>
+    <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Name</label>
+        <input id="name" name="name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Price</label>
+        <input id="price" name="price" type="number" min="0" step="0.01" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Category</label>
+        <select id="category" name="category" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+          <option value="">Select category</option>
+          <option value="frames">Frames</option>
+          <option value="books">Books</option>
+          <option value="birthday">Birthday</option>
+          <option value="baby">Baby</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="bestseller" name="bestseller" class="w-4 h-4 rounded cursor-pointer">
+        <label for="bestseller" class="text-sm text-[#9e7550] cursor-pointer">Add to Best Sellers</label>
+      </div>
+      <div>
+        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Images (Multiple)</label>
+        <input type="file" id="image" accept="image/*" multiple class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white">
+        <p class="text-[10px] text-[#c4a882] mt-1">You can select multiple images. They will be displayed as a gallery on the product page.</p>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Description</label>
+        <textarea id="description" name="description" rows="3" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]"></textarea>
+      </div>
+
+      <div class="md:col-span-2">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550]">Custom Fields</label>
+          <div class="flex gap-2">
+            <button type="button" id="add-text-field-btn" class="px-3 py-2 rounded-lg text-[10px] tracking-widest uppercase border border-[#ecdccc] text-[#9e7550] hover:bg-[#faf5ef] transition">Add Text Field</button>
+            <button type="button" id="add-image-field-btn" class="px-3 py-2 rounded-lg text-[10px] tracking-widest uppercase border border-[#ecdccc] text-[#9e7550] hover:bg-[#faf5ef] transition">Add Image Field</button>
+          </div>
+        </div>
+        <div id="custom-fields-list" class="space-y-2"></div>
+        <p class="text-[11px] text-[#c4a882] mt-2">These fields will appear on the product details page.</p>
+      </div>
+      <div class="md:col-span-2 flex items-center gap-3">
+        <button type="submit" id="add-product-btn" class="bg-[#9e7550] hover:bg-[#7a5c3e] text-white px-5 py-2.5 rounded-lg text-xs uppercase tracking-widest transition">Add Product</button>
+        <p id="add-product-message" class="text-sm text-[#9e7550]"></p>
+      </div>
+    </form>
+  </section>
   
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
     <div>
@@ -158,57 +219,369 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 </div>
 
 <script>
-  // Dummy Data Injection if localStorage is empty
-  let orders = JSON.parse(localStorage.getItem('hc_orders') || '[]');
-  if(orders.length === 0) {
-    orders = [
-      {
-        id: "#4592", date: "2026-04-14", customer: "Sarah Ahmed", phone: "010 1234 5678", ig: "@sarah.a", address: "123 Maadi Street",
-        items: [{name: "Custom Memory Frame", qty: 1, price: 350}], total: 350, txid: "VX932840001", status: "Pending", paymentMethod: "Vodafone Cash", receiptImg: "https://images.unsplash.com/photo-1620288627223-53302f4e8c74?w=400",
-        itemDetails: [
-          {
-            messages: [
-              {type: "Love message", text: "Happy Anniversary my love <3"}
-            ],
-            images: ["https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400", "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400"]
-          }
-        ]
-      },
-      {
-        id: "#4593", date: "2026-04-13", customer: "Nour El Din", phone: "011 9876 5432", ig: "@nour.din", address: "Sheraton branch",
-        items: [{name: "Handmade Memory Book", qty: 2, price: 450}], total: 900, txid: "IP112932900", status: "Paid", paymentMethod: "InstaPay", receiptImg: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400",
-        itemDetails: [
-          {
-            messages: [
-              {type: "How it started", text: "Page 1: 2023, Page 2: Our trip"}
-            ],
-            images: ["https://images.unsplash.com/photo-1524311583145-d5593bd2602a?w=400"]
-          },
-          {
-            messages: [
-              {type: "Proud message", text: "You did so well!"}
-            ],
-            images: []
-          }
-        ]
-      },
-      {
-        id: "#4591", date: "2026-04-10", customer: "Lina M.", phone: "012 3456 7890", ig: "@lina_m", address: "",
-        items: [{name: "Baby Newborn Box", qty: 1, price: 250}], total: 250, txid: "IP84029239", status: "Completed", paymentMethod: "InstaPay", receiptImg: "",
-        itemDetails: [
-          {
-            messages: [
-              {type: "Love message", text: "Welcome baby Youssef"}
-            ],
-            images: []
-          }
-        ]
-      }
-    ];
-    localStorage.setItem('hc_orders', JSON.stringify(orders));
+  // Load API config dynamically (supports both dev and production)
+  const API_BASE_URL = "http://localhost:5000/api";
+
+  // Check authentication
+  function checkAuth() {
+    const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      window.location.href = 'admin-login.html';
+      return false;
+    }
+
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      return '';
+    }
+    return token;
   }
 
+  function getAuthHeaders(token) {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
+  function handleAuthError(response) {
+    if (response.status === 401 || response.status === 403) {
+      console.warn('Authentication failed, redirecting to login...');
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-login.html';
+      return true;
+    }
+    return false;
+  }
+
+  const adminToken = checkAuth();
+  if (adminToken === false) {
+    throw new Error('Unauthorized');
+  }
+  let orders = [];
   let currentFilter = 'All';
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escapeAttr(value) {
+    // Same as escapeHtml; kept separate for clarity when used in attributes.
+    return escapeHtml(value);
+  }
+
+  function safeText(value, fallback = 'N/A') {
+    const s = String(value ?? '').trim();
+    return escapeHtml(s || fallback);
+  }
+
+  function safeStatus(value) {
+    const allowed = new Set(['Pending', 'Paid', 'Completed', 'Rejected']);
+    const s = String(value ?? '').trim();
+    return allowed.has(s) ? s : 'Pending';
+  }
+
+  function safeUrl(url) {
+    const s = String(url ?? '').trim();
+    if (!s) return '';
+    // Allow https/http URLs and common inline image data URLs only.
+    if (/^https?:\/\//i.test(s)) return s;
+    if (/^data:image\//i.test(s)) return s;
+    return '';
+  }
+
+  async function uploadImageToCloudinary(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_BASE_URL}/upload/image`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${adminToken}` },
+    body: formData
+  });
+
+  const data = await response.json();
+  if (!data.success) throw new Error(data.message || 'Upload failed');
+  return data.url;
+}
+
+  async function getUploadSignature() {
+    const response = await fetch(`${API_BASE_URL}/upload/sign`, {
+      method: 'POST',
+      headers: getAuthHeaders(adminToken)
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || 'Failed to get upload signature');
+    }
+
+    return response.json();
+  }
+
+  async function createProduct(event) {
+    event.preventDefault();
+
+    const messageEl = document.getElementById('add-product-message');
+    const submitBtn = document.getElementById('add-product-btn');
+    const form = document.getElementById('add-product-form');
+
+    messageEl.textContent = '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Adding...';
+
+    try {
+      if (!adminToken) {
+        throw new Error('Please re-login to add products.');
+      }
+
+      const name = document.getElementById("name").value?.trim();
+      const price = document.getElementById("price").value?.trim();
+      const category = document.getElementById("category").value?.trim();
+      const description = document.getElementById("description").value?.trim();
+
+      if (!name || !price || !category || !description) {
+        throw new Error("Please fill all required fields");
+      }
+
+      if (isNaN(price) || parseFloat(price) <= 0) {
+        throw new Error("Price must be a positive number");
+      }
+
+      const imageFiles = document.getElementById("image").files;
+      if (imageFiles.length === 0) {
+        throw new Error("Please choose at least one product image");
+      }
+
+      const uploadedImages = [];
+
+     for (let i = 0; i < imageFiles.length; i++) {
+  const file = imageFiles[i];
+
+  if (!file.type.startsWith('image/')) {
+    throw new Error(`File ${file.name} is not an image`);
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error(`File ${file.name} is too large (max 10MB)`);
+  }
+
+  try {
+    submitBtn.textContent = `Uploading images (${i + 1}/${imageFiles.length})...`;
+    const url = await uploadImageToCloudinary(file);
+    uploadedImages.push(url);
+  } catch (uploadErr) {
+    throw new Error(`Failed to upload ${file.name}: ${uploadErr.message}`);
+  }
+}
+
+      if (uploadedImages.length === 0) {
+        throw new Error("No images were successfully uploaded");
+      }
+
+      const customFields = readCustomFields();
+
+      submitBtn.textContent = 'Saving product...';
+
+      const payload = {
+        name,
+        price: parseFloat(price),
+        category,
+        description,
+        images: uploadedImages,
+        customFields,
+        bestSeller: document.getElementById("bestseller")?.checked || false
+      };
+
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        method: 'POST',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify(payload)
+      });
+
+      if (handleAuthError(response)) return;
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || result.error || 'Failed to add product');
+      }
+
+      messageEl.textContent = 'Product added successfully! ✓';
+      messageEl.className = 'text-sm text-green-600 font-medium';
+
+      form.reset();
+      document.getElementById("custom-fields-list").innerHTML = "";
+
+      setTimeout(() => {
+        messageEl.textContent = '';
+      }, 3000);
+
+    } catch (error) {
+      messageEl.textContent = error.message;
+      messageEl.className = 'text-sm text-red-600 font-medium';
+      console.error('Product creation error:', error);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Add Product';
+    }
+  }
+
+  function addCustomFieldRow(type) {
+    const list = document.getElementById("custom-fields-list");
+    const row = document.createElement("div");
+    row.className = "bg-[#fffdf9] border border-[#ecdccc]/70 rounded-lg p-4 space-y-3";
+    
+    const fieldId = 'field-' + Date.now();
+    const minMaxId = 'minmax-' + Date.now();
+    
+    let minMaxSection = '';
+    if (type === 'image') {
+      minMaxSection = `
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs text-[#9e7550] mb-1 block">Min Photos</label>
+            <input type="number" min="1" value="1" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-min>
+          </div>
+          <div>
+            <label class="text-xs text-[#9e7550] mb-1 block">Max Photos</label>
+            <input type="number" min="1" value="9" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-max>
+          </div>
+        </div>
+      `;
+    }
+    
+    row.innerHTML = `
+      <div>
+        <input 
+          id="${fieldId}"
+          class="w-full rounded-lg border border-[#ecdccc] px-3 py-2 text-sm focus:outline-none focus:border-[#9e7550]" 
+          placeholder="Field label (e.g. Your Name)" 
+          type="text"
+        />
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <select class="rounded-lg border border-[#ecdccc] px-3 py-2 text-sm focus:outline-none focus:border-[#9e7550]" data-type>
+          <option value="text">Text</option>
+          <option value="image">Image</option>
+        </select>
+        <label class="flex items-center gap-2 text-sm text-[#9e7550] cursor-pointer">
+          <input type="checkbox" class="w-4 h-4 rounded" data-required>
+          <span>Required</span>
+        </label>
+      </div>
+      ${minMaxSection}
+      <button type="button" class="w-full px-3 py-2 rounded-lg text-[10px] tracking-widest uppercase border border-red-200 text-red-600 hover:bg-red-50 transition font-medium">Remove</button>
+    `;
+    
+    const select = row.querySelector("[data-type]");
+    select.value = type;
+    
+    // Handle type change to show/hide min-max
+    select.addEventListener('change', (e) => {
+      const minMaxDiv = row.querySelector('[data-min]')?.parentElement.parentElement;
+      if (minMaxDiv) {
+        minMaxDiv.style.display = e.target.value === 'image' ? 'grid' : 'none';
+      }
+    });
+    
+    row.querySelector("button").addEventListener("click", (e) => {
+      e.preventDefault();
+      row.remove();
+    });
+    
+    list.appendChild(row);
+    
+    // Focus on the input
+    setTimeout(() => {
+      document.getElementById(fieldId).focus();
+    }, 0);
+  }
+
+  function readCustomFields() {
+    const list = document.getElementById("custom-fields-list");
+    const rows = Array.from(list.children);
+    return rows.map((row) => {
+      const label = row.querySelector("input[type='text']").value.trim();
+      const type = row.querySelector("[data-type]").value;
+      const required = row.querySelector("[data-required]").checked;
+      
+      const field = { label, type, required };
+      
+      if (type === 'image') {
+        const minInput = row.querySelector("[data-min]");
+        const maxInput = row.querySelector("[data-max]");
+        field.minImages = parseInt(minInput?.value) || 1;
+        field.maxImages = parseInt(maxInput?.value) || 9;
+      }
+      
+      return field;
+    }).filter((f) => f.label && (f.type === "text" || f.type === "image"));
+  }
+
+  document.getElementById("add-text-field-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    addCustomFieldRow("text");
+  });
+
+  document.getElementById("add-image-field-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    addCustomFieldRow("image");
+  });
+
+  document.getElementById('add-product-form').addEventListener('submit', createProduct);
+
+  function formatOrderDate(value) {
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return 'N/A';
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+  }
+
+  function downloadAllImages(orderId) {
+    const order = orders.find(o => o._id === orderId);
+    if (!order || !order.items) return;
+    
+    const urls = [];
+    order.items.forEach(item => {
+      if (item.customization?.images && Array.isArray(item.customization.images)) {
+        item.customization.images.forEach(img => {
+          const url = safeUrl(img);
+          if (url) urls.push(url);
+        });
+      }
+    });
+    
+    if (urls.length === 0) {
+      alert('No images found for this order');
+      return;
+    }
+    
+    urls.forEach(url => {
+      window.open(url, '_blank');
+    });
+  }
+
+  async function fetchOrders() {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      headers: getAuthHeaders(adminToken)
+    });
+
+    // Handle auth errors
+    if (handleAuthError(response)) return;
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to load orders');
+    }
+
+    orders = result.data || [];
+  }
 
   function renderOrders() {
     const grid = document.getElementById('orders-grid');
@@ -223,22 +596,23 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       return;
     }
 
-    filtered.forEach((o, i) => {
-      const originalIdx = orders.indexOf(o);
-      const itemsList = o.items ? o.items.map(it => `${it.qty}x ${it.name}`).join(', ') : 'Custom Product';
+    filtered.forEach((o) => {
+      const originalIdx = orders.findIndex(order => order._id === o._id);
+      const itemsList = o.items ? o.items.map(it => `${it.quantity}x ${it.name}`).join(', ') : 'Custom Product';
       
-      const isPending = o.status === 'Pending';
-      const isPaid = o.status === 'Paid';
+      const status = safeStatus(o.status);
+      const isPending = status === 'Pending';
+      const isPaid = status === 'Paid';
 
       let actionBtns = '';
       if(isPending) {
         actionBtns = `
-          <button onclick="updateStatus(${originalIdx}, 'Paid')" class="flex-1 bg-blue-50 text-blue-600 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-100">Mark Paid</button>
-          <button onclick="updateStatus(${originalIdx}, 'Rejected')" class="flex-1 bg-red-50 text-red-500 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-red-100 transition font-medium border border-red-100">Reject</button>
+          <button onclick="updateStatus(${originalIdx}, 'Paid').catch(error => alert(error.message))" class="flex-1 bg-blue-50 text-blue-600 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-blue-100 transition font-medium border border-blue-100">Mark Paid</button>
+          <button onclick="updateStatus(${originalIdx}, 'Rejected').catch(error => alert(error.message))" class="flex-1 bg-red-50 text-red-500 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-red-100 transition font-medium border border-red-100">Reject</button>
         `;
       } else if (isPaid) {
         actionBtns = `
-          <button onclick="updateStatus(${originalIdx}, 'Completed')" class="flex-1 bg-green-50 text-green-600 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-green-100 transition font-medium border border-green-100">Complete Order</button>
+          <button onclick="updateStatus(${originalIdx}, 'Completed').catch(error => alert(error.message))" class="flex-1 bg-green-50 text-green-600 text-[10px] tracking-wider uppercase py-2.5 rounded-lg hover:bg-green-100 transition font-medium border border-green-100">Complete Order</button>
         `;
       } else {
         actionBtns = `<div class="flex-1 text-center text-[11px] text-brown-light py-2">Order ${o.status}</div>`;
@@ -250,32 +624,32 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           <div>
             <div class="flex justify-between items-start mb-4">
               <div>
-                <span class="text-xs text-brown-light tracking-widest font-medium block mb-1 uppercase">${(() => { const d = new Date(o.date); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; })()}</span>
-                <span class="font-cormorant text-2xl text-brown-dark italic font-semibold leading-none">${o.id}</span>
+                <span class="text-xs text-brown-light tracking-widest font-medium block mb-1 uppercase">${escapeHtml(formatOrderDate(o.createdAt))}</span>
+                <span class="font-cormorant text-xl text-brown-dark italic font-semibold leading-none" title="${o._id}">ID: ${String(o._id).substring(0, 8)}</span>
               </div>
-              <span class="text-[10px] uppercase tracking-widest font-medium py-1 px-3 rounded-md status-${o.status}">${o.status}</span>
+              <span class="text-[10px] uppercase tracking-widest font-medium py-1 px-3 rounded-md status-${status}">${escapeHtml(status)}</span>
             </div>
 
             <div class="space-y-3 mb-5">
               <div class="flex items-start gap-3">
                 <div class="w-8 h-8 rounded-full bg-beige-soft flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-brown-mid" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></div>
                 <div class="flex flex-col">
-                  <span class="text-sm font-medium text-brown-dark leading-tight">${o.customer}</span>
-                  <span class="text-[11px] text-brown-mid">${o.phone} · <span class="text-blue-400">${o.ig}</span></span>
+                  <span class="text-sm font-medium text-brown-dark leading-tight">${safeText(o.customer?.name, 'N/A')}</span>
+                  <span class="text-[11px] text-brown-mid">${safeText(o.customer?.phone, 'N/A')} · <span class="text-blue-400">${safeText(o.customer?.instagram, '')}</span></span>
                 </div>
               </div>
               
               <div class="flex items-start gap-3">
                 <div class="w-8 h-8 rounded-full bg-beige-soft flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-brown-mid" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"/></svg></div>
                 <div class="flex flex-col py-0.5">
-                  <span class="text-xs text-brown-dark font-medium leading-snug">${itemsList}</span>
-                  <span class="text-[11px] text-brown-mid">${o.total} EGP</span>
+                  <span class="text-xs text-brown-dark font-medium leading-snug">${escapeHtml(itemsList)}</span>
+                  <span class="text-[11px] text-brown-mid">${escapeHtml(o.totalPrice)} EGP</span>
                 </div>
               </div>
             </div>
             
             <div class="bg-beige-soft/50 rounded-xl p-3 border border-brown-pale/40 mb-4 whitespace-nowrap overflow-hidden text-ellipsis text-xs text-brown-dark">
-              💳 <span class="tracking-wide">${o.transactionRef || (o.txid || 'N/A')}</span> <span class="text-brown-light">(${o.paymentMethod || 'InstaPay'})</span>
+              💳 <span class="tracking-wide">${safeText(o.payment?.transactionReference, 'N/A')}</span> <span class="text-brown-light">(${safeText(o.payment?.method, 'InstaPay')})</span>
             </div>
           </div>
           
@@ -300,16 +674,54 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     renderOrders();
   }
 
-  function updateStatus(idx, newStatus) {
-    orders[idx].status = newStatus;
-    localStorage.setItem('hc_orders', JSON.stringify(orders));
+  async function updateStatus(idx, newStatus) {
+    const order = orders[idx];
+    if (!order) return;
+
+    const response = await fetch(`${API_BASE_URL}/orders/${order._id}`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(adminToken),
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    // Handle auth errors
+    if (handleAuthError(response)) return;
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Failed to update order status');
+    }
+
+    orders[idx] = result.data;
     renderOrders();
   }
 
+function buildCustomizationBlocks(customization) {
+  if (!customization) {
+    return '';
+  }
+
+  let blocks = Object.entries(customization)
+    .filter(([key, value]) => key !== 'images' && key !== 'shapes' && value)
+    .map(([key, value]) => {
+      return `<div class="mb-2">
+        <span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${escapeHtml(key)}</span>
+        <p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${escapeHtml(String(value))}</p>
+      </div>`;
+    }).join('');
+
+  if (Array.isArray(customization.shapes) && customization.shapes.length > 0) {
+    blocks += `<div class="mb-2">
+      <span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">shapes</span>
+      <p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${escapeHtml(customization.shapes.join(', '))}</p>
+    </div>`;
+  }
+
+  return blocks || '<span class="text-xs text-brown-light italic">No custom details provided.</span>';
+}
   function viewDetails(idx) {
     const o = orders[idx];
-    
-    // Validate that order exists
     if (!o) {
       alert('Order details not available');
       return;
@@ -319,31 +731,21 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     let hasImages = false;
     let imagesGalleryHtml = '';
 
-    if (o.itemDetails && o.itemDetails.length > 0) {
-      o.itemDetails.forEach((item, i) => {
-        // Handle both old format (text field) and new format (messages object)
-        let msgBlocks = '';
-        if (item.messages) {
-          if (Array.isArray(item.messages)) {
-            msgBlocks = item.messages.map(m => {
-              const msgType = m.type || 'Message';
-              const msgText = m.text || '';
-              return `<div class="mb-2"><span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${msgType}</span><p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${msgText}</p></div>`;
-            }).join('');
-          } else {
-            // Handle object format
-            msgBlocks = Object.entries(item.messages).map(([key, value]) => {
-              return `<div class="mb-2"><span class="text-[10px] uppercase text-brown-light block font-semibold tracking-wide">${key}</span><p class="text-[13px] text-brown-dark bg-[#faf5ef] p-2 rounded border border-brown-pale/40">${value || 'N/A'}</p></div>`;
-            }).join('');
-          }
-        }
-        
-        if(item.images && item.images.length > 0) {
+    if (o.items && o.items.length > 0) {
+      o.items.forEach((item, i) => {
+        const msgBlocks = buildCustomizationBlocks(item.customization);
+
+        if(item.customization?.images && item.customization.images.length > 0) {
           hasImages = true;
-          let imgsHtml = item.images.map(img => `<img src="${img}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" onclick="window.open('${img}', '_blank')" alt="Item ${i+1}">`).join('');
+          const imgsHtml = item.customization.images.map(rawImg => {
+            const img = safeUrl(rawImg);
+            if (!img) return '';
+            const imgAttr = escapeAttr(img);
+            return `<img src="${imgAttr}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" onclick="window.open('${imgAttr}', '_blank')" alt="Item ${i+1}">`;
+          }).join('');
           imagesGalleryHtml += `<div class="mb-3"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Item ${i+1} Images</span><div class="flex flex-wrap gap-2">${imgsHtml}</div></div>`;
         }
-        
+
         msgsHtml += `
           <div class="bg-white p-4 rounded-xl border border-brown-pale/40 shadow-sm mb-4">
             <h4 class="font-cormorant text-lg italic text-[#6b4f35] mb-3 border-b border-[#e8d8c8]/50 pb-2">Item ${i+1} Details</h4>
@@ -356,19 +758,17 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     }
 
     let receiptHtml = '';
-    if(o.receiptImg) {
-      receiptHtml = `<div class="mt-4"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Payment Receipt</span><img src="${o.receiptImg}" class="w-full max-h-48 object-cover rounded-xl border border-brown-pale shadow-sm cursor-pointer" onclick="window.open('${o.receiptImg}', '_blank')" onerror="this.style.display='none'" alt="Payment Receipt"></div>`;
+    if(o.payment?.receiptImageUrl) {
+      const receipt = safeUrl(o.payment.receiptImageUrl);
+      if (receipt) {
+        const receiptAttr = escapeAttr(receipt);
+        receiptHtml = `<div class="mt-4"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Payment Receipt</span><img src="${receiptAttr}" class="w-full max-h-48 object-cover rounded-xl border border-brown-pale shadow-sm cursor-pointer" onclick="window.open('${receiptAttr}', '_blank')" onerror="this.style.display='none'" alt="Payment Receipt"></div>`;
+      }
     }
 
-    const downloadBtn = hasImages ? `<button onclick="alert('In a real app, this would zip and download all item images.')" class="mt-2 w-full border border-[#c4a882] text-[#9e7550] text-[10px] tracking-[0.1em] uppercase py-2 rounded-lg hover:bg-[#faf5ef] transition font-medium">Download All Images</button>` : '';
-
-    // Format order date
-    const orderDate = (() => {
-      if (!o.date) return 'N/A';
-      const d = new Date(o.date);
-      if (isNaN(d.getTime())) return 'N/A';
-      return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-    })();
+    const downloadBtn = hasImages ? `
+      <button onclick="downloadAllImages('${o._id}')" class="mt-2 w-full border border-[#c4a882] text-[#9e7550] text-[10px] tracking-[0.1em] uppercase py-2 rounded-lg hover:bg-[#faf5ef] transition font-medium">Download All Images</button>
+    ` : '';
 
     const body = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -380,10 +780,10 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                <h3 class="font-cormorant text-xl italic text-brown-mid">Order Info</h3>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Order ID</span><span class="font-medium text-brown-dark">${o.id || 'N/A'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Date</span><span class="font-medium text-brown-dark">${orderDate}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="font-medium text-brown-dark">${o.status || 'Pending'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Total</span><span class="font-medium text-brown-dark">EGP ${o.total || '0'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Order ID</span><span class="font-medium text-brown-dark">${o._id || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Date</span><span class="font-medium text-brown-dark">${formatOrderDate(o.createdAt)}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="font-medium text-brown-dark">${escapeHtml(safeStatus(o.status))}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Total</span><span class="font-medium text-brown-dark">EGP ${escapeHtml(o.totalPrice || '0')}</span></div>
             </div>
           </div>
 
@@ -393,10 +793,10 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                <h3 class="font-cormorant text-xl italic text-brown-mid">Customer Info</h3>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Name</span><span class="font-medium text-brown-dark">${o.customer || 'N/A'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Phone</span><span class="font-medium text-brown-dark">${o.phone || 'N/A'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Instagram</span><span class="font-medium text-brown-dark">${o.ig ? '@' + (o.ig.replace('@', '')) : 'N/A'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Address</span><span class="text-brown-dark">${o.address || 'N/A'}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Name</span><span class="font-medium text-brown-dark">${safeText(o.customer?.name, 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Phone</span><span class="font-medium text-brown-dark">${safeText(o.customer?.phone, 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Instagram</span><span class="font-medium text-brown-dark">${safeText(o.customer?.instagram, 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Address</span><span class="text-brown-dark">${safeText(o.customer?.address, 'N/A')}</span></div>
             </div>
           </div>
           
@@ -406,9 +806,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                <h3 class="font-cormorant text-xl italic text-brown-mid">Payment Info</h3>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Method</span><span class="text-brown-dark">${o.paymentMethod || 'InstaPay'}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="text-brown-dark">${o.status || 'Pending'}</span></div>
-              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Transaction Reference Number</span><span class="font-medium tracking-wider text-brown-dark">${o.transactionRef || (o.txid || 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Method</span><span class="text-brown-dark">${safeText(o.payment?.method, 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="text-brown-dark">${escapeHtml(safeStatus(o.status))}</span></div>
+              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Transaction Reference Number</span><span class="font-medium tracking-wider text-brown-dark">${safeText(o.payment?.transactionReference, 'N/A')}</span></div>
             </div>
             ${receiptHtml}
           </div>
@@ -444,8 +844,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   }
 
   function updateDetailsStatus(idx, newStatus) {
-    updateStatus(idx, newStatus);
-    closeModal();
+    updateStatus(idx, newStatus)
+      .then(() => closeModal())
+      .catch(error => alert(error.message));
   }
 
   function closeModal() {
@@ -454,7 +855,11 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     setTimeout(() => document.getElementById('order-modal').classList.add('pointer-events-none'), 300);
   }
 
-  renderOrders();
+  fetchOrders()
+    .then(() => renderOrders())
+    .catch(error => {
+      document.getElementById('orders-grid').innerHTML = `<div class="col-span-full py-12 text-center text-brown-light">${error.message}</div>`;
+    });
 </script>
 </body>
 </html>

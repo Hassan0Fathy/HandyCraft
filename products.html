@@ -275,85 +275,142 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </a>
 
   <script>
-    // ── Category mapping for filtering ──
-    const categoryMap = {
-      'frame-1': 'frames', 'frame-2': 'frames',
-      'book-1': 'books', 'book-2': 'books',
-      'birth-1': 'birthday', 'birth-2': 'birthday',
-      'baby-1': 'baby', 'baby-2': 'baby'
-    };
-
-    // ── Render products dynamically from data.js ──
-    function renderProducts() {
-      if (typeof products === 'undefined' || !Array.isArray(products)) {
-        console.error('[HandyCraft] Products data not available');
-        return;
-      }
-
-      const grid = document.getElementById('product-grid');
-      grid.innerHTML = '';
-
-      products.forEach((product) => {
-        const mainImage = product.images && product.images[0] ? product.images[0] : 'images/placeholder.png';
-        const hoverImage = product.images && product.images[1] ? product.images[1] : mainImage;
-        const category = categoryMap[product.id] || 'all';
-
-        const card = document.createElement('div');
-        card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
-        card.dataset.cat = category;
-        card.onclick = () => window.location.href = `product-details.html?id=${product.id}`;
-
-        card.innerHTML = `
-          <div class="aspect-square overflow-hidden bg-[#f5ede3]">
-            <div class="prod-image-container">
-              <img src="${mainImage}" alt="${product.name}" class="prod-image-main" />
-              ${hoverImage !== mainImage ? `<img src="${hoverImage}" alt="${product.name} hover" class="prod-image-hover" />` : ''}
-            </div>
-          </div>
-          <div class="p-4 md:p-5 flex flex-col h-[140px]">
-            <h3 class="text-sm md:text-base font-medium text-[#6b4f35] mb-1 line-clamp-2">
-              ${product.name}
-            </h3>
-            <p class="text-xs md:text-sm text-[#9e7550] mb-3 line-clamp-1 flex-grow">
-              ${product.description.split('.')[0] || product.description}
-            </p>
-            <div class="flex items-center justify-between mt-auto">
-              <span class="text-sm md:text-base font-medium text-[#6b4f35]">
-                ${product.price} EGP
-              </span>
-              <button onclick=\"event.stopPropagation(); window.location.href='product-details.html?id=${product.id}';\"
-                      class=\"px-3 md:px-4 py-2 bg-[#9e7550] text-white text-xs md:text-sm rounded-full hover:bg-[#6b4f35] transition-colors duration-200\">
-                Customize
-              </button>
-            </div>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
-
-      console.log('[HandyCraft] Rendered ' + products.length + ' products');
-    }
+    const API_BASE_URL = 'http://localhost:5000/api';
+    let productList = [];
 
     // ── Read category from URL & init ──
     const params  = new URLSearchParams(window.location.search);
     const initCat = params.get('cat') || 'all';
 
-    // Wait for products data to load
-    function waitForProducts() {
-      if (typeof products !== 'undefined' && Array.isArray(products) && products.length > 0) {
+    function inferCategory(product) {
+      if (product.category) return String(product.category).toLowerCase();
+      const guessed = String(product.name || '').toLowerCase();
+      if (guessed.includes('frame')) return 'frames';
+      if (guessed.includes('book') || guessed.includes('journal')) return 'books';
+      if (guessed.includes('birth')) return 'birthday';
+      if (guessed.includes('baby')) return 'baby';
+      return 'all';
+    }
+
+    function getProductId(product) {
+      return product._id || product.id || '';
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '';
+
+      productList.forEach((product) => {
+        // Support both old (image) and new (images array) formats
+        let mainImage = 'images/placeholder.png';
+        let hoverImage = null;
+        
+        if (Array.isArray(product.images) && product.images.length > 0) {
+          if (product.images[0]) mainImage = product.images[0];
+          if (product.images[1]) hoverImage = product.images[1]; // Use second image for hover
+        } else if (product.image && typeof product.image === 'string') {
+          mainImage = product.image;
+        } else if (product.imageUrl && typeof product.imageUrl === 'string') {
+          mainImage = product.imageUrl;
+        }
+
+        const category = inferCategory(product);
+        const productId = getProductId(product);
+
+        const card = document.createElement('div');
+        card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
+        card.dataset.cat = category;
+        card.onclick = () => window.location.href = `product-details.html?id=${encodeURIComponent(productId)}`;
+
+        const hoverImageHtml = hoverImage ? `<img src="${hoverImage}" alt="${product.name || 'Product'}" class="prod-image-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" onerror="this.style.display='none'" />` : '';
+
+        card.innerHTML = `
+          <div class="aspect-square overflow-hidden bg-[#f5ede3]">
+            <div class="prod-image-container relative">
+              <img src="${mainImage}" alt="${product.name || 'Product'}" class="prod-image-main" onerror="this.src='images/placeholder.png'" />
+              ${hoverImageHtml}
+            </div>
+          </div>
+          <div class="p-4 md:p-5 flex flex-col h-[140px]">
+            <h3 class="text-sm md:text-base font-medium text-[#6b4f35] mb-1 line-clamp-2">${product.name || 'Product'}</h3>
+            <p class="text-xs md:text-sm text-[#9e7550] mb-3 line-clamp-1 flex-grow">${String(product.description || '').split('.')[0] || 'Handmade item'}</p>
+            <div class="flex items-center justify-between mt-auto">
+              <span class="text-sm md:text-base font-medium text-[#6b4f35]">${product.price || 0} EGP</span>
+              <button onclick="event.stopPropagation(); window.location.href='product-details.html?id=${encodeURIComponent(productId)}';"
+                      class="px-3 md:px-4 py-2 bg-[#9e7550] text-white text-xs md:text-sm rounded-full hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium">
+                View
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function addToCart(encodedProductId) {
+      const productId = decodeURIComponent(encodedProductId);
+      const p = productList.find(x => (x._id || x.id) === productId);
+      if (!p) {
+        alert('Product not found');
+        return;
+      }
+
+      const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+      const idx = cart.findIndex(i => (i.id || i.baseId) === productId && (!i.customization || Object.keys(i.customization).length === 0));
+      if (idx >= 0) cart[idx].qty = (cart[idx].qty || 1) + 1;
+      else cart.push({
+        id: productId,
+        baseId: productId,
+        name: p.name,
+        price: Number(p.price) || 0,
+        qty: 1,
+        customization: { images: [] }
+      });
+      localStorage.setItem("hc_cart", JSON.stringify(cart));
+      window.updateCartBadge && window.updateCartBadge();
+      
+      // Show success feedback
+      const btn = document.querySelector(`[data-product-id="${encodeURIComponent(productId)}"]`);
+      if (btn) {
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Added';
+        btn.disabled = true;
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 1500);
+      }
+    }
+    window.addToCart = addToCart;
+
+    async function initializeProducts() {
+      const grid = document.getElementById('product-grid');
+      grid.innerHTML = '<div class="col-span-full text-center py-12 text-[#9e7550]">Loading products...</div>';
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/products`);
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result?.message || result?.error || 'Unable to load products. Please check if the backend is running.');
+        }
+        productList = Array.isArray(result) ? result : (result.data || []);
+        if (!productList.length) {
+          grid.innerHTML =
+            `<div class="col-span-full text-center py-12 text-[#9e7550]">No products yet. Add one from the admin dashboard.</div>`;
+          return;
+        }
         renderProducts();
         filterCat(initCat);
-      } else {
-        setTimeout(waitForProducts, 100);
+      } catch (error) {
+        console.error('Products fetch error:', error);
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-red-600"><p class="font-medium mb-2">Failed to load products</p><p class="text-sm">${error.message}</p></div>`;
       }
     }
 
-    // Start waiting if DOM is ready, otherwise wait for DOM
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', waitForProducts);
+      document.addEventListener('DOMContentLoaded', initializeProducts);
     } else {
-      waitForProducts();
+      initializeProducts();
     }
 
     function filterCat(cat) {

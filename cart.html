@@ -69,16 +69,18 @@
     
     let total = 0;
     cart.forEach((it, i) => {
-      total += it.price * it.qty;
+      // Ensure qty is always at least 1
+      const qty = it.qty || 1;
+      total += it.price * qty;
       c.insertAdjacentHTML('beforeend', `
       <div class="cart-item-anim flex gap-4 p-4 rounded-2xl bg-white shadow-sm hover:shadow-[0_8px_30px_rgba(158,117,80,0.08)] border border-[#e8d8c8]/60 transition-all duration-300 transform" style="animation-delay: ${i * 0.1}s;">
         <div class="w-20 h-20 rounded-xl overflow-hidden bg-[#faf5ef] shrink-0 border border-[#e8d8c8]/40">
-          <img src="${it.img}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110">
+          <img src="${it.img || it.image || 'images/placeholder.png'}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" onerror="this.src='images/placeholder.png'">
         </div>
         <div class="flex flex-col grow justify-between py-0.5">
           <div class="flex justify-between items-start">
             <h3 class="font-medium text-[#4a3728] text-sm leading-tight max-w-[80%]">${it.name}</h3>
-            <button onclick="cart.splice(${i},1);renderCart()" class="text-[#c4a882] hover:text-red-500 transition-colors p-1" aria-label="Remove item">
+            <button onclick="removeFromCart(${i}); renderCart();" class="text-[#c4a882] hover:text-red-500 transition-colors p-1" aria-label="Remove item">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg>
             </button>
           </div>
@@ -90,29 +92,48 @@
             <span class="font-medium">Song:</span> ${it.messages.song}
           </div>
           ` : ''}
-          ${it.images && it.images.length ? `
+          ${it.customization?.images && it.customization.images.length ? `
           <div class="flex gap-1 mt-1.5 overflow-x-auto pb-1">
-            ${it.images.map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded-md border border-[#e8d8c8]" />`).join('')}
+            ${it.customization.images.map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded-md border border-[#e8d8c8]" onerror="this.src='images/placeholder.png'" />`).join('')}
           </div>
-          ` : (it.message ? `<div class="text-[10px] text-[#9e7550] mt-1.5 truncate">${it.message}</div>` : '')}
+          ` : ''}
           <div class="flex justify-between items-center mt-2">
             <div class="flex items-center bg-[#faf5ef] rounded-[10px] px-1 py-1 border border-[#e8d8c8]">
-              <button onclick="updateQty(${i},-1)" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">-</button>
-              <span class="text-[13px] w-6 text-center text-[#4a3728] font-medium pointer-events-none">${it.qty}</span>
-              <button onclick="updateQty(${i},1)" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">+</button>
+              <button onclick="updateQty(${i},-1); renderCart();" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">-</button>
+              <span class="text-[13px] w-6 text-center text-[#4a3728] font-medium pointer-events-none">${qty}</span>
+              <button onclick="updateQty(${i},1); renderCart();" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">+</button>
             </div>
             <span class="font-medium text-[#9e7550] text-[15px]">EGP ${it.price}</span>
           </div>
         </div>
       </div>`);
     });
-    document.getElementById('cart-total').textContent = 'EGP ' + total;
+    document.getElementById('cart-total').textContent = 'EGP ' + total.toFixed(2);
     localStorage.setItem('hc_cart', JSON.stringify(cart));
     
     // Update badge
     updateCartBadge();
   }
-  function updateQty(i, d) { if(cart[i].qty+d>0) cart[i].qty+=d; else cart.splice(i,1); renderCart(); }
+  
+  function updateQty(i, d) { 
+    if(cart[i]) {
+      const newQty = (cart[i].qty || 1) + d;
+      if(newQty > 0) {
+        cart[i].qty = newQty;
+      } else {
+        cart.splice(i,1);
+      }
+      renderCart();
+    }
+  }
+  
+  function removeFromCart(i) {
+    if(cart[i]) {
+      cart.splice(i, 1);
+      renderCart();
+    }
+  }
+  
   renderCart();
 </script>
 </body>

@@ -1,0 +1,67 @@
+/**
+ * Sanitize and normalize customer object
+ */
+function sanitizeCustomer(customer) {
+  return {
+    name: String(customer.name || '').trim().substring(0, 100),
+    phone: String(customer.phone || '').trim().substring(0, 20),
+    address: String(customer.address || '').trim().substring(0, 500),
+    instagram: String(customer.instagram || '').trim().substring(0, 50)
+  };
+}
+
+/**
+ * Sanitize and normalize items array
+ */
+function sanitizeItems(items) {
+  return items.map(item => ({
+    productId: String(item.productId || '').trim(),
+    name: String(item.name || '').trim().substring(0, 200),
+    price: Number(item.price) || 0,
+    quantity: Number(item.quantity) || 1,
+    customization: sanitizeCustomization(item.customization || {})
+  }));
+}
+
+/**
+ * Sanitize customization object (prevent injection)
+ */
+function sanitizeCustomization(customization) {
+  const result = {};
+
+  // Preserve arbitrary text/primitive fields (for dynamic product custom fields)
+  const entries = Object.entries(customization || {});
+  for (const [key, value] of entries) {
+    if (key === "images" || key === "shapes") continue;
+    if (!key) continue;
+
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      result[String(key).trim().substring(0, 60)] = String(value).trim().substring(0, 500);
+    }
+  }
+
+  result.shapes = Array.isArray(customization.shapes)
+    ? customization.shapes.map((s) => String(s).trim()).slice(0, 6)
+    : [];
+  result.images = Array.isArray(customization.images) ? customization.images.slice(0, 10) : [];
+
+  return result;
+}
+
+/**
+ * Sanitize payment object
+ */
+function sanitizePayment(payment) {
+  return {
+    method: String(payment.method || '').trim(),
+    transactionReference: String(payment.transactionReference || '').trim(),
+    receiptImageUrl: payment.receiptImageUrl ? String(payment.receiptImageUrl || '').trim() : ''
+  };
+}
+
+module.exports = {
+  sanitizeCustomer,
+  sanitizeItems,
+  sanitizeCustomization,
+  sanitizePayment
+};

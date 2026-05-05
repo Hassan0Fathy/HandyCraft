@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: handycraft-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        fromConfigVar: MONGODB_URI
+      - key: CLOUDINARY_CLOUD_NAME
+        fromConfigVar: CLOUDINARY_CLOUD_NAME
+      - key: CLOUDINARY_API_KEY
+        fromConfigVar: CLOUDINARY_API_KEY
+      - key: CLOUDINARY_API_SECRET
+        fromConfigVar: CLOUDINARY_API_SECRET
+      - key: API_BASE_URL
+        fromConfigVar: API_BASE_URL
+      - key: ADMIN_PASSWORD
+        fromConfigVar: ADMIN_PASSWORD
+      - key: JWT_SECRET
+        fromConfigVar: JWT_SECRET
+      - key: ALLOWED_ORIGINS
+        value: "*" # Set to your frontend URL in production
