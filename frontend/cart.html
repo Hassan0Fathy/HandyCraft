@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cart | Handy Crafts</title>
+  <script src="config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -56,9 +57,64 @@
 </main>
 
 <script>
+  // IndexedDB Helper
+  const DB_NAME = 'HandyCraftDB';
+  const STORE_NAME = 'cartImages';
+  let db = null;
+
+  async function initIndexedDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        db = request.result;
+        resolve(db);
+      };
+      request.onupgradeneeded = (event) => {
+        const database = event.target.result;
+        if (!database.objectStoreNames.contains(STORE_NAME)) {
+          database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        }
+      };
+    });
+  }
+
+  async function getImagesFromIndexedDB(cartItemId) {
+    if (!db) await initIndexedDB();
+    return new Promise((resolve) => {
+      try {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(cartItemId);
+        request.onsuccess = () => resolve(request.result?.images || []);
+        request.onerror = () => resolve([]);
+      } catch (err) {
+        resolve([]);
+      }
+    });
+  }
+
+  async function deleteImagesFromIndexedDB(cartItemId) {
+    if (!db) await initIndexedDB();
+    return new Promise((resolve) => {
+      try {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(cartItemId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+      } catch (err) {
+        resolve();
+      }
+    });
+  }
+
+  // Initialize IndexedDB
+  initIndexedDB().catch(err => console.warn('IndexedDB not available:', err));
+
   let cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
   
-  function renderCart() {
+  async function renderCart() {
     const c = document.getElementById('cart-items');
     const s = document.getElementById('cart-summary');
     const e = document.getElementById('empty-cart');
@@ -68,10 +124,20 @@
     e.classList.add('hidden'); s.classList.remove('hidden');
     
     let total = 0;
-    cart.forEach((it, i) => {
-      // Ensure qty is always at least 1
+    for (let i = 0; i < cart.length; i++) {
+      const it = cart[i];
       const qty = it.qty || 1;
       total += it.price * qty;
+
+      // Load images from IndexedDB if available
+      let customImages = it.customization?.images || [];
+      if (it.hasImages) {
+        const idbImages = await getImagesFromIndexedDB(it.id);
+        if (idbImages.length > 0) {
+          customImages = idbImages;
+        }
+      }
+
       c.insertAdjacentHTML('beforeend', `
       <div class="cart-item-anim flex gap-4 p-4 rounded-2xl bg-white shadow-sm hover:shadow-[0_8px_30px_rgba(158,117,80,0.08)] border border-[#e8d8c8]/60 transition-all duration-300 transform" style="animation-delay: ${i * 0.1}s;">
         <div class="w-20 h-20 rounded-xl overflow-hidden bg-[#faf5ef] shrink-0 border border-[#e8d8c8]/40">
@@ -92,9 +158,9 @@
             <span class="font-medium">Song:</span> ${it.messages.song}
           </div>
           ` : ''}
-          ${it.customization?.images && it.customization.images.length ? `
+          ${customImages && customImages.length ? `
           <div class="flex gap-1 mt-1.5 overflow-x-auto pb-1">
-            ${it.customization.images.map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded-md border border-[#e8d8c8]" onerror="this.src='images/placeholder.png'" />`).join('')}
+            ${customImages.map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded-md border border-[#e8d8c8]" onerror="this.src='images/placeholder.png'" />`).join('')}
           </div>
           ` : ''}
           <div class="flex justify-between items-center mt-2">
@@ -107,7 +173,7 @@
           </div>
         </div>
       </div>`);
-    });
+    }
     document.getElementById('cart-total').textContent = 'EGP ' + total.toFixed(2);
     localStorage.setItem('hc_cart', JSON.stringify(cart));
     
@@ -121,6 +187,7 @@
       if(newQty > 0) {
         cart[i].qty = newQty;
       } else {
+        deleteImagesFromIndexedDB(cart[i].id);
         cart.splice(i,1);
       }
       renderCart();
@@ -129,6 +196,7 @@
   
   function removeFromCart(i) {
     if(cart[i]) {
+      deleteImagesFromIndexedDB(cart[i].id);
       cart.splice(i, 1);
       renderCart();
     }

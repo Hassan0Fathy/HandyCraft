@@ -29,4 +29,31 @@ async function deleteProduct(req, res, next) {
   }
 }
 
-module.exports = { getProducts, getProductById, deleteProduct };
+async function updateProduct(req, res, next) {
+  try {
+    const { name, price, category, description, bestSeller } = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { 
+        $set: { 
+          name, 
+          price, 
+          category, 
+          description, 
+          bestSeller 
+        } 
+      },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedProduct) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    
+    res.json({ success: true, data: updatedProduct });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { getProducts, getProductById, deleteProduct, updateProduct };

@@ -1,11 +1,10 @@
 const express = require("express");
-
 const { verifyAuth } = require("../middleware/auth");
 const Product = require("../models/Product");
-
-const { deleteProduct } = require("../controllers/productController");
+const { deleteProduct, updateProduct } = require("../controllers/productController");
 
 const router = express.Router();
+
 router.get("/", async (req, res, next) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
@@ -27,7 +26,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", verifyAuth, async (req, res) => {
   try {
-    const { name, price, category, description, images, customFields } = req.body || {};
+    const { name, price, category, description, images, customFields, bestSeller } = req.body || {};
     if (!name || !price || !category || !description) {
       return res.status(400).json({ error: "Missing required fields: name, price, category, description" });
     }
@@ -37,6 +36,7 @@ router.post("/", verifyAuth, async (req, res) => {
       price: Number(price),
       category: String(category).trim(),
       description: String(description).trim(),
+      bestSeller: bestSeller === true || bestSeller === 'true',
       images: Array.isArray(images)
         ? images.filter(url => typeof url === 'string' && url.trim()).map(url => String(url).trim())
         : [],
@@ -44,7 +44,10 @@ router.post("/", verifyAuth, async (req, res) => {
         ? customFields
             .map((f) => ({
               label: String(f?.label || "").trim(),
-              type: String(f?.type || "").trim()
+              type: String(f?.type || "").trim(),
+              required: f?.required === true || f?.required === 'true',
+              minImages: Number(f?.minImages) || 1,
+              maxImages: Number(f?.maxImages) || 9
             }))
             .filter((f) => f.label && (f.type === "text" || f.type === "image"))
         : []
@@ -56,5 +59,7 @@ router.post("/", verifyAuth, async (req, res) => {
 });
 
 router.delete("/:id", verifyAuth, deleteProduct);
+
+router.patch("/:id", verifyAuth, updateProduct);
 
 module.exports = router;

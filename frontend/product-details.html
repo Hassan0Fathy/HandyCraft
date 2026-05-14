@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product Details · Handy Crafts</title>
+  <title>Product Details | Handy Crafts</title>
+  <script src="config.js"></script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -49,7 +51,68 @@
 <body class="min-h-screen flex flex-col">
   <script src="data.js"></script>
 
-  <!-- NAVBAR -->
+  <!-- IndexedDB Helper -->
+  <script>
+    // IndexedDB for storing large image data
+    const DB_NAME = 'HandyCraftDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'cartImages';
+    
+    let db = null;
+
+    async function initIndexedDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          db = request.result;
+          resolve(db);
+        };
+        request.onupgradeneeded = (event) => {
+          const database = event.target.result;
+          if (!database.objectStoreNames.contains(STORE_NAME)) {
+            database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+      });
+    }
+
+    async function saveImagesToIndexedDB(cartItemId, images) {
+      if (!db) await initIndexedDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.put({ id: cartItemId, images });
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve();
+      });
+    }
+
+    async function getImagesFromIndexedDB(cartItemId) {
+      if (!db) await initIndexedDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(cartItemId);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result?.images || []);
+      });
+    }
+
+    async function deleteImagesFromIndexedDB(cartItemId) {
+      if (!db) await initIndexedDB();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(cartItemId);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve();
+      });
+    }
+
+    // Initialize on page load
+    initIndexedDB().catch(err => console.warn('IndexedDB not available:', err));
+  </script>
   
 <!-- NAVBAR & DRAWER -->
 <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
@@ -162,7 +225,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     const productContainer = document.getElementById('product-container');
     const params = new URLSearchParams(window.location.search);
     const productId = (params.get('id') || '').trim();
-    const API_BASE_URL = 'http://localhost:5000/api';
+    const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
 
     function renderError(title, message) {
       productContainer.innerHTML = `
@@ -234,7 +297,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
               ${safeLabel}${requiredMarker}
             </label>
             <input type="text" data-field-type="text" data-field-name="${encodeURIComponent(safeLabel)}" 
-              data-required="${f.required}"
+              data-required="${f.required === true ? 'true' : 'false'}"
               class="w-full bg-[#fffdf9] rounded-xl px-4 py-3 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:border-[#9e7550] transition" 
               placeholder="Enter ${safeLabel}" />
             <p class="text-[10px] text-red-500 hidden error-msg-${idx}"></p>
@@ -305,7 +368,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       btn.disabled = true;
       btn.textContent = 'Adding...';
 
-      try {
+      try { // Added missing 'try' keyword
         // Clear previous errors
         document.querySelectorAll('.error-msg-0, .error-msg-1, .error-msg-2, .error-msg-3, .error-msg-4, .error-msg-5').forEach(el => {
           el.classList.add('hidden');
@@ -321,7 +384,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           const el = inputs[fieldIdx];
           const type = el.getAttribute("data-field-type");
           const name = decodeURIComponent(el.getAttribute("data-field-name") || "");
-          const required = el.getAttribute("data-required") === "true";
+          const required = el.getAttribute("data-required") === "true" || el.getAttribute("data-required") === true;
           const minImages = parseInt(el.getAttribute("data-min-images")) || 1;
           const maxImages = parseInt(el.getAttribute("data-max-images")) || 9;
           const errorMsg = document.querySelector(`.error-msg-${fieldIdx}`);
@@ -342,7 +405,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           } else if (type === "image") {
             const files = el.files;
             const fileCount = files.length;
-            
+
             if (required && fileCount === 0) {
               if (errorMsg) {
                 errorMsg.textContent = `Please upload at least ${minImages} photo(s)`;
@@ -357,14 +420,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                 }
                 hasError = true;
               } else {
+                btn.textContent = `Reading photos...`;
                 for (const file of files) {
-                  const b64 = await fileToBase64(file);
-                  if (b64) customization.images.push(b64);
+                  try {
+                    const base64 = await fileToBase64(file);
+                    customization.images.push(base64);
+                  } catch (err) {
+                    throw new Error(`Failed to read ${file.name}: ${err.message}`);
+                  }
                 }
               }
             }
           }
-        }
 
         if (hasError) {
           throw new Error('Please fix the errors above');
@@ -372,18 +439,44 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
         const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
         const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
+        const cartItemId = product._id + '_' + Date.now();
         
-        cart.push({
-          id: product._id + '_' + Date.now(),
+        // Create cart item WITHOUT images in localStorage (to avoid quota exceeded)
+        const customizationForStorage = { ...customization, images: [] };
+        
+        const cartItem = {
+          id: cartItemId,
           baseId: product._id || product.id,
           name: product.name,
           price: Number(product.price) || 0,
           qty: Math.max(1, qty),
           img: product.images?.[0] || product.image || '',
-          customization
-        });
+          customization: customizationForStorage,
+          hasImages: customization.images.length > 0
+        };
         
-        localStorage.setItem("hc_cart", JSON.stringify(cart));
+        // Save images to IndexedDB if they exist
+        if (customization.images.length > 0) {
+          try {
+            await saveImagesToIndexedDB(cartItemId, customization.images);
+          } catch (err) {
+            console.warn('Failed to save to IndexedDB, falling back to localStorage:', err);
+            // Fallback: save images to localStorage (will still work for small amounts)
+            customizationForStorage.images = customization.images;
+          }
+        }
+        
+        cart.push(cartItem);
+        
+        try {
+          localStorage.setItem("hc_cart", JSON.stringify(cart));
+        } catch (err) {
+          if (err.name === 'QuotaExceededError') {
+            throw new Error('Cart storage is full. Please clear some items and try again.');
+          }
+          throw err;
+        }
+        
         window.updateCartBadge && window.updateCartBadge();
         
         btn.textContent = '✓ Added to cart!';
@@ -393,15 +486,25 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           btn.style.backgroundColor = '';
           btn.disabled = false;
         }, 2000);
-      } catch (error) {
-        btn.textContent = 'Error - try again';
-        console.error('Add to cart error:', error);
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }, 2000);
-      }
+      } 
     }
+      catch (error) {
+       if (error.message === 'Please fix the errors above') {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      
+  } else {
+    btn.textContent = 'Error - try again';
+    console.error('Add to cart error:', error);
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }, 2000);
+  }
+}
+    }
+  
+  
 
     function setMainImage(src, el) {
       document.querySelectorAll('.thumbnail').forEach((thumb) => {
@@ -458,6 +561,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         renderError('Unable to load product.', error.message);
       }
     }
+  
 
     loadProduct();
   </script>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment | Handy Crafts</title>
+  <script src="config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}</script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -277,8 +278,63 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 </main>
 
 <script>
+  // IndexedDB Helper
+  const DB_NAME = 'HandyCraftDB';
+  const STORE_NAME = 'cartImages';
+  let db = null;
+
+  async function initIndexedDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        db = request.result;
+        resolve(db);
+      };
+      request.onupgradeneeded = (event) => {
+        const database = event.target.result;
+        if (!database.objectStoreNames.contains(STORE_NAME)) {
+          database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        }
+      };
+    });
+  }
+
+  async function getImagesFromIndexedDB(cartItemId) {
+    if (!db) await initIndexedDB();
+    return new Promise((resolve) => {
+      try {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(cartItemId);
+        request.onsuccess = () => resolve(request.result?.images || []);
+        request.onerror = () => resolve([]);
+      } catch (err) {
+        resolve([]);
+      }
+    });
+  }
+
+  async function deleteImagesFromIndexedDB(cartItemId) {
+    if (!db) await initIndexedDB();
+    return new Promise((resolve) => {
+      try {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(cartItemId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+      } catch (err) {
+        resolve();
+      }
+    });
+  }
+
+  // Initialize IndexedDB
+  initIndexedDB().catch(err => console.warn('IndexedDB not available:', err));
+
   // Load API config dynamically (supports both dev and production)
-  const API_BASE_URL = "http://localhost:5000/api";
+  const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
 
   const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
   if(cart.length === 0) location.href="products.html";
@@ -345,22 +401,62 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   }
 
   async function submitOrderToApi(receiptBase64) {
-      const payload = buildOrderPayload(receiptBase64);
+      // 1. Prepare items by fetching images from IndexedDB
+      const itemsWithImages = [];
+      for (const item of cart) {
+          // Deep copy the customization object
+          const customization = JSON.parse(JSON.stringify(item.customization || { images: [] }));
+          
+          // If item has images, retrieve them from IndexedDB
+          if (item.hasImages && item.id) {
+              const storedImages = await getImagesFromIndexedDB(item.id);
+              if (storedImages && storedImages.length > 0) {
+                  customization.images = storedImages;
+              }
+          }
 
+          itemsWithImages.push({
+              productId: item.baseId || item.id,
+              name: item.name,
+              price: item.price,
+              quantity: parseInt(item.qty || item.quantity || 1),
+              customization: customization
+          });
+      }
+
+      // 2. Build the final payload
+      let paymentMethod = 'InstaPay';
+      document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+          if (r.checked) paymentMethod = r.value;
+      });
+
+      const payload = {
+          customer: {
+              name: document.querySelector('[name="name"]').value.trim(),
+              phone: document.querySelector('[name="phone"]').value.trim(),
+              address: document.querySelector('[name="address"]').value.trim(),
+              instagram: document.querySelector('[name="ig"]').value.trim()
+          },
+          items: itemsWithImages,
+          totalPrice: total,
+          payment: {
+              method: paymentMethod,
+              transactionReference: document.querySelector('[name="transactionRef"]').value.trim(),
+              receiptImage: receiptBase64 || ""
+          }
+      };
+
+      // 3. Submit to API (One-shot)
       const response = await fetch(`${API_BASE_URL}/orders`, {
           method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
       });
 
       const result = await response.json();
-
       if (!response.ok) {
           const error = new Error(result.message || 'Failed to create order');
           error.errors = result.errors || [result.message];
-          error.response = result;
           throw error;
       }
 
@@ -408,11 +504,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
           const result = await submitOrderToApi(receiptImg);
 
+          // Clean up IndexedDB
+          for (const item of cart) {
+            if (item.id) {
+              await deleteImagesFromIndexedDB(item.id);
+            }
+          }
+
           localStorage.removeItem('hc_cart');
           localStorage.removeItem('hc_order_temp');
           
           setTimeout(() => {
-              window.location.href = 'success.html?orderId=' + encodeURIComponent(result.data._id);
+              window.location.href = 'success.html?orderId=' + encodeURIComponent(result.data.orderNumber);
           }, 1200);
       } catch(err) {
           btn.innerText = originalBtnText;

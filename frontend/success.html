@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Order received – Handy Crafts will be in touch soon." />
   <title>Order Received | Handy Crafts</title>
+  <script src="config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}</script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -56,7 +57,7 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const orderId = params.get('orderId');
+    const orderId = params.get('orderId'); // This might be the orderNumber now
     
     // Display Order ID
     if (orderId) {

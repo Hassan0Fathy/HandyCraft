@@ -6,6 +6,7 @@
   <meta name="description" content="Handy Crafts – Handmade gifts made with love. Custom frames, books, birthday & baby gifts." />
   <title>Handy Crafts · Gift Shop</title>
 
+  <script src="config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -121,20 +122,16 @@
   </div>
 
   <div class="w-2/4 flex justify-center">
-    <a href="index.html" class="flex flex-col items-center group">
+    <button id="logo-btn" class="flex flex-col items-center group" type="button">
       <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
         onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
       <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
         Handy crafts
       </span>
-    </a>
+    </button>
   </div>
 
   <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
-    <a href="admin-login.html" aria-label="Admin" class="inline-flex items-center gap-1.5 text-[#9e7550] hover:text-[#6b4f35] border border-[#ecdccc] rounded-full px-3 py-1.5 text-[10px] tracking-widest uppercase transition">
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422A12.083 12.083 0 0112 20.055 12.083 12.083 0 015.84 10.578L12 14z"></path></svg>
-      Admin
-    </a>
     <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
       <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -445,87 +442,63 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       }
     }
 
-    .reviews-section-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
+    /* As Seen On You Section */
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
-
-    .reviews-static-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      margin-top: 1.25rem;
-    }
-
-    .review-static-card {
-      background: #faf5ef;
-      border-radius: 20px;
-      padding: 1.25rem 1.15rem;
-      min-height: 170px;
+    .scroll-track {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .review-static-stars {
-      color: #c4a882;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      line-height: 1;
-      margin-bottom: 0.7rem;
-    }
-
-    .review-static-text {
-      font-size: 13px;
-      line-height: 1.65;
-      color: #7a5c3e;
-      max-width: 27ch;
-      margin: 0 auto;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .review-static-author {
-      margin-top: 1rem;
-      padding-top: 0.75rem;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #9e7550;
-      border-top: 1px solid rgba(236, 220, 204, 0.6);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    @media (max-width: 1023px) {
-      .reviews-static-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 639px) {
-      .reviews-static-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .review-static-card {
-        min-height: 155px;
-      }
+      animation: scroll-left 20s linear infinite;
+      width: max-content;
     }
   </style>
 
   <!-- ═══════════════════════════════════════════
-       CUSTOMER REVIEWS
+       AS SEEN ON YOU (Infinite Scroll)
   ════════════════════════════════════════════ -->
-  <section class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-6 pb-24">
-    <div class="reviews-section-wrap">
-      <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">Customer Reviews</h2>
-      <p class="text-[11px] tracking-widest uppercase text-brown-light mt-2">Loved by our customers</p>
-      <div id="reviews-track" class="reviews-static-grid"></div>
+  <section class="max-w-7xl mx-auto pb-24 text-center overflow-hidden">
+    <h2 class="font-cormorant text-3xl md:text-4xl italic text-brown-dark">As Seen On You</h2>
+    <p class="text-[10px] md:text-[11px] tracking-widest uppercase text-brown-light mt-2 mb-12">Real customers, real moments</p>
+    
+    <div class="relative overflow-hidden">
+      <div class="scroll-track gap-4 pr-4">
+        <!-- Set 1 -->
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/9e7550?text=1" alt="1" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/c4a882?text=2" alt="2" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/f5ede3/9e7550?text=3" alt="3" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/6b4f35?text=4" alt="4" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/9e7550?text=5" alt="5" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/f5ede3/c4a882?text=6" alt="6" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/9e7550?text=7" alt="7" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/6b4f35?text=8" alt="8" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+
+        <!-- Set 2 (Duplicate for infinite loop) -->
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/9e7550?text=1" alt="1" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/c4a882?text=2" alt="2" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/f5ede3/9e7550?text=3" alt="3" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/6b4f35?text=4" alt="4" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/9e7550?text=5" alt="5" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/f5ede3/c4a882?text=6" alt="6" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/ecdccc/9e7550?text=7" alt="7" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+        <!-- Replace with real customer photo -->
+        <img src="https://placehold.co/400x533/faf5ef/6b4f35?text=8" alt="8" class="w-48 h-64 rounded-2xl object-cover flex-shrink-0" loading="lazy" />
+      </div>
     </div>
   </section>
 
@@ -540,7 +513,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       <div class="flex justify-center gap-6 md:gap-8">
         <a href="products.html" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Shop</a>
         <a href="order.html"    class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Order</a>
-        <a href="admin-login.html" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Admin</a>
         <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="text-[11px] md:text-[12px] tracking-widest uppercase text-brown-light hover:text-brown-mid transition">Instagram</a>
       </div>
       <p class="text-[10px] md:text-[11px] text-brown-pale mt-8">© 2026 Handy Crafts</p>
@@ -566,185 +538,74 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     // Placeholder image fallback
     const FALLBACK_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"%3E%3Crect fill="%23f5ede3" width="400" height="400"/%3E%3Ctext x="50%" y="50%" font-size="14" fill="%239e7550" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif"%3EImage not available%3C/text%3E%3C/svg%3E';
 
-    function renderFeaturedProducts() {
+    async function renderFeaturedProducts() {
       const grid = document.getElementById('featured-products-grid');
-      if (!grid) {
-        console.error('[HandyCraft] Grid container not found');
-        return;
-      }
+      if (!grid) return;
 
-      // Check if products data is available
-      if (typeof products === 'undefined') {
-        console.error('[HandyCraft] Products data not loaded. Ensure data.js is properly included.');
-        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">No products available</p></div>';
-        return;
-      }
+      grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">Loading...</p></div>';
 
-      // Check if products array is empty
-      if (!Array.isArray(products) || products.length === 0) {
-        console.warn('[HandyCraft] Products array is empty');
-        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">No products available</p></div>';
-        return;
-      }
+      try {
+        const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
+        const response = await fetch(`${API_BASE_URL}/products`);
+        const result = await response.json();
+        const allProducts = Array.isArray(result) ? result : (result.data || []);
+        const featured = allProducts.filter(p => p.bestSeller === true);
 
-      console.log(`[HandyCraft] Loading ${Math.min(8, products.length)} products from ${products.length} total`);
+        if (featured.length === 0) {
+          grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">No best sellers yet.</p></div>';
+          return;
+        }
 
-      // Show first 8 products
-      const featuredProducts = products.slice(0, 8);
+        grid.innerHTML = featured.map(product => {
+          const mainImage = product.images?.[0] || 'images/placeholder.png';
+          const hoverImage = product.images?.[1] || mainImage;
+          const hasHover = product.images?.length > 1;
+          const shortDesc = product.description?.split('.')[0] || '';
 
-      grid.innerHTML = featuredProducts.map((product, index) => {
-        try {
-          const badge = featuredProductConfig[product.id]?.badge || null;
-          const hasMultipleImages = product.images && product.images.length > 1;
-          const mainImage = (product.images && product.images[0]) ? product.images[0] : FALLBACK_IMAGE;
-          const hoverImage = (hasMultipleImages && product.images[1]) ? product.images[1] : mainImage;
-          const shortDesc = product.description ? product.description.split('•')[0].trim().split('.')[0].trim() : 'Premium handmade item';
-          
-          // Debug logging
-          if (index < 2) {
-            console.log(`[HandyCraft] Product ${index}: ${product.name} - ${hasMultipleImages ? 'Has hover image ✓' : 'Single image only'}`);
-          }
-          
           return `
-            <a href="products.html" class="product-card-link product-card-animate">
+            <a href="product-details.html?id=${product._id}" class="product-card-link product-card-animate">
               <div class="featured-product-card">
                 <div class="featured-product-image">
-                  <img src="${mainImage}" alt="${product.name}" class="featured-product-image-main" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'" />
-                  ${hasMultipleImages ? `<img src="${hoverImage}" alt="${product.name} alternate" class="featured-product-image-hover" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'" />` : ''}
-                  ${badge ? `<span class="featured-product-badge">${badge}</span>` : ''}
+                  <img src="${mainImage}" alt="${product.name}" class="featured-product-image-main" loading="lazy" onerror="this.src='images/placeholder.png'" />
+                  ${hasHover ? `<img src="${hoverImage}" alt="${product.name}" class="featured-product-image-hover" loading="lazy" onerror="this.src='images/placeholder.png'" />` : ''}
                 </div>
                 <div class="featured-product-content">
-                  <h3 class="featured-product-name">${product.name || 'Unnamed Product'}</h3>
+                  <h3 class="featured-product-name">${product.name}</h3>
                   <p class="featured-product-desc">${shortDesc}</p>
-                  <p class="featured-product-price">EGP ${product.price || 'N/A'}</p>
+                  <p class="featured-product-price">EGP ${product.price}</p>
                 </div>
               </div>
             </a>
           `;
-        } catch (error) {
-          console.error(`[HandyCraft] Error rendering product ${index}:`, error);
-          return '';
-        }
-      }).join('');
-
-      const hoverCount = featuredProducts.filter(p => p.images && p.images.length > 1).length;
-      console.log(`[HandyCraft] Products rendered: ${featuredProducts.length} total | ${hoverCount} with hover images`);
+        }).join('');
+      } catch (err) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">Failed to load products.</p></div>';
+      }
     }
 
-    // Robust loading strategy: wait for both DOM and data
-    function initializeProducts() {
-      // Check if data is already loaded
-      if (typeof products !== 'undefined' && products.length > 0) {
-        console.log('[HandyCraft] Data already available, rendering products...');
-        renderFeaturedProducts();
+    document.addEventListener('DOMContentLoaded', renderFeaturedProducts);
+
+    // Secret admin access: 5 taps on logo in 600ms
+    let logoTapCount = 0;
+    let logoTapTimer = null;
+    
+    function handleLogoTap() {
+      logoTapCount++;
+      if (logoTapTimer) clearTimeout(logoTapTimer);
+      if (logoTapCount >= 5) {
+        logoTapCount = 0;
+        window.location.href = 'admin-login.html';
         return;
       }
-
-      // If data not ready, wait for it
-      let attempts = 0;
-      const maxAttempts = 20;
-      const checkInterval = setInterval(() => {
-        attempts++;
-        if (typeof products !== 'undefined' && products.length > 0) {
-          console.log('[HandyCraft] Data loaded successfully after ' + attempts + ' checks');
-          clearInterval(checkInterval);
-          renderFeaturedProducts();
-        } else if (attempts >= maxAttempts) {
-          console.error('[HandyCraft] Products data failed to load after ' + maxAttempts + ' attempts');
-          clearInterval(checkInterval);
-          const grid = document.getElementById('featured-products-grid');
-          if (grid) {
-            grid.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-brown-light">Unable to load products</p></div>';
-          }
-        }
-      }, 100);
+      logoTapTimer = setTimeout(() => {
+        if (logoTapCount === 1) window.location.href = 'index.html';
+        logoTapCount = 0;
+      }, 600);
     }
 
-    // Initialize on DOM ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeProducts);
-    } else {
-      // DOM already loaded, initialize immediately
-      initializeProducts();
-    }
-
-    function initializeReviewsCarousel() {
-      const track = document.getElementById('reviews-track');
-      if (!track) return;
-
-      const reviewsData = [
-        {
-          stars: 5,
-          text: 'Beautiful quality and exactly like the photos.',
-          name: 'Salma',
-          location: 'Cairo'
-        },
-        {
-          stars: 5,
-          text: 'Elegant finishing and fast delivery. Perfect gift.',
-          name: 'Karim',
-          location: 'Mansoura'
-        },
-        {
-          stars: 5,
-          text: 'Great communication and lovely packaging details.',
-          name: 'Dina',
-          location: 'Alexandria'
-        }
-      ];
-
-      const toSafeText = (value) => String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-
-      const validItems = reviewsData.filter((item) => item && item.text && item.name).slice(0, 3);
-      if (!validItems.length) return;
-
-      track.innerHTML = validItems.map((item) => `
-        <article class="review-static-card">
-          <div>
-            ${item.stars ? `<p class="review-static-stars" aria-label="${Number(item.stars)} out of 5 stars">${'★'.repeat(Math.max(0, Math.min(5, Number(item.stars))))}</p>` : ''}
-            <p class="review-static-text">"${toSafeText(item.text)}"</p>
-          </div>
-          <p class="review-static-author">— ${toSafeText(item.name)}${item.location ? `, ${toSafeText(item.location)}` : ''}</p>
-        </article>
-      `).join('');
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeReviewsCarousel);
-    } else {
-      initializeReviewsCarousel();
-    }
-
-    // Secret admin access: 5 clicks on logo in 3 seconds
-    let logoClickCount = 0;
-    let logoClickTimeout = null;
-
-    const logoElement = document.getElementById('logo-hero');
-    if (logoElement) {
-      logoElement.style.cursor = 'pointer';
-      logoElement.addEventListener('click', function() {
-        logoClickCount++;
-
-        // Clear existing timeout and set new one
-        if (logoClickTimeout) clearTimeout(logoClickTimeout);
-        
-        // Reset counter after 3 seconds
-        logoClickTimeout = setTimeout(() => {
-          logoClickCount = 0;
-        }, 3000);
-
-        // Check if reached 5 clicks
-        if (logoClickCount === 5) {
-          logoClickCount = 0;
-          clearTimeout(logoClickTimeout);
-          window.location.href = 'admin-login.html';
-        }
-      });
+    const logoBtn = document.getElementById('logo-btn');
+    if (logoBtn) {
+      logoBtn.addEventListener('click', handleLogoTap);
     }
   </script>
 

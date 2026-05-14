@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login · Handy Crafts</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brown: { dark:'#6b4f35', mid:'#9e7550', light:'#c4a882', pale:'#ecdccc' },
+            beige: { soft:'#faf5ef', cream:'#fffdf9' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Jost', sans-serif; background-color: #faf5ef; color: #6b4f35; }
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+    .fade-up-2 { animation: fadeUp 0.6s 0.1s ease both; }
+    .fade-up-3 { animation: fadeUp 0.6s 0.2s ease both; }
+
+    input:focus {
+      outline: none;
+      border-color: #9e7550;
+      box-shadow: 0 0 0 3px rgba(158, 117, 80, 0.1);
+    }
+
+    .btn-login {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .btn-login:hover::after {
+      transform: translateX(0);
+    }
+
+    .lock-icon {
+      animation: fadeUp 0.6s 0.05s ease both;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-5">
+
+  <!-- Background decoration -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-[-100px] right-[-100px] w-[400px] h-[400px] rounded-full bg-[#ecdccc]/30 blur-3xl"></div>
+    <div class="absolute bottom-[-80px] left-[-80px] w-[300px] h-[300px] rounded-full bg-[#c4a882]/20 blur-3xl"></div>
+  </div>
+
+  <div class="w-full max-w-[420px] relative">
+
+    <!-- Logo & Title -->
+    <div class="text-center mb-8 fade-up">
+      <a href="index.html" class="inline-block mb-4">
+        <img src="images/logo.png" alt="Handy Crafts" class="h-16 w-auto mx-auto"
+          onerror="this.style.display='none'; document.getElementById('logo-text').classList.remove('hidden')" />
+        <span id="logo-text" class="font-cormorant text-3xl italic text-[#9e7550] hidden">Handy crafts</span>
+      </a>
+      <p class="text-[11px] tracking-[0.25em] uppercase text-[#c4a882]">Admin Access</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-3xl shadow-[0_8px_40px_rgba(158,117,80,0.12)] border border-[#ecdccc]/60 p-8 fade-up-2">
+
+      <!-- Lock icon -->
+      <div class="flex justify-center mb-6 lock-icon">
+        <div class="w-12 h-12 rounded-full bg-[#faf5ef] border border-[#ecdccc] flex items-center justify-center">
+          <svg class="w-5 h-5 text-[#9e7550]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+          </svg>
+        </div>
+      </div>
+
+      <h2 class="font-cormorant text-2xl italic text-center text-[#6b4f35] mb-1">Welcome Back</h2>
+      <p class="text-[12px] text-[#c4a882] text-center mb-6 tracking-wide">Enter your password to continue</p>
+
+      <!-- Error -->
+      <div id="error-message" class="hidden mb-4 p-3.5 bg-red-50 border border-red-100 rounded-xl text-red-500 text-[12px] text-center"></div>
+
+      <!-- Success -->
+      <div id="success-message" class="hidden mb-4 p-3.5 bg-green-50 border border-green-100 rounded-xl text-green-600 text-[12px] text-center"></div>
+
+      <!-- Form -->
+      <div class="flex flex-col gap-4">
+        <div>
+          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Password</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter admin password"
+              class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 pr-12 text-sm text-[#6b4f35] border border-[#ecdccc] transition"
+            />
+            <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4a882] hover:text-[#9e7550] transition p-1">
+              <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          id="login-btn"
+          onclick="handleLogin()"
+          class="btn-login w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3.5 rounded-xl text-[12px] uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          Login
+        </button>
+      </div>
+
+      <p class="text-center text-[10px] text-[#c4a882] mt-5 tracking-wide">
+        Use the password set in your backend <span class="font-medium">.env</span> file
+      </p>
+    </div>
+
+    <!-- Back link -->
+    <div class="text-center mt-5 fade-up-3">
+      <a href="index.html" class="text-[11px] tracking-widest uppercase text-[#c4a882] hover:text-[#9e7550] transition">
+        ← Back to Store
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || 'http://localhost:5000/api';
+
+    function togglePassword() {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    async function handleLogin() {
+      const btn = document.getElementById('login-btn');
+      const errorEl = document.getElementById('error-message');
+      const successEl = document.getElementById('success-message');
+      const password = document.getElementById('password').value;
+
+      errorEl.classList.add('hidden');
+      successEl.classList.add('hidden');
+
+      if (!password) {
+        showError('Please enter your password');
+        return;
+      }
+
+      btn.textContent = 'Logging in...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showError(data.message || 'Incorrect password');
+          btn.textContent = 'Login';
+          btn.disabled = false;
+          return;
+        }
+
+        if (data?.token) {
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('adminAuthenticated', 'true');
+        }
+
+        showSuccess('Login successful! Redirecting...');
+        setTimeout(() => { window.location.href = 'admin.html'; }, 800);
+
+      } catch (err) {
+        showError('Connection error. Is the server running?');
+        btn.textContent = 'Login';
+        btn.disabled = false;
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-message');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function showSuccess(msg) {
+      const el = document.getElementById('success-message');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>
