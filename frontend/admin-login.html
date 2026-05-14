@@ -111,7 +111,7 @@
               placeholder="Enter admin password"
               class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 pr-12 text-sm text-[#6b4f35] border border-[#ecdccc] transition"
             />
-            <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4a882] hover:text-[#9e7550] transition p-1">
+            <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#c4a882] hover:text-[#9e7550] transition p-1">
               <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -122,7 +122,6 @@
 
         <button
           id="login-btn"
-          onclick="handleLogin()"
           class="btn-login w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3.5 rounded-xl text-[12px] uppercase tracking-[0.2em] font-medium transition-all duration-300 shadow-md hover:shadow-lg"
         >
           Login
@@ -151,11 +150,13 @@
       input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    async function handleLogin() {
+    async function handleLogin(e) {
+      if (e) e.preventDefault();
+      
       const btn = document.getElementById('login-btn');
       const errorEl = document.getElementById('error-message');
       const successEl = document.getElementById('success-message');
-      const password = document.getElementById('password').value;
+      const password = document.getElementById('password')?.value || '';
 
       errorEl.classList.add('hidden');
       successEl.classList.add('hidden');
@@ -193,6 +194,7 @@
         setTimeout(() => { window.location.href = 'admin.html'; }, 800);
 
       } catch (err) {
+        console.error('Login error:', err);
         showError('Connection error. Is the server running?');
         btn.textContent = 'Login';
         btn.disabled = false;
@@ -201,20 +203,62 @@
 
     function showError(msg) {
       const el = document.getElementById('error-message');
-      el.textContent = msg;
-      el.classList.remove('hidden');
+      if (el) {
+        el.textContent = msg;
+        el.classList.remove('hidden');
+      }
     }
 
     function showSuccess(msg) {
       const el = document.getElementById('success-message');
-      el.textContent = msg;
-      el.classList.remove('hidden');
+      if (el) {
+        el.textContent = msg;
+        el.classList.remove('hidden');
+      }
     }
 
-    // Enter key support
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleLogin();
-    });
+    // Initialize event listeners properly
+    function initializeLoginForm() {
+      const loginBtn = document.getElementById('login-btn');
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.querySelector('button[onclick="togglePassword()"]');
+
+      // Bind login button click
+      if (loginBtn && !loginBtn.dataset.eventBound) {
+        loginBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          handleLogin();
+        });
+        loginBtn.dataset.eventBound = 'true';
+      }
+
+      // Bind password field Enter key
+      if (passwordInput && !passwordInput.dataset.eventBound) {
+        passwordInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            handleLogin();
+          }
+        });
+        passwordInput.dataset.eventBound = 'true';
+      }
+
+      // Bind toggle password button
+      if (toggleBtn && !toggleBtn.dataset.eventBound) {
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          togglePassword();
+        });
+        toggleBtn.dataset.eventBound = 'true';
+      }
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeLoginForm);
+    } else {
+      initializeLoginForm();
+    }
   </script>
 </body>
 </html>

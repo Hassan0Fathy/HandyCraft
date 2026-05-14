@@ -81,6 +81,7 @@
 </div>
 
 <script>
+// Drawer management
 window.openDrawer = function() {
   const w = document.getElementById('mobile-drawer-wrapper');
   if(!w) return;
@@ -88,6 +89,7 @@ window.openDrawer = function() {
   document.getElementById('drawer-backdrop').classList.remove('opacity-0');
   document.getElementById('drawer-panel').classList.remove('-translate-x-full');
 };
+
 window.closeDrawer = function() {
   document.getElementById('drawer-backdrop').classList.add('opacity-0');
   document.getElementById('drawer-panel').classList.add('-translate-x-full');
@@ -97,26 +99,28 @@ window.closeDrawer = function() {
   }, 300);
 };
 
-// Use event delegation or check if DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-    // Only register once
-    const menuBtn = document.getElementById('menu-open-btn');
-    if(menuBtn && !menuBtn.dataset.listener) {
-      menuBtn.addEventListener('click', window.openDrawer);
-      menuBtn.dataset.listener = 'true';
-    }
-    
-    // Add logout button event listener
-    const logoutBtn = document.getElementById('logout-btn');
-    if(logoutBtn && !logoutBtn.dataset.listener) {
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminAuthenticated');
-        window.location.href = 'admin-login.html';
-      });
-      logoutBtn.dataset.listener = 'true';
-    }
-});
+// Navbar event listeners - set up properly with DOMContentLoaded guard
+function initializeNavbarListeners() {
+  const menuBtn = document.getElementById('menu-open-btn');
+  if(menuBtn && !menuBtn.dataset.eventBound) {
+    menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.openDrawer();
+    });
+    menuBtn.dataset.eventBound = 'true';
+  }
+  
+  const logoutBtn = document.getElementById('logout-btn');
+  if(logoutBtn && !logoutBtn.dataset.eventBound) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-login.html';
+    });
+    logoutBtn.dataset.eventBound = 'true';
+  }
+}
 
 window.updateCartBadge = function() {
     try {
@@ -130,7 +134,11 @@ window.updateCartBadge = function() {
     } catch(e){}
 };
 
-document.addEventListener("DOMContentLoaded", window.updateCartBadge);
+// Initialize when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  initializeNavbarListeners();
+  window.updateCartBadge();
+});
 </script>
 
 
@@ -590,7 +598,12 @@ document.addEventListener("DOMContentLoaded", window.updateCartBadge);
     addCustomFieldRow("image");
   });
 
-  document.getElementById('add-product-form').addEventListener('submit', createProduct);
+  // Add product form submission
+  const addProductForm = document.getElementById('add-product-form');
+  if (addProductForm && !addProductForm.dataset.eventBound) {
+    addProductForm.addEventListener('submit', createProduct);
+    addProductForm.dataset.eventBound = 'true';
+  }
 
   function formatOrderDate(value) {
     const date = new Date(value);
@@ -974,97 +987,170 @@ document.addEventListener("DOMContentLoaded", window.updateCartBadge);
   window.closeEditModal = closeEditModal;
   window.deleteProduct = deleteProduct;
 
-  // --- 2. GLOBAL EVENT DELEGATION (Bulletproof) ---
-  if (!document.body.dataset.adminBound) {
-    document.body.dataset.adminBound = 'true';
+  // --- 2. GLOBAL EVENT DELEGATION (Setup once with proper initialization) ---
+  function initializeEventDelegation() {
+    // Guard to prevent duplicate listeners
+    if (document.body.dataset.adminDelegationBound === 'true') {
+      return;
+    }
+    document.body.dataset.adminDelegationBound = 'true';
     
+    // Main click delegation for all data-action buttons and filter tabs
     document.body.addEventListener('click', (e) => {
+      // Find the closest clickable element
       const target = e.target.closest('[data-action], .filter-tab');
       if (!target) return;
 
+      // Handle filter tabs
       if (target.classList.contains('filter-tab')) {
         const filterStatus = target.getAttribute('data-status');
-        if (filterStatus) window.filterOrders(filterStatus);
+        if (filterStatus) {
+          e.preventDefault();
+          window.filterOrders(filterStatus);
+        }
         return;
       }
 
+      // Handle data-action buttons
       const action = target.getAttribute('data-action');
       if (!action) return;
 
+      e.preventDefault();
       const idx = parseInt(target.getAttribute('data-index'));
       const id = target.getAttribute('data-id');
       const status = target.getAttribute('data-status');
       const url = target.getAttribute('data-url');
 
-      if (action === 'viewDetails') {
+      if (action === 'viewDetails' && !isNaN(idx)) {
         window.viewDetails(idx);
-      } else if (action === 'updateStatus') {
-        window.updateStatus(idx, status).catch(error => alert(error.message));
-      } else if (action === 'updateDetailsStatus') {
+      } else if (action === 'updateStatus' && !isNaN(idx) && status) {
+        window.updateStatus(idx, status).catch(error => {
+          console.error('Update status error:', error);
+          alert('Error: ' + error.message);
+        });
+      } else if (action === 'updateDetailsStatus' && !isNaN(idx) && status) {
         window.updateDetailsStatus(idx, status);
       } else if (action === 'downloadAllAsZip') {
         window.downloadAllAsZip(window.lastInjectedUrls || []);
-      } else if (action === 'openUrl') {
+      } else if (action === 'openUrl' && url) {
         window.open(url, '_blank');
-      } else if (action === 'openEditModal') {
+      } else if (action === 'openEditModal' && id) {
         window.openEditModal(id);
-      } else if (action === 'deleteProduct') {
+      } else if (action === 'deleteProduct' && id) {
         window.deleteProduct(id);
       }
     });
 
+    // Set up form submission listener
     const editForm = document.getElementById('edit-product-form');
-    if (editForm) {
-      editForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const productId = document.getElementById('edit-product-id').value;
-        const saveBtn = document.getElementById('save-product-btn');
-        const originalText = saveBtn.textContent;
-
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Saving...';
-
-        const payload = {
-          name: document.getElementById('edit-name').value.trim(),
-          price: parseFloat(document.getElementById('edit-price').value),
-          category: document.getElementById('edit-category').value,
-          description: document.getElementById('edit-description').value.trim(),
-          bestSeller: document.getElementById('edit-bestseller').checked
-        };
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
-            method: 'PATCH',
-            headers: getAuthHeaders(adminToken),
-            body: JSON.stringify(payload)
-          });
-
-          if (handleAuthError(response)) return;
-
-          const result = await response.json();
-          if (!response.ok) throw new Error(result.message || 'Failed to update product');
-
-          const idx = allProducts.findIndex(p => p._id === productId);
-          if (idx !== -1) allProducts[idx] = { ...allProducts[idx], ...payload };
-          
-          renderProductsTable();
-          closeEditModal();
-          
-        } catch (error) {
-          alert(`Error: ${error.message}`);
-        } finally {
-          saveBtn.disabled = false;
-          saveBtn.textContent = originalText;
-        }
-      });
+    if (editForm && !editForm.dataset.listenerBound) {
+      editForm.addEventListener('submit', handleEditProductSubmit);
+      editForm.dataset.listenerBound = 'true';
     }
   }
 
-  // --- 3. INITIAL LOAD ---
-  fetchOrders().then(() => renderOrders()).catch(error => {
-    document.getElementById('orders-grid').innerHTML = `<div class="col-span-full py-12 text-center text-brown-light">${error.message}</div>`;
-  });
-  fetchProducts();
+  // Edit product form submission handler
+  async function handleEditProductSubmit(e) {
+    e.preventDefault();
+    const productId = document.getElementById('edit-product-id').value;
+    const saveBtn = document.getElementById('save-product-btn');
+    const originalText = saveBtn.textContent;
+
+    if (!productId) {
+      alert('Product ID is missing');
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const payload = {
+      name: (document.getElementById('edit-name').value || '').trim(),
+      price: parseFloat(document.getElementById('edit-price').value) || 0,
+      category: document.getElementById('edit-category').value || '',
+      description: (document.getElementById('edit-description').value || '').trim(),
+      bestSeller: document.getElementById('edit-bestseller')?.checked || false
+    };
+
+    try {
+      if (!payload.name || !payload.price || !payload.category || !payload.description) {
+        throw new Error('Please fill all required fields');
+      }
+
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify(payload)
+      });
+
+      if (handleAuthError(response)) return;
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to update product');
+
+      const idx = allProducts.findIndex(p => p._id === productId);
+      if (idx !== -1) allProducts[idx] = { ...allProducts[idx], ...payload };
+      
+      renderProductsTable();
+      closeEditModal();
+      
+      // Show success message
+      const msg = document.getElementById('add-product-message');
+      if (msg) {
+        msg.textContent = 'Product updated successfully! ✓';
+        msg.className = 'text-sm text-green-600 font-medium';
+        setTimeout(() => msg.textContent = '', 3000);
+      }
+      
+    } catch (error) {
+      console.error('Error updating product:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
+    }
+  }
+
+  // --- 3. INITIALIZATION ---
+  // Ensure everything is set up when DOM is ready
+  function initializeAdminPanel() {
+    initializeEventDelegation();
+    
+    // Load data
+    fetchOrders()
+      .then(() => {
+        renderOrders();
+        console.log('Orders loaded successfully');
+      })
+      .catch(error => {
+        console.error('Error loading orders:', error);
+        document.getElementById('orders-grid').innerHTML = 
+          `<div class="col-span-full py-12 text-center text-brown-light">
+            Error loading orders: ${escapeHtml(error.message)}
+          </div>`;
+      });
+
+    fetchProducts()
+      .then(() => {
+        console.log('Products loaded successfully');
+      })
+      .catch(error => {
+        console.error('Error loading products:', error);
+        document.getElementById('products-tbody').innerHTML = 
+          `<tr><td colspan="4" class="text-center py-8 text-red-600">
+            Error loading products: ${escapeHtml(error.message)}
+          </td></tr>`;
+      });
+  }
+
+  // Wait for DOM to be fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAdminPanel);
+  } else {
+    // DOM is already loaded
+    initializeAdminPanel();
+  }
+</script>
 </script>
 </body>
 </html>

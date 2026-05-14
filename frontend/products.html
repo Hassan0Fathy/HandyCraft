@@ -189,11 +189,19 @@ window.toggleCategoryMenu = function() {
   arrow.classList.toggle('rotate-180');
 };
 
-// Use event delegation or check if DOM is ready because scripts might run before DOM loads if placed in head, but here it's in body
-document.addEventListener("DOMContentLoaded", () => {
-    const menuBtn = document.getElementById('menu-open-btn');
-    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
-});
+// Proper navbar initialization with guard against duplicates
+function initializeProductsNavbar() {
+  const menuBtn = document.getElementById('menu-open-btn');
+  if (menuBtn && !menuBtn.dataset.eventBound) {
+    menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.openDrawer();
+    });
+    menuBtn.dataset.eventBound = 'true';
+  }
+  
+  window.updateCartBadge();
+}
 
 window.updateCartBadge = function() {
     try {
@@ -207,11 +215,11 @@ window.updateCartBadge = function() {
     } catch(e){}
 };
 
-document.addEventListener("DOMContentLoaded", window.updateCartBadge);
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    const menuBtn = document.getElementById('menu-open-btn');
-    if(menuBtn) menuBtn.addEventListener('click', window.openDrawer);
-    window.updateCartBadge();
+// Wait for DOM to be ready before initializing
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeProductsNavbar);
+} else {
+  initializeProductsNavbar();
 }
 </script>
 
