@@ -47,6 +47,7 @@ app.use(cors({
     // Check if it's a Netlify or Render subdomain
     if (origin.endsWith('.netlify.app') || origin.endsWith('.onrender.com')) return callback(null, true);
     
+    console.warn(`CORS blocked request from origin: ${origin}`);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true

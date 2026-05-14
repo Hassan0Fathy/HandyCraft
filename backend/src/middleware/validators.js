@@ -93,7 +93,10 @@ function validateTotalPrice(totalPrice, items) {
   }
 
   // Basic check: total should roughly match item prices (within 10% tolerance for variations)
-  const calculatedTotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const calculatedTotal = items.reduce((sum, item) => {
+    const q = item.qty || item.quantity || 0;
+    return sum + (item.price * q);
+  }, 0);
   const tolerance = calculatedTotal * 0.1;
 
   if (Math.abs(totalPrice - calculatedTotal) > tolerance) {

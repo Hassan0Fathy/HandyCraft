@@ -276,8 +276,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </a>
 
   <script>
-    const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
-    let productList = [];
+    const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
+    let allProducts = [];
 
     // ── Read category from URL & init ──
     const params  = new URLSearchParams(window.location.search);

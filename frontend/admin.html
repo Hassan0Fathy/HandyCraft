@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", window.updateCartBadge);
 
 <script>
   // Load API config dynamically (supports both dev and production)
-  const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
+  const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
 
   // Check authentication
   function checkAuth() {

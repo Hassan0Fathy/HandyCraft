@@ -225,7 +225,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     const productContainer = document.getElementById('product-container');
     const params = new URLSearchParams(window.location.search);
     const productId = (params.get('id') || '').trim();
-    const API_BASE_URL = window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api";
+    const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
 
     function renderError(title, message) {
       productContainer.innerHTML = `

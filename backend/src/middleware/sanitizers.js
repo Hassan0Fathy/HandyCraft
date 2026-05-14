@@ -18,7 +18,7 @@ function sanitizeItems(items) {
     productId: String(item.productId || '').trim(),
     name: String(item.name || '').trim().substring(0, 200),
     price: Number(item.price) || 0,
-    quantity: Number(item.quantity) || 1,
+    quantity: Number(item.quantity || item.qty) || 1,
     customization: sanitizeCustomization(item.customization || {})
   }));
 }
