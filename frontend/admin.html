@@ -25,7 +25,7 @@
 
 <!-- NAVBAR & DRAWER -->
 <nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
-<div class="max-w-[520px] mx-auto px-5 h-16 flex items-center justify-between">
+<div class="max-w-[1000px] mx-auto px-6 h-16 flex items-center justify-between">
   
   <div class="flex items-center w-1/4">
     <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
@@ -63,7 +63,7 @@
 
 <div id="mobile-drawer-wrapper" class="fixed inset-0 z-[60] pointer-events-none">
 <div id="drawer-backdrop" class="absolute inset-0 bg-black/20 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
-<div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-[#fffdf9] shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col pointer-events-auto">
+<div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-[#fffdf9] shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col">
   <div class="p-6 flex items-center justify-between border-b border-[#ecdccc]/50">
     <span class="font-cormorant text-2xl italic text-[#6b4f35]">Menu</span>
     <button onclick="closeDrawer()" class="text-[#c4a882] hover:text-[#6b4f35] p-1">
@@ -91,12 +91,15 @@ window.openDrawer = function() {
 };
 
 window.closeDrawer = function() {
+  const w = document.getElementById('mobile-drawer-wrapper');
+  if(!w) return;
+  
+  // Add pointer-events-none IMMEDIATELY to prevent blocking clicks during animation
+  w.classList.add('pointer-events-none');
+  
+  // Start exit animation
   document.getElementById('drawer-backdrop').classList.add('opacity-0');
   document.getElementById('drawer-panel').classList.add('-translate-x-full');
-  setTimeout(() => {
-    const w = document.getElementById('mobile-drawer-wrapper');
-    if(w) w.classList.add('pointer-events-none');
-  }, 300);
 };
 
 // Navbar event listeners - set up properly with DOMContentLoaded guard
@@ -142,21 +145,21 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-<main class="max-w-[1000px] mx-auto px-6 pt-10 pb-20">
+<main class="max-w-[1000px] mx-auto px-6 pt-24 pb-20">
   <section class="bg-white rounded-2xl border border-[#e8d8c8]/50 shadow-sm p-6 mb-8">
     <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-2">Add Product</h2>
     <p class="text-sm text-[#9e7550] mb-5">Create new products and save them to MongoDB.</p>
     <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Name</label>
+        <label for="name" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Name</label>
         <input id="name" name="name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Price</label>
+        <label for="price" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Price</label>
         <input id="price" name="price" type="number" min="0" step="0.01" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Category</label>
+        <label for="category" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Category</label>
         <select id="category" name="category" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
           <option value="">Select category</option>
           <option value="frames">Frames</option>
@@ -170,12 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="bestseller" class="text-sm text-[#9e7550] cursor-pointer">Add to Best Sellers</label>
       </div>
       <div>
-        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Images (Multiple)</label>
-        <input type="file" id="image" accept="image/*" multiple class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white">
+        <label for="image" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Images (Multiple)</label>
+        <input type="file" id="image" name="image" accept="image/*" multiple class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer">
         <p class="text-[10px] text-[#c4a882] mt-1">You can select multiple images. They will be displayed as a gallery on the product page.</p>
       </div>
       <div class="md:col-span-2">
-        <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Description</label>
+        <label for="description" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Description</label>
         <textarea id="description" name="description" rows="3" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]"></textarea>
       </div>
 
@@ -241,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- Details Modal -->
 <div id="order-modal" class="fixed inset-0 z-[60] flex items-end sm:items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
   <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeModal()"></div>
-  <div class="bg-white w-full sm:w-[800px] max-h-[90vh] sm:rounded-2xl rounded-t-3xl overflow-hidden shadow-2xl relative flex flex-col pointer-events-auto transform translate-y-full sm:translate-y-8 transition-transform duration-300" id="modal-content">
+  <div class="bg-white w-full sm:w-[800px] max-h-[90vh] sm:rounded-2xl rounded-t-3xl overflow-hidden shadow-2xl relative flex flex-col transform translate-y-full sm:translate-y-8 transition-transform duration-300" id="modal-content">
     <div class="p-6 border-b border-brown-pale/30 flex justify-between items-center bg-[#faf5ef]/50">
       <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Order Details</h2>
       <button onclick="closeModal()" class="text-brown-light hover:text-brown-dark bg-white rounded-full p-1 border border-brown-pale/50 shadow-sm"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg></button>
@@ -253,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- Edit Product Modal -->
 <div id="edit-product-modal" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
   <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
-  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col pointer-events-auto transform scale-95 transition-transform duration-300" id="edit-modal-content">
+  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300" id="edit-modal-content">
     <div class="p-6 border-b border-[#ecdccc] flex justify-between items-center bg-[#faf5ef]">
       <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Edit Product</h2>
       <button onclick="closeEditModal()" class="text-[#c4a882] hover:text-[#6b4f35] p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg></button>
@@ -588,21 +591,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }).filter(f => f.label && (f.type === "text" || f.type === "image"));
   }
 
-  document.getElementById("add-text-field-btn").addEventListener("click", (e) => {
-    e.preventDefault();
-    addCustomFieldRow("text");
-  });
+  // Initialize form button listeners - wrapped in initialization
+  function initializeFormButtons() {
+    const addTextBtn = document.getElementById("add-text-field-btn");
+    if (addTextBtn && !addTextBtn.dataset.eventBound) {
+      addTextBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        addCustomFieldRow("text");
+      });
+      addTextBtn.dataset.eventBound = 'true';
+    }
 
-  document.getElementById("add-image-field-btn").addEventListener("click", (e) => {
-    e.preventDefault();
-    addCustomFieldRow("image");
-  });
+    const addImageBtn = document.getElementById("add-image-field-btn");
+    if (addImageBtn && !addImageBtn.dataset.eventBound) {
+      addImageBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        addCustomFieldRow("image");
+      });
+      addImageBtn.dataset.eventBound = 'true';
+    }
 
-  // Add product form submission
-  const addProductForm = document.getElementById('add-product-form');
-  if (addProductForm && !addProductForm.dataset.eventBound) {
-    addProductForm.addEventListener('submit', createProduct);
-    addProductForm.dataset.eventBound = 'true';
+    // Add product form submission
+    const addProductForm = document.getElementById('add-product-form');
+    if (addProductForm && !addProductForm.dataset.eventBound) {
+      addProductForm.addEventListener('submit', createProduct);
+      addProductForm.dataset.eventBound = 'true';
+    }
   }
 
   function formatOrderDate(value) {
@@ -879,9 +893,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function closeModal() {
-    document.getElementById('modal-content').classList.add('translate-y-full', 'sm:translate-y-8');
-    document.getElementById('order-modal').classList.add('opacity-0');
-    setTimeout(() => document.getElementById('order-modal').classList.add('pointer-events-none'), 300);
+    const modal = document.getElementById('order-modal');
+    const content = document.getElementById('modal-content');
+    
+    // Add pointer-events-none IMMEDIATELY to allow clicks on Add Product form
+    modal.classList.add('pointer-events-none');
+    
+    // Start exit animation
+    content.classList.add('translate-y-full', 'sm:translate-y-8');
+    modal.classList.add('opacity-0');
   }
 
   async function fetchProducts() {
@@ -932,9 +952,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeEditModal() {
     const modal = document.getElementById('edit-product-modal');
+    const content = document.getElementById('edit-modal-content');
+    
+    // Add pointer-events-none IMMEDIATELY to allow clicks on Add Product form
+    modal.classList.add('pointer-events-none');
+    
+    // Start exit animation
+    content.classList.add('scale-95');
     modal.classList.add('opacity-0');
-    document.getElementById('edit-modal-content').classList.add('scale-95');
-    setTimeout(() => modal.classList.add('pointer-events-none'), 300);
   }
 
   async function deleteProduct(productId) {
@@ -1115,6 +1140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Ensure everything is set up when DOM is ready
   function initializeAdminPanel() {
     initializeEventDelegation();
+    initializeFormButtons();
     
     // Load data
     fetchOrders()
@@ -1150,7 +1176,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // DOM is already loaded
     initializeAdminPanel();
   }
-</script>
 </script>
 </body>
 </html>
