@@ -2,10 +2,10 @@
   "name": "handycraft-fullstack",
   "version": "1.0.0",
   "description": "Simple full-stack backend for the HandyCraft handmade e-commerce website",
-  "main": "backend/server.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "node --watch backend/server.js",
-    "start": "node backend/server.js"
+    "dev": "node --watch index.js",
+    "start": "node index.js"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",
