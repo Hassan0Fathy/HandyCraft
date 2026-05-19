@@ -29,7 +29,44 @@
 </head>
 <body class="min-h-screen pb-20 bg-[#fffdf9]">
 
-<nav></nav>
+<nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
+<div class="max-w-[520px] md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+  
+  <div class="flex items-center w-1/4">
+    <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="w-2/4 flex justify-center">
+    <button id="logo-btn" class="flex flex-col items-center group" type="button">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
+        onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
+      <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
+        Handy crafts
+      </span>
+    </button>
+  </div>
+
+  <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+    <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
+      <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </a>
+    <a href="cart.html" aria-label="Cart" class="relative text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -mr-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+      </svg>
+      <span id="cart-badge-nav" class="absolute top-0 right-0 bg-[#6b4f35] text-white text-[9px] font-medium w-[18px] h-[18px] rounded-full flex items-center justify-center translate-x-1.5 -translate-y-1 shadow-sm hidden">
+        0
+      </span>
+    </a>
+  </div>
+</div>
+</nav>
 
 <main class="max-w-[520px] mx-auto px-5 pt-8">
   <h1 class="font-cormorant text-4xl italic text-brown-dark mb-8 text-center">Cart</h1>
@@ -146,7 +183,7 @@
         <div class="flex flex-col grow justify-between py-0.5">
           <div class="flex justify-between items-start">
             <h3 class="font-medium text-[#4a3728] text-sm leading-tight max-w-[80%]">${it.name}</h3>
-            <button onclick="removeFromCart(${i}); renderCart();" class="text-[#c4a882] hover:text-red-500 transition-colors p-1" aria-label="Remove item">
+            <button onclick="removeFromCart('${it.id}')" class="text-[#c4a882] hover:text-red-500 transition-colors p-1" aria-label="Remove item">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg>
             </button>
           </div>
@@ -165,9 +202,9 @@
           ` : ''}
           <div class="flex justify-between items-center mt-2">
             <div class="flex items-center bg-[#faf5ef] rounded-[10px] px-1 py-1 border border-[#e8d8c8]">
-              <button onclick="updateQty(${i},-1); renderCart();" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">-</button>
+              <button onclick="updateQty('${it.id}', -1)" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">-</button>
               <span class="text-[13px] w-6 text-center text-[#4a3728] font-medium pointer-events-none">${qty}</span>
-              <button onclick="updateQty(${i},1); renderCart();" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">+</button>
+              <button onclick="updateQty('${it.id}', 1)" class="w-7 h-7 text-[#9e7550] hover:bg-white rounded-md transition-colors font-medium">+</button>
             </div>
             <span class="font-medium text-[#9e7550] text-[15px]">EGP ${it.price}</span>
           </div>
@@ -187,19 +224,32 @@
       if(newQty > 0) {
         cart[i].qty = newQty;
       } else {
-        deleteImagesFromIndexedDB(cart[i].id);
-        cart.splice(i,1);
+        const targetId = cart[i].cartId || cart[i].id;
+        deleteImagesFromIndexedDB(targetId);
+        cart = cart.filter(it => (it.cartId || it.id) !== targetId);
       }
       renderCart();
     }
   }
   
-  function removeFromCart(i) {
-    if(cart[i]) {
-      deleteImagesFromIndexedDB(cart[i].id);
-      cart.splice(i, 1);
+  function removeFromCart(targetId) {
+    const item = cart.find(it => (it.cartId || it.id) === targetId);
+    if(item) {
+      deleteImagesFromIndexedDB(item.cartId || item.id);
+      cart = cart.filter(it => (it.cartId || it.id) !== targetId);
       renderCart();
     }
+  }
+  
+  function updateCartBadge() {
+    try {
+      const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      const badges = document.querySelectorAll("#cart-badge-nav");
+      badges.forEach(b => {
+        if (count > 0) { b.textContent = count; b.classList.remove('hidden'); }
+        else b.classList.add('hidden');
+      });
+    } catch(e) {}
   }
   
   renderCart();

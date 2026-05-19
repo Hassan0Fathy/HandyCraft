@@ -421,6 +421,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                 hasError = true;
               } else {
                 btn.textContent = `Reading photos...`;
+                console.log("UPLOAD START");
                 for (const file of files) {
                   try {
                     const base64 = await fileToBase64(file);
@@ -432,6 +433,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
               }
             }
           }
+        }
 
         if (hasError) {
           throw new Error('Please fix the errors above');
@@ -439,34 +441,42 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
         const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
         const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
-        const cartItemId = product._id + '_' + Date.now();
         
-        // Create cart item WITHOUT images in localStorage (to avoid quota exceeded)
-        const customizationForStorage = { ...customization, images: [] };
+        const existingItem = cart.find(item => item.baseId === (product._id || product.id));
         
-        const cartItem = {
-          id: cartItemId,
-          baseId: product._id || product.id,
-          name: product.name,
-          price: Number(product.price) || 0,
-          qty: Math.max(1, qty),
-          img: product.images?.[0] || product.image || '',
-          customization: customizationForStorage,
-          hasImages: customization.images.length > 0
-        };
-        
-        // Save images to IndexedDB if they exist
-        if (customization.images.length > 0) {
-          try {
-            await saveImagesToIndexedDB(cartItemId, customization.images);
-          } catch (err) {
-            console.warn('Failed to save to IndexedDB, falling back to localStorage:', err);
-            // Fallback: save images to localStorage (will still work for small amounts)
-            customizationForStorage.images = customization.images;
+        if (existingItem) {
+          existingItem.qty = (existingItem.qty || 1) + qty;
+        } else {
+          const cartItemId = crypto.randomUUID();
+          
+          // Create cart item WITHOUT images in localStorage (to avoid quota exceeded)
+          const customizationForStorage = { ...customization, images: [] };
+          
+          const cartItem = {
+            id: cartItemId,
+            cartId: cartItemId,
+            baseId: product._id || product.id,
+            name: product.name,
+            price: Number(product.price) || 0,
+            qty: Math.max(1, qty),
+            img: product.images?.[0] || product.image || '',
+            customization: customizationForStorage,
+            hasImages: customization.images.length > 0
+          };
+          
+          // Save images to IndexedDB if they exist
+          if (customization.images.length > 0) {
+            try {
+              await saveImagesToIndexedDB(cartItemId, customization.images);
+            } catch (err) {
+              console.warn('Failed to save to IndexedDB, falling back to localStorage:', err);
+              // Fallback: save images to localStorage (will still work for small amounts)
+              customizationForStorage.images = customization.images;
+            }
           }
+          
+          cart.push(cartItem);
         }
-        
-        cart.push(cartItem);
         
         try {
           localStorage.setItem("hc_cart", JSON.stringify(cart));
@@ -485,20 +495,21 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           btn.textContent = originalText;
           btn.style.backgroundColor = '';
           btn.disabled = false;
+          isAddingToCart = false;
         }, 2000);
       } 
-    }
       catch (error) {
        if (error.message === 'Please fix the errors above') {
       btn.textContent = originalText;
       btn.disabled = false;
-      
+      isAddingToCart = false;
   } else {
     btn.textContent = 'Error - try again';
     console.error('Add to cart error:', error);
     setTimeout(() => {
       btn.textContent = originalText;
       btn.disabled = false;
+      isAddingToCart = false;
     }, 2000);
   }
 }
@@ -567,4 +578,20 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </script>
 
 </body>
+</html>
+body>
+</html>
+esult?.data || result);
+      } catch (error) {
+        renderError('Unable to load product.', error.message);
+      }
+    }
+  
+
+    loadProduct();
+  </script>
+
+</body>
+</html>
+body>
 </html>

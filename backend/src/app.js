@@ -16,8 +16,9 @@ app.use(helmet()); // Adds various HTTP headers for security
 // Rate limiting - prevent abuse
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  max: 300, // Increased to allow more interactions
+  message: 'Too many requests from this IP, please try again later.',
+  skip: (req) => req.path.startsWith('/api/upload') // Skip uploads to allow multiple photos
 });
 
 const orderLimiter = rateLimit({
@@ -44,8 +45,8 @@ app.use(cors({
     // Check if it's a localhost origin
     if (origin.includes('localhost') || origin.includes('127.0.0.1')) return callback(null, true);
     
-    // Check if it's a Netlify or Render subdomain
-    if (origin.endsWith('.netlify.app') || origin.endsWith('.onrender.com')) return callback(null, true);
+    // Check if it's a Netlify, Render, or Cloudflare Pages subdomain
+    if (origin.endsWith('.netlify.app') || origin.endsWith('.onrender.com') || origin.endsWith('.pages.dev') || origin.endsWith('.runasp.net')) return callback(null, true);
     
     console.warn(`CORS blocked request from origin: ${origin}`);
     callback(new Error('Not allowed by CORS'));

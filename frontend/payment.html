@@ -530,8 +530,29 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           }
           
           alert(errorMessage);
+      } finally {
+          window.isSubmittingPayment = false;
       }
   });
+</script>
+</body>
+</html>
+ });
+</script>
+</body>
+</html>
+s.length > 0) {
+              // Backend validation errors - join all errors
+              errorMessage = err.errors.join('\n');
+          }
+          
+          alert(errorMessage);
+      }
+  });
+</script>
+</body>
+</html>
+ });
 </script>
 </body>
 </html>
