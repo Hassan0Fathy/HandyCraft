@@ -31,7 +31,7 @@ async function deleteProduct(req, res, next) {
 
 async function updateProduct(req, res, next) {
   try {
-    const { name, price, category, description, bestSeller } = req.body;
+    const { name, price, category, subcategory, description, bestSeller } = req.body;
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       { 
@@ -39,6 +39,7 @@ async function updateProduct(req, res, next) {
           name, 
           price, 
           category, 
+          subcategory,
           description, 
           bestSeller 
         } 

@@ -243,15 +243,23 @@ if (document.readyState === 'loading') {
   </div>
 
   <!-- ═══════ FILTER TABS ═══════ -->
-  <div class="max-w-[520px] mx-auto px-6 mb-10 anim-2">
+  <div class="max-w-[520px] mx-auto px-6 mb-4 anim-2">
     <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
-      <button onclick="filterCat('all')"      id="tab-all"      class="filter-tab tab-active shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border transition-all duration-200">All</button>
-      <button onclick="filterCat('frames')"   id="tab-frames"   class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Frames</button>
-      <button onclick="filterCat('books')"    id="tab-books"    class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Books</button>
-      <button onclick="filterCat('birthday')" id="tab-birthday" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Birthday</button>
-      <button onclick="filterCat('baby')"     id="tab-baby"     class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Baby</button>
+      <button onclick="filterCat('all')"          id="tab-all"          class="filter-tab tab-active shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border transition-all duration-200">All</button>
+      <button onclick="filterCat('graduation')"   id="tab-graduation"   class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Graduation</button>
+      <button onclick="filterCat('bridal')"       id="tab-bridal"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Bridal</button>
+      <button onclick="filterCat('valentine')"    id="tab-valentine"    class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Valentine</button>
+      <button onclick="filterCat('frames')"       id="tab-frames"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Frames</button>
+      <button onclick="filterCat('books')"        id="tab-books"        class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Books</button>
+      <button onclick="filterCat('birthday')"     id="tab-birthday"     class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Birthday</button>
+      <button onclick="filterCat('ramadan')"      id="tab-ramadan"      class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Ramadan</button>
+      <button onclick="filterCat('baby')"         id="tab-baby"         class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Baby</button>
+      <button onclick="filterCat('summer')"       id="tab-summer"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Summer</button>
+      <button onclick="filterCat('remembrances')" id="tab-remembrances" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Remembrances</button>
     </div>
   </div>
+
+  <div id="subcategory-tabs" class="max-w-[520px] mx-auto px-6 mb-10 anim-2 hidden"></div>
 
   <!-- ═══════ PRODUCT GRID ═══════ -->
   <section class="max-w-7xl mx-auto px-6 pb-28 anim-3">
@@ -286,20 +294,15 @@ if (document.readyState === 'loading') {
   <script>
     const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
     let allProducts = [];
+    let productList = [];
+
+    function normalize(str) {
+      return (str || "").toLowerCase().trim();
+    }
 
     // ── Read category from URL & init ──
     const params  = new URLSearchParams(window.location.search);
     const initCat = params.get('cat') || 'all';
-
-    function inferCategory(product) {
-      if (product.category) return String(product.category).toLowerCase();
-      const guessed = String(product.name || '').toLowerCase();
-      if (guessed.includes('frame')) return 'frames';
-      if (guessed.includes('book') || guessed.includes('journal')) return 'books';
-      if (guessed.includes('birth')) return 'birthday';
-      if (guessed.includes('baby')) return 'baby';
-      return 'all';
-    }
 
     function getProductId(product) {
       return product._id || product.id || '';
@@ -307,6 +310,7 @@ if (document.readyState === 'loading') {
 
     function renderProducts() {
       const grid = document.getElementById('product-grid');
+      if (!grid) return;
       grid.innerHTML = '';
 
       productList.forEach((product) => {
@@ -323,12 +327,14 @@ if (document.readyState === 'loading') {
           mainImage = product.imageUrl;
         }
 
-        const category = inferCategory(product);
+        const category = String(product.category || 'all').toLowerCase();
+        const subcategory = String(product.subcategory || '').toLowerCase();
         const productId = getProductId(product);
 
         const card = document.createElement('div');
         card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
         card.dataset.cat = category;
+        card.dataset.subcat = subcategory;
         card.onclick = () => window.location.href = `product-details.html?id=${encodeURIComponent(productId)}`;
 
         const hoverImageHtml = hoverImage ? `<img src="${hoverImage}" alt="${product.name || 'Product'}" class="prod-image-hover absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" onerror="this.style.display='none'" />` : '';
@@ -394,6 +400,7 @@ if (document.readyState === 'loading') {
 
     async function initializeProducts() {
       const grid = document.getElementById('product-grid');
+      if (!grid) return;
       grid.innerHTML = '<div class="col-span-full text-center py-12 text-[#9e7550]">Loading products...</div>';
       
       try {
@@ -422,10 +429,29 @@ if (document.readyState === 'loading') {
       initializeProducts();
     }
 
+    let currentCat = 'all';
+    let currentSubCat = 'all';
+
     function filterCat(cat) {
+      currentCat = cat;
+      currentSubCat = 'all';
+
       // Update title
-      const titles = { all:'All Products', frames:'Frames', books:'Books', birthday:'Birthday', baby:'Baby' };
-      document.getElementById('page-title').textContent = titles[cat] || 'All Products';
+      const titles = { 
+        all:'All Products', 
+        graduation: 'Graduation',
+        bridal: 'Bridal',
+        valentine: 'Valentine',
+        frames:'Frames', 
+        books:'Books', 
+        birthday:'Birthday', 
+        ramadan: 'Ramadan',
+        baby:'Baby',
+        summer: 'Summer',
+        remembrances: 'Remembrances'
+      };
+      const titleEl = document.getElementById('page-title');
+      if (titleEl) titleEl.textContent = titles[cat] || 'All Products';
 
       // Reset all tabs
       document.querySelectorAll('.filter-tab').forEach(t => {
@@ -444,12 +470,80 @@ if (document.readyState === 'loading') {
         active.style.borderColor = '#9e7550';
       }
 
-      // Show/hide cards
+      updateSubcategories(cat);
+      applyFilters();
+    }
+
+    function updateSubcategories(cat) {
+      const subcatContainer = document.getElementById('subcategory-tabs');
+      if (!subcatContainer) return;
+      
+      if (cat === 'all') {
+        subcatContainer.classList.add('hidden');
+        return;
+      }
+
+      const titles = { 
+        graduation: 'Graduation', bridal: 'Bridal', valentine: 'Valentine', frames:'Frames', books:'Books', birthday:'Birthday', ramadan: 'Ramadan', baby:'Baby', summer: 'Summer', remembrances: 'Remembrances'
+      };
+
+      // Find all unique subcategories for this category
+      const subcats = [...new Set(productList
+        .filter(p => String(p.category || '').toLowerCase() === cat && p.subcategory)
+        .map(p => p.subcategory)
+      )];
+
+      if (subcats.length === 0) {
+        subcatContainer.classList.add('hidden');
+        return;
+      }
+
+      subcatContainer.classList.remove('hidden');
+      subcatContainer.innerHTML = `
+        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" style="scrollbar-width:none;">
+          <button onclick="filterSubCat('all')" id="subtab-all" class="subfilter-tab tab-active shrink-0 px-4 py-1.5 rounded-full text-[9px] tracking-[0.15em] uppercase border transition-all duration-200">All ${titles[cat] || ''}</button>
+          ${subcats.map(sub => `
+            <button onclick="filterSubCat('${sub.toLowerCase()}')" id="subtab-${sub.toLowerCase().replace(/\s+/g, '-')}" class="subfilter-tab shrink-0 px-4 py-1.5 rounded-full text-[9px] tracking-[0.15em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">${sub}</button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function filterSubCat(subcat) {
+      currentSubCat = subcat;
+      
+      // Reset all subtabs
+      document.querySelectorAll('.subfilter-tab').forEach(t => {
+        t.classList.remove('tab-active');
+        t.style.backgroundColor = '';
+        t.style.color = '#c4a882';
+        t.style.borderColor = '#ecdccc';
+      });
+
+      // Activate selected subtab
+      const targetId = subcat === 'all' ? 'subtab-all' : `subtab-${subcat.replace(/\s+/g, '-')}`;
+      const active = document.getElementById(targetId);
+      if (active) {
+        active.classList.add('tab-active');
+        active.style.backgroundColor = '#9e7550';
+        active.style.color = '#ffffff';
+        active.style.borderColor = '#9e7550';
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
       document.querySelectorAll('#product-grid .prod-card').forEach(card => {
-        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+        const matchesCat = currentCat === 'all' || card.dataset.cat === currentCat;
+        const matchesSubCat = currentSubCat === 'all' || card.dataset.subcat === currentSubCat;
+        card.style.display = (matchesCat && matchesSubCat) ? '' : 'none';
       });
     }
   </script>
 </body>
+</html>
+
+
 </html>
 

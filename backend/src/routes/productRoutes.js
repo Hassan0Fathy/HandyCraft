@@ -26,7 +26,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", verifyAuth, async (req, res) => {
   try {
-    const { name, price, category, description, images, customFields, bestSeller } = req.body || {};
+    const { name, price, category, subcategory, description, images, customFields, bestSeller } = req.body || {};
     if (!name || !price || !category || !description) {
       return res.status(400).json({ error: "Missing required fields: name, price, category, description" });
     }
@@ -35,6 +35,7 @@ router.post("/", verifyAuth, async (req, res) => {
       name: String(name).trim(),
       price: Number(price),
       category: String(category).trim(),
+      subcategory: String(subcategory || "").trim(),
       description: String(description).trim(),
       bestSeller: bestSeller === true || bestSeller === 'true',
       images: Array.isArray(images)
