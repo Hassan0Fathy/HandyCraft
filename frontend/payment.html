@@ -171,9 +171,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         </div>
         <div>
           <label class="flex items-center gap-1 text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">
-            Instagram Username <span class="text-red-400">*</span>
+            Instagram Username
           </label>
-          <input type="text" required class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition" placeholder="@username" name="ig" />
+          <input type="text" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition" placeholder="@username" name="ig" />
         </div>
         <div>
           <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Delivery Address <span class="text-red-400">*</span></label>
@@ -242,18 +242,19 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         
         <div>
           <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Transaction Reference Number <span class="text-red-400">*</span></label>
-          <input type="text" required pattern="[0-9]{11}" maxlength="11" inputmode="numeric" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition invalid:border-red-400" placeholder="Enter 11-digit reference (numbers only)" name="transactionRef" />
-          <p class="text-[11px] text-[#9e7550] mt-1.5">Enter exactly 12 digits from your payment provider confirmation</p>
+          <input type="text" required pattern="[0-9]{11}" maxlength="11" inputmode="numeric" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition invalid:border-red-400" placeholder="Enter 11-digit reference (numbers only)" name="transactionRef" id="transactionRefInput" />
+          <p class="text-[11px] text-[#9e7550] mt-1.5" id="transactionRefHelp">Enter sender phone/reference number</p>
         </div>
 
         <div>
-          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Screenshot (Optional)</label>
+          <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium" id="screenshotLabel">Screenshot (Optional)</label>
           <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-[#c4a882]/70 bg-[#faf5ef]/30 rounded-xl px-4 py-6 text-sm text-[#9e7550] hover:bg-[#faf5ef] cursor-pointer transition">
             <svg class="w-6 h-6 mb-1 text-[#c4a882]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"></path></svg>
             <span class="font-medium text-[#6b4f35]">Upload Receipt Image</span>
             <span class="text-xs text-[#c4a882]">(Max 5MB)</span>
-            <input type="file" accept="image/*" class="hidden" name="screenshot" onchange="document.getElementById('file-status').innerText=this.files[0]?this.files[0].name:'';document.getElementById('file-status').classList.remove('hidden')">
+            <input type="file" accept="image/*" class="hidden" name="screenshot" id="screenshotInput" onchange="document.getElementById('file-status').innerText=this.files[0]?this.files[0].name:'';document.getElementById('file-status').classList.remove('hidden')">
           </label>
+          <p id="screenshotHelp" class="text-[11px] text-[#9e7550] mt-1.5 hidden">Upload payment screenshot for verification</p>
           <p id="file-status" class="mt-2 text-xs text-green-600 font-medium hidden text-center"></p>
         </div>
       </div>
@@ -356,6 +357,33 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           r.parentElement.classList.add('border-transparent');
         }
       });
+
+      const refInput = document.getElementById('transactionRefInput');
+      const refHelp = document.getElementById('transactionRefHelp');
+      const screenshotLabel = document.getElementById('screenshotLabel');
+      const screenshotHelp = document.getElementById('screenshotHelp');
+      
+      if (refInput) {
+          if (method === 'InstaPay') {
+              refInput.pattern = '[0-9]{11}';
+              refInput.maxLength = 11;
+              refInput.setAttribute('inputmode', 'numeric');
+              refInput.placeholder = 'Enter 11-digit reference (numbers only)';
+              refHelp.innerText = 'Enter sender phone/reference number';
+              
+              screenshotLabel.innerHTML = 'Screenshot (Optional)';
+              screenshotHelp.classList.add('hidden');
+          } else {
+              refInput.removeAttribute('pattern');
+              refInput.removeAttribute('maxlength');
+              refInput.removeAttribute('inputmode');
+              refInput.placeholder = 'Enter reference or sender info';
+              refHelp.innerText = 'Enter sender phone/reference number';
+              
+              screenshotLabel.innerHTML = 'Screenshot <span class="text-red-400">*</span>';
+              screenshotHelp.classList.remove('hidden');
+          }
+      }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -473,16 +501,31 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       const transactionRefInput = document.querySelector('[name="transactionRef"]');
       transactionRefInput.classList.remove('border-red-400');
       
+      let paymentMethod = 'InstaPay';
+      document.querySelectorAll('input[name="payment_method"]').forEach(r => {
+          if (r.checked) paymentMethod = r.value;
+      });
+
       if(!transactionRefInput.value.trim()) {
           transactionRefInput.classList.add('border-red-400');
           transactionRefInput.parentElement.insertAdjacentHTML('beforeend', 
-              '<p class="transaction-ref-error text-red-500 text-xs mt-2 font-medium">Please enter an 11-digit transaction reference.</p>');
+              '<p class="transaction-ref-error text-red-500 text-xs mt-2 font-medium">Please enter a transaction reference.</p>');
           return;
       }
-      if(!/^[0-9]{11}$/.test(transactionRefInput.value.trim())) {
+      
+      if(paymentMethod === 'InstaPay' && !/^[0-9]{11}$/.test(transactionRefInput.value.trim())) {
           transactionRefInput.classList.add('border-red-400');
           transactionRefInput.parentElement.insertAdjacentHTML('beforeend', 
               '<p class="transaction-ref-error text-red-500 text-xs mt-2 font-medium">Transaction reference must be exactly 11 digits.</p>');
+          return;
+      }
+      
+      const fileInput = document.querySelector('[name="screenshot"]');
+      const screenshotError = document.getElementById('screenshot-error');
+      if (screenshotError) screenshotError.remove();
+
+      if ((paymentMethod === 'Telda' || paymentMethod === 'WE Pay') && fileInput.files.length === 0) {
+          fileInput.parentElement.insertAdjacentHTML('afterend', '<p id="screenshot-error" class="text-red-500 text-xs mt-2 font-medium text-center">Payment screenshot is required for verification.</p>');
           return;
       }
       
@@ -534,25 +577,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           window.isSubmittingPayment = false;
       }
   });
-</script>
-</body>
-</html>
- });
-</script>
-</body>
-</html>
-s.length > 0) {
-              // Backend validation errors - join all errors
-              errorMessage = err.errors.join('\n');
-          }
-          
-          alert(errorMessage);
-      }
-  });
-</script>
-</body>
-</html>
- });
 </script>
 </body>
 </html>

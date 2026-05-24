@@ -237,6 +237,50 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       `;
     }
 
+    let selectedImages = [];
+
+    window.handleProductImagePreview = function(event, index) {
+        if (!selectedImages[index]) selectedImages[index] = [];
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        const input = event.target;
+        const maxImages = parseInt(input.getAttribute("data-max-images")) || 9;
+        
+        Array.from(files).forEach(file => {
+            if (selectedImages[index].length < maxImages) {
+                selectedImages[index].push(file);
+            }
+        });
+        
+        renderProductPreviews(index);
+        event.target.value = '';
+    }
+
+    window.renderProductPreviews = function(index) {
+        const container = document.getElementById(`preview_${index}`);
+        if (!container) return;
+        container.innerHTML = '';
+        selectedImages[index].forEach((file, fileIdx) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'w-16 h-16 rounded-xl overflow-hidden border border-[#e8d8c8]/80 relative group shadow-sm bg-white item-img-wrapper shrink-0';
+                wrapper.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover item-uploaded-img">
+                   <button type="button" class="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition z-10" onclick="removeProductImage(event, ${index}, ${fileIdx})">&times;</button>
+                   <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>`;
+                container.appendChild(wrapper);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    window.removeProductImage = function(event, index, fileIdx) {
+        event.preventDefault();
+        selectedImages[index].splice(fileIdx, 1);
+        window.renderProductPreviews(index);
+    }
+
     function renderProduct(product) {
       // Get images array - support both old (image) and new (images) formats
       let images = [];
@@ -283,9 +327,10 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                 ${safeLabel}${requiredMarker}
               </label>
               <input type="file" accept="image/*" multiple data-field-type="image" data-field-name="${encodeURIComponent(safeLabel)}" 
-                data-required="${f.required}" data-min-images="${minImages}" data-max-images="${maxImages}"
+                data-required="${f.required}" data-min-images="${minImages}" data-max-images="${maxImages}" onchange="handleProductImagePreview(event, ${idx})"
                 class="w-full bg-[#fffdf9] rounded-xl px-4 py-3 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:border-[#9e7550] transition" />
               <p class="text-[11px] text-[#c4a882] mt-1">Upload ${minImages} to ${maxImages} photos</p>
+              <div id="preview_${idx}" class="flex flex-wrap gap-3 mt-3 empty:hidden"></div>
               <p class="text-[10px] text-red-500 hidden error-msg-${idx}"></p>
             </div>
           `;
@@ -403,7 +448,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
               customization[name] = value;
             }
           } else if (type === "image") {
-            const files = el.files;
+            const files = selectedImages[fieldIdx] || [];
             const fileCount = files.length;
 
             if (required && fileCount === 0) {

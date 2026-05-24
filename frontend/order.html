@@ -178,22 +178,44 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       });
   }
 
+  let selectedImages = [];
+
   function handleImagePreview(event, index) {
-      const container = document.getElementById(`preview_${index}`);
-      container.innerHTML = '';
+      if (!selectedImages[index]) selectedImages[index] = [];
       const files = event.target.files;
       if (!files || files.length === 0) return;
-      Array.from(files).slice(0, 5).forEach(file => {
+      
+      Array.from(files).forEach(file => {
+          if (selectedImages[index].length < 5) {
+              selectedImages[index].push(file);
+          }
+      });
+      
+      renderPreviews(index);
+      event.target.value = '';
+  }
+
+  function renderPreviews(index) {
+      const container = document.getElementById(`preview_${index}`);
+      container.innerHTML = '';
+      selectedImages[index].forEach((file, fileIdx) => {
           const reader = new FileReader();
           reader.onload = e => {
               const wrapper = document.createElement('div');
               wrapper.className = 'w-16 h-16 rounded-xl overflow-hidden border border-[#e8d8c8]/80 relative group shadow-sm bg-white item-img-wrapper';
               wrapper.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover item-uploaded-img">
-                 <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition"></div>`;
+                 <button type="button" class="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition z-10" onclick="removeImage(event, ${index}, ${fileIdx})">&times;</button>
+                 <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>`;
               container.appendChild(wrapper);
           };
           reader.readAsDataURL(file);
       });
+  }
+
+  function removeImage(event, index, fileIdx) {
+      event.preventDefault();
+      selectedImages[index].splice(fileIdx, 1);
+      renderPreviews(index);
   }
 
   const badge = document.getElementById('cart-badge-nav');
