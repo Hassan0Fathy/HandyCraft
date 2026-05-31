@@ -4,11 +4,10 @@ const { verifyAuth } = require("../middleware/auth");
 const multer = require("multer");
 
 const router = express.Router();
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
 });
-
 // Public upload for customer order images (no auth required)
 router.post("/public", upload.single("file"), async (req, res) => {
   try {

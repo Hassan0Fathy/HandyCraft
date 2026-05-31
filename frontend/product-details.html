@@ -36,6 +36,11 @@
         border-color: #9e7550 !important;
         opacity: 1 !important;
     }
+
+    .variant-active {
+        border-color: #9e7550 !important;
+        box-shadow: 0 0 0 2px rgba(158, 117, 80, 0.2);
+    }
   
     /* Customization Builder Styles */
     .custom-option { cursor: pointer; position: relative; border: 2px solid transparent; transition: all 0.3s ease; }
@@ -281,37 +286,13 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         window.renderProductPreviews(index);
     }
 
-    function renderProduct(product) {
-      // Get images array - support both old (image) and new (images) formats
-      let images = [];
-      if (Array.isArray(product.images) && product.images.length > 0) {
-        images = product.images.filter(img => typeof img === 'string' && img.trim());
-      } else if (product.image && typeof product.image === 'string') {
-        images = [product.image];
-      }
+    let currentVariant = null;
+    let activeProduct = null;
+
+    function buildCustomFieldsHtml(fields) {
+      if (!fields || !fields.length) return `<p class="text-sm text-[#9e7550] italic">No customization required for this design.</p>`;
       
-      if (images.length === 0) {
-        images = ['images/placeholder.png'];
-      }
-
-      const mainImage = images[0];
-      const fields = Array.isArray(product.customFields) ? product.customFields : [];
-
-      // Build gallery thumbnails
-      const thumbnailsHtml = images.length > 1 ? `
-        <div class="flex gap-2 mt-3 overflow-x-auto">
-          ${images.map((img, idx) => `
-            <img 
-              src="${img}" 
-              class="thumbnail w-16 h-16 rounded-lg object-cover border-2 border-transparent opacity-70 cursor-pointer transition hover:opacity-100" 
-              onclick="window.setMainImage('${img}', this)"
-              onerror="this.src='images/placeholder.png'"
-            />
-          `).join('')}
-        </div>
-      ` : '';
-
-      const fieldsHtml = fields.length ? fields.map((f, idx) => {
+      return fields.map((f, idx) => {
         const safeLabel = String(f.label || f.name || '').trim();
         const safeType = String(f.type || '').trim();
         if (!safeLabel || (safeType !== 'text' && safeType !== 'image')) return '';
@@ -348,18 +329,116 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
             <p class="text-[10px] text-red-500 hidden error-msg-${idx}"></p>
           </div>
         `;
-      }).join('') : `<p class="text-sm text-[#9e7550] italic">No customization required for this product.</p>`;
+      }).join('');
+    }
+
+    window.selectVariant = function(idx) {
+      if (!activeProduct || !activeProduct.variants || !activeProduct.variants[idx]) return;
+      currentVariant = activeProduct.variants[idx];
+      
+      // Highlight circular thumbnails
+      document.querySelectorAll('.variant-thumb').forEach((thumb, i) => {
+        if (i === idx) {
+          thumb.classList.add('variant-active');
+        } else {
+          thumb.classList.remove('variant-active');
+        }
+      });
+
+      const priceEl = document.getElementById('product-price');
+      if (priceEl) {
+        priceEl.textContent = (currentVariant.price !== undefined && currentVariant.price !== null ? currentVariant.price : activeProduct.price) + ' EGP';
+      }
+
+      const customFieldsForm = document.getElementById('custom-fields-form');
+      if (customFieldsForm) {
+        const fields = currentVariant.customFields && currentVariant.customFields.length > 0 ? currentVariant.customFields : (activeProduct.customFields || []);
+        customFieldsForm.innerHTML = buildCustomFieldsHtml(fields);
+        selectedImages = []; // reset images when switching variants
+      }
+    };
+
+    function renderProduct(product) {
+      activeProduct = product;
+      currentVariant = null;
+
+      // Get images array - support both old (image) and new (images) formats
+      let images = [];
+      if (Array.isArray(product.images) && product.images.length > 0) {
+        images = product.images.filter(img => typeof img === 'string' && img.trim());
+      } else if (product.image && typeof product.image === 'string') {
+        images = [product.image];
+      }
+      
+      if (images.length === 0) {
+        images = ['images/placeholder.png'];
+      }
+
+      let mainImage = images[0];
+      let fieldsHtml = buildCustomFieldsHtml(product.customFields || []);
+      let priceDisplay = product.price || 0;
+
+      let variantsHtml = '';
+      let variantThumbnailsHtml = '';
+
+      if (product.hasVariants && product.variants && product.variants.length > 0) {
+        variantThumbnailsHtml = `
+          <div class="mb-5 px-1">
+            <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-3 font-semibold">Select Design</h3>
+            <div id="variant-thumbnails" class="flex gap-4 overflow-x-auto pb-2">
+              ${product.variants.map((v, i) => {
+                const previewImg = (v.images && v.images.length > 0) ? v.images[0] : (images[0] || 'images/placeholder.png');
+                return `
+                  <div onclick="selectVariant(${i})" class="variant-thumb-wrapper shrink-0 cursor-pointer flex flex-col items-center gap-2 group">
+                    <div class="variant-thumb w-[60px] h-[60px] rounded-full overflow-hidden border-2 border-[#ecdccc] transition-all duration-300 group-hover:border-[#9e7550]">
+                      <img src="${previewImg}" class="w-full h-full object-cover" onerror="this.src='images/placeholder.png'">
+                    </div>
+                    <span class="text-[9px] uppercase tracking-tight text-brown-mid text-center max-w-[65px] truncate leading-tight">${v.name}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+        variantsHtml = `
+          <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
+            <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Choose Design</h3>
+            <div class="flex flex-wrap gap-2">
+              ${product.variants.map((v, i) => `
+                <button type="button" onclick="selectVariant(${i})" class="variant-btn px-4 py-2 text-xs font-medium rounded-xl border border-[#ecdccc] bg-[#faf5ef] text-[#9e7550] transition hover:border-[#9e7550]">
+                  ${v.name}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      const thumbnailsHtml = images.length > 1 ? images.map((img, idx) => `
+            <img 
+              src="${img}" 
+              class="thumbnail w-16 h-16 rounded-lg object-cover border-2 border-transparent opacity-70 cursor-pointer transition hover:opacity-100" 
+              onclick="window.setMainImage('${img}', this)"
+              onerror="this.src='images/placeholder.png'"
+            />
+          `).join('') : '';
 
       productContainer.innerHTML = `
         <div class="anim-1">
-          <div class="aspect-square rounded-3xl overflow-hidden mb-5 border border-[#ecdccc] bg-[#f5ede3]">
+          <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc] bg-[#f5ede3]">
             <img id="main-image" src="${mainImage}" class="w-full h-full object-cover transition duration-300" onerror="this.src='images/placeholder.png'" />
           </div>
-          ${thumbnailsHtml}
+          
+          ${variantThumbnailsHtml}
+
+          <div id="thumbnails-container" class="flex gap-2 mt-3 overflow-x-auto">
+            ${thumbnailsHtml}
+          </div>
           
           <div class="flex justify-between items-start mb-2 mt-6">
             <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name || 'Product'}</h1>
-            <span class="text-lg font-medium text-[#9e7550]">${product.price || 0} EGP</span>
+            <span id="product-price" class="text-lg font-medium text-[#9e7550]">${priceDisplay} EGP</span>
           </div>
           <p class="text-[10px] tracking-[0.2em] text-[#c4a882] mb-6">${product.category || 'Handmade Gift'}</p>
 
@@ -396,6 +475,11 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       `;
 
       document.getElementById("add-to-cart-btn").addEventListener("click", () => addToCartWithCustomization(product));
+      
+      // Auto-select first variant if present
+      if (product.hasVariants && product.variants && product.variants.length > 0) {
+        selectVariant(0);
+      }
     }
 
     async function fileToBase64(file) {
@@ -487,7 +571,22 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
         const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
         
-        const existingItem = cart.find(item => item.baseId === (product._id || product.id));
+        let finalPrice = Number(activeProduct.price) || 0;
+        let finalName = activeProduct.name;
+        let finalImg = activeProduct.images?.[0] || activeProduct.image || '';
+        let variantName = null;
+
+        if (currentVariant) {
+          finalName = `${activeProduct.name} - ${currentVariant.name}`;
+          variantName = currentVariant.name;
+          finalImg = currentVariant.images?.[0] || finalImg;
+          if (currentVariant.price !== undefined && currentVariant.price !== null) {
+            finalPrice = Number(currentVariant.price);
+          }
+        }
+
+        // Must treat different variants as different cart items
+        const existingItem = cart.find(item => item.baseId === (activeProduct._id || activeProduct.id) && item.variantName === variantName);
         
         if (existingItem) {
           existingItem.qty = (existingItem.qty || 1) + qty;
@@ -500,11 +599,13 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           const cartItem = {
             id: cartItemId,
             cartId: cartItemId,
-            baseId: product._id || product.id,
-            name: product.name,
-            price: Number(product.price) || 0,
+            baseId: activeProduct._id || activeProduct.id,
+            variantId: currentVariant?._id || currentVariant?.id || null,
+            variantName: variantName,
+            name: finalName,
+            price: finalPrice,
             qty: Math.max(1, qty),
-            img: product.images?.[0] || product.image || '',
+            img: finalImg,
             customization: customizationForStorage,
             hasImages: customization.images.length > 0
           };
@@ -612,7 +713,9 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           throw new Error(result?.message || result?.error || 'Failed to load product');
         }
 
-        renderProduct(result?.data || result);
+        const product = result?.data || result;
+        console.log('Product Loaded:', product);
+        renderProduct(product);
       } catch (error) {
         renderError('Unable to load product.', error.message);
       }
@@ -623,20 +726,4 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   </script>
 
 </body>
-</html>
-body>
-</html>
-esult?.data || result);
-      } catch (error) {
-        renderError('Unable to load product.', error.message);
-      }
-    }
-  
-
-    loadProduct();
-  </script>
-
-</body>
-</html>
-body>
 </html>

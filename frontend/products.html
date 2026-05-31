@@ -151,11 +151,15 @@
       </button>
       <div id="shop-categories-menu" class="hidden flex flex-col gap-2 pl-8">
         <a href="products.html" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">All Products</a>
-        <a href="products.html?cat=frames" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Frames</a>
+        <a href="products.html?cat=graduation" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Graduation</a>
+        <a href="products.html?cat=gifts" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Gifts</a>
+        <a href="products.html?cat=photo-frames" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Photo Frames</a>
         <a href="products.html?cat=books" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Books</a>
-        <a href="products.html?cat=birthday" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Birthday</a>
-        <a href="products.html?cat=baby" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Baby</a>
-        <a href="products.html?cat=bestseller" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Best Seller</a>
+        <a href="products.html?cat=birthday-essentials" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Birthday Essentials</a>
+        <a href="products.html?cat=bride-to-be-essentials" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Bride To Be Essentials</a>
+        <a href="products.html?cat=summer-essentials" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Summer Essentials</a>
+        <a href="products.html?cat=ramadan-decorations" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Ramadan Decorations</a>
+        <a href="products.html?cat=baby-stuff" class="text-[#c4a882] hover:text-[#9e7550] transition-colors text-[11px]">Baby Stuff</a>
       </div>
     </div>
     <a href="https://wa.me/201012345678" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.595-5.236-3.935-6.831-6.831l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"></path></svg> Contact Us</a>
@@ -245,17 +249,16 @@ if (document.readyState === 'loading') {
   <!-- ═══════ FILTER TABS ═══════ -->
   <div class="max-w-[520px] mx-auto px-6 mb-4 anim-2">
     <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
-      <button onclick="filterCat('all')"          id="tab-all"          class="filter-tab tab-active shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border transition-all duration-200">All</button>
-      <button onclick="filterCat('graduation')"   id="tab-graduation"   class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Graduation</button>
-      <button onclick="filterCat('bridal')"       id="tab-bridal"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Bridal</button>
-      <button onclick="filterCat('valentine')"    id="tab-valentine"    class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Valentine</button>
-      <button onclick="filterCat('frames')"       id="tab-frames"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Frames</button>
-      <button onclick="filterCat('books')"        id="tab-books"        class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Books</button>
-      <button onclick="filterCat('birthday')"     id="tab-birthday"     class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Birthday</button>
-      <button onclick="filterCat('ramadan')"      id="tab-ramadan"      class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Ramadan</button>
-      <button onclick="filterCat('baby')"         id="tab-baby"         class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Baby</button>
-      <button onclick="filterCat('summer')"       id="tab-summer"       class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Summer</button>
-      <button onclick="filterCat('remembrances')" id="tab-remembrances" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Remembrances</button>
+      <button onclick="filterCat('all')" id="tab-all" class="filter-tab tab-active shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border transition-all duration-200">All</button>
+      <button onclick="filterCat('graduation')" id="tab-graduation" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Graduation</button>
+      <button onclick="filterCat('gifts')" id="tab-gifts" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Gifts</button>
+      <button onclick="filterCat('photo frames')" id="tab-photo-frames" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Photo Frames</button>
+      <button onclick="filterCat('books')" id="tab-books" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Books</button>
+      <button onclick="filterCat('birthday essentials')" id="tab-birthday-essentials" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Birthday Essentials</button>
+      <button onclick="filterCat('bride to be essentials')" id="tab-bride-to-be-essentials" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Bride To Be Essentials</button>
+      <button onclick="filterCat('summer essentials')" id="tab-summer-essentials" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Summer Essentials</button>
+      <button onclick="filterCat('ramadan decorations')" id="tab-ramadan-decorations" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Ramadan Decorations</button>
+      <button onclick="filterCat('baby stuff')" id="tab-baby-stuff" class="filter-tab shrink-0 px-5 py-2.5 rounded-full text-[10px] tracking-[0.2em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">Baby Stuff</button>
     </div>
   </div>
 
@@ -440,15 +443,14 @@ if (document.readyState === 'loading') {
       const titles = { 
         all:'All Products', 
         graduation: 'Graduation',
-        bridal: 'Bridal',
-        valentine: 'Valentine',
-        frames:'Frames', 
-        books:'Books', 
-        birthday:'Birthday', 
-        ramadan: 'Ramadan',
-        baby:'Baby',
-        summer: 'Summer',
-        remembrances: 'Remembrances'
+        gifts: 'Gifts',
+        'photo frames': 'Photo Frames',
+        books: 'Books',
+        'birthday essentials': 'Birthday Essentials',
+        'bride to be essentials': 'Bride To Be Essentials',
+        'summer essentials': 'Summer Essentials',
+        'ramadan decorations': 'Ramadan Decorations',
+        'baby stuff': 'Baby Stuff'
       };
       const titleEl = document.getElementById('page-title');
       if (titleEl) titleEl.textContent = titles[cat] || 'All Products';
@@ -462,7 +464,8 @@ if (document.readyState === 'loading') {
       });
 
       // Activate selected tab
-      const active = document.getElementById('tab-' + cat);
+      const targetId = cat === 'all' ? 'tab-all' : `tab-${cat.replace(/\s+/g, '-')}`;
+      const active = document.getElementById(targetId);
       if (active) {
         active.classList.add('tab-active');
         active.style.backgroundColor = '#9e7550';
@@ -484,7 +487,7 @@ if (document.readyState === 'loading') {
       }
 
       const titles = { 
-        graduation: 'Graduation', bridal: 'Bridal', valentine: 'Valentine', frames:'Frames', books:'Books', birthday:'Birthday', ramadan: 'Ramadan', baby:'Baby', summer: 'Summer', remembrances: 'Remembrances'
+        graduation: 'Graduation', gifts: 'Gifts', 'photo frames': 'Photo Frames', books: 'Books', 'birthday essentials': 'Birthday Essentials', 'bride to be essentials': 'Bride To Be Essentials', 'summer essentials': 'Summer Essentials', 'ramadan decorations': 'Ramadan Decorations', 'baby stuff': 'Baby Stuff'
       };
 
       // Find all unique subcategories for this category
@@ -502,9 +505,11 @@ if (document.readyState === 'loading') {
       subcatContainer.innerHTML = `
         <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" style="scrollbar-width:none;">
           <button onclick="filterSubCat('all')" id="subtab-all" class="subfilter-tab tab-active shrink-0 px-4 py-1.5 rounded-full text-[9px] tracking-[0.15em] uppercase border transition-all duration-200">All ${titles[cat] || ''}</button>
-          ${subcats.map(sub => `
-            <button onclick="filterSubCat('${sub.toLowerCase()}')" id="subtab-${sub.toLowerCase().replace(/\s+/g, '-')}" class="subfilter-tab shrink-0 px-4 py-1.5 rounded-full text-[9px] tracking-[0.15em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">${sub}</button>
-          `).join('')}
+          ${subcats.map(sub => {
+            const subSafe = sub.toLowerCase().replace(/'/g, "\\'");
+            const idSafe = sub.toLowerCase().replace(/[\s\W]+/g, '-');
+            return `<button onclick="filterSubCat('${subSafe}')" id="subtab-${idSafe}" class="subfilter-tab shrink-0 px-4 py-1.5 rounded-full text-[9px] tracking-[0.15em] uppercase border border-[#ecdccc] text-[#c4a882] hover:border-[#9e7550] hover:text-[#9e7550] transition-all duration-200">${sub}</button>`;
+          }).join('')}
         </div>
       `;
     }
@@ -521,7 +526,7 @@ if (document.readyState === 'loading') {
       });
 
       // Activate selected subtab
-      const targetId = subcat === 'all' ? 'subtab-all' : `subtab-${subcat.replace(/\s+/g, '-')}`;
+      const targetId = subcat === 'all' ? 'subtab-all' : `subtab-${subcat.replace(/[\s\W]+/g, '-')}`;
       const active = document.getElementById(targetId);
       if (active) {
         active.classList.add('tab-active');

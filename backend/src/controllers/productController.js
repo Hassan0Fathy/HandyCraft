@@ -31,19 +31,27 @@ async function deleteProduct(req, res, next) {
 
 async function updateProduct(req, res, next) {
   try {
-    const { name, price, category, subcategory, description, bestSeller } = req.body;
+    const { name, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body;
+    
+    const updateData = {
+      name,
+      price,
+      category,
+      subcategory,
+      description,
+      bestSeller,
+      hasVariants,
+      images,
+      customFields,
+      variants
+    };
+
+    // Remove undefined fields to avoid overwriting with null if they weren't provided
+    Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
-      { 
-        $set: { 
-          name, 
-          price, 
-          category, 
-          subcategory,
-          description, 
-          bestSeller 
-        } 
-      },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
     
