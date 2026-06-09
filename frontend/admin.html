@@ -632,12 +632,12 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div>
             <label class="text-xs text-[#9e7550] mb-1 block">Max Photos</label>
-            <input type="number" min="1" value="9" placeholder="Max photos" min="1" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="max-images">
+            <input type="number" min="1" value="100" placeholder="Max photos" min="1" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="max-images">
           </div>
         </div>
       `;
     } else {
-      minMaxSection = '<div data-minmax-section style="display: none;" class="grid grid-cols-2 gap-2"><div><input type="number" min="1" value="1" placeholder="Min photos" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="min-images"></div><div><input type="number" min="1" value="9" placeholder="Max photos" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="max-images"></div></div>';
+      minMaxSection = '<div data-minmax-section style="display: none;" class="grid grid-cols-2 gap-2"><div><input type="number" min="1" value="1" placeholder="Min photos" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="min-images"></div><div><input type="number" min="1" value="100" placeholder="Max photos" class="w-full rounded-lg border border-[#ecdccc] px-2 py-1.5 text-sm focus:outline-none focus:border-[#9e7550]" data-role="max-images"></div></div>';
     }
     
     row.innerHTML = `
@@ -752,9 +752,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let minMaxSection = type === 'image' ? `
       <div class="grid grid-cols-2 gap-2 mt-2">
         <input type="number" name="vcf-min-${cfId}" min="1" value="1" placeholder="Min" class="w-full rounded border border-[#ecdccc] px-2 py-1 text-xs focus:outline-none" data-role="min-images">
-        <input type="number" name="vcf-max-${cfId}" min="1" value="9" placeholder="Max" class="w-full rounded border border-[#ecdccc] px-2 py-1 text-xs focus:outline-none" data-role="max-images">
+        <input type="number" name="vcf-max-${cfId}" min="1" value="100" placeholder="Max" class="w-full rounded border border-[#ecdccc] px-2 py-1 text-xs focus:outline-none" data-role="max-images">
       </div>
-    ` : `<input type="hidden" name="vcf-min-${cfId}" data-role="min-images" value="1"><input type="hidden" name="vcf-max-${cfId}" data-role="max-images" value="9">`;
+    ` : `<input type="hidden" name="vcf-min-${cfId}" data-role="min-images" value="1"><input type="hidden" name="vcf-max-${cfId}" data-role="max-images" value="100">`;
 
     row.innerHTML = `
       <div class="flex items-center gap-2">
@@ -861,31 +861,49 @@ document.addEventListener("DOMContentLoaded", () => {
   // Define global to ensure visibility
   window.lastInjectedUrls = [];
   
-  window.downloadAllAsZip = async function(urls) {
-    if (!urls || !urls.length) return;
-    const zip = new JSZip();
-    const folder = zip.folder("customer-images");
+  window.downloadAllAsZip = async function(imageData) {
+    const images = Array.isArray(imageData) ? imageData : window.lastInjectedUrls;
+    if (!images || !images.length) return;
     
-    for (let i = 0; i < urls.length; i++) {
+    const zip = new JSZip();
+    const customerName = (images[0].customerName || 'Customer').replace(/[^a-z0-9]/gi, '_');
+    const orderNumber = (images[0].orderNumber || 'Order').replace(/[^a-z0-9]/gi, '_');
+    
+    // Group counts to avoid duplicate names in same field
+    const nameCounts = {};
+    
+    for (let i = 0; i < images.length; i++) {
+      const item = images[i];
+      const url = typeof item === 'string' ? item : item.url;
+      const field = typeof item === 'string' ? 'General' : item.field;
+      
       try {
-        const response = await fetch(urls[i]);
+        const response = await fetch(url);
         const blob = await response.blob();
         const ext = blob.type.split('/')[1] || 'jpg';
-        folder.file(`image-${i + 1}.${ext}`, blob);
+        
+        const fieldName = (field || 'General').replace(/[^a-z0-9]/gi, '_');
+        const baseFileName = `${customerName}_${fieldName}`;
+        
+        nameCounts[baseFileName] = (nameCounts[baseFileName] || 0) + 1;
+        const finalFileName = `${baseFileName}_${nameCounts[baseFileName]}.${ext}`;
+        
+        zip.file(finalFileName, blob);
       } catch(e) {
-        console.warn('Could not fetch image:', urls[i]);
+        console.warn('Could not fetch image:', url);
       }
     }
     
     const content = await zip.generateAsync({ type: "blob" });
-    saveAs(content, "order-images.zip");
+    saveAs(content, `${customerName}_Order_${orderNumber}.zip`);
   }
 
-  window.downloadAllImages = function(urls) {
-    const images = Array.isArray(urls) ? urls : window.lastInjectedUrls;
+  window.downloadAllImages = function(imageData) {
+    const images = Array.isArray(imageData) ? imageData : window.lastInjectedUrls;
     if (!images || !images.length) return;
-    images.forEach((url, i) => {
+    images.forEach((imgObj, i) => {
       setTimeout(() => {
+        const url = typeof imgObj === 'string' ? imgObj : imgObj.url;
         window.open(url, '_blank');
       }, i * 300);
     });
@@ -1019,20 +1037,45 @@ document.addEventListener("DOMContentLoaded", () => {
     if (o.items && o.items.length > 0) {
       o.items.forEach((item, i) => {
         const msgBlocks = buildCustomizationBlocks(item.customization);
+        
         if(item.customization?.images && item.customization.images.length > 0) {
           hasImages = true;
-          const imgsHtml = item.customization.images.map(rawImg => {
-            const img = safeUrl(rawImg);
-            if (!img) return '';
-            allImageUrls.push(img);
-            const imgAttr = escapeAttr(img);
-            return `<img src="${imgAttr}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" data-action="openUrl" data-url="${imgAttr}" alt="Item ${i+1}">`;
-          }).join('');
-          imagesGalleryHtml += `<div class="mb-3"><span class="text-[10px] uppercase text-brown-light block font-semibold mb-2">Item ${i+1} Images</span><div class="flex flex-wrap gap-2">${imgsHtml}</div></div>`;
+          
+          // Group images by field
+          const groupedImages = {};
+          item.customization.images.forEach(imgObj => {
+            const url = typeof imgObj === 'string' ? imgObj : (imgObj.url || '');
+            const field = typeof imgObj === 'string' ? 'General' : (imgObj.field || 'General');
+            if (!url) return;
+            
+            if (!groupedImages[field]) groupedImages[field] = [];
+            groupedImages[field].push(url);
+            
+            // Store rich info for downloading
+            allImageUrls.push({
+              url: url,
+              field: field,
+              customerName: o.customer?.name || 'Customer',
+              orderNumber: o.orderNumber || o._id.substring(0,8)
+            });
+          });
+
+          for (const [field, urls] of Object.entries(groupedImages)) {
+            const imgsHtml = urls.map(url => {
+              const imgAttr = escapeAttr(url);
+              return `<img src="${imgAttr}" class="w-16 h-16 rounded-lg object-cover border border-[#e8d8c8] cursor-pointer hover:border-[#9e7550] transition" data-action="openUrl" data-url="${imgAttr}" alt="${escapeAttr(field)}">`;
+            }).join('');
+            imagesGalleryHtml += `
+              <div class="mb-4">
+                <span class="text-[10px] uppercase text-brown-light block font-bold mb-2 tracking-widest">${escapeHtml(field)}</span>
+                <div class="flex flex-wrap gap-2">${imgsHtml}</div>
+              </div>`;
+          }
         }
+
         msgsHtml += `
           <div class="bg-white p-4 rounded-xl border border-brown-pale/40 shadow-sm mb-4">
-            <h4 class="font-cormorant text-lg italic text-[#6b4f35] mb-3 border-b border-[#e8d8c8]/50 pb-2">Item ${i+1} Details</h4>
+            <h4 class="font-cormorant text-lg italic text-[#6b4f35] mb-3 border-b border-[#e8d8c8]/50 pb-2">Item ${i+1} Details: ${escapeHtml(item.name)}</h4>
             ${msgBlocks || '<span class="text-xs text-brown-light italic">No custom details provided.</span>'}
           </div>
         `;

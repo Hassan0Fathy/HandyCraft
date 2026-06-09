@@ -25,11 +25,36 @@ async function uploadCustomizationImages(items) {
     const uploadedImages = [];
 
     for (const image of incomingImages) {
-      if (typeof image === "string" && image.startsWith("data:")) {
-        const uploadedUrl = await uploadImage(image, "handycraft/reference-images");
-        uploadedImages.push(uploadedUrl);
-      } else if (typeof image === "string" && image.trim()) {
-        uploadedImages.push(image);
+      try {
+        // Case 1: Image is an object with { file: "data:...", field: "Label" }
+        if (image && typeof image === "object" && image.file) {
+          const field = image.field || "General";
+          if (typeof image.file === "string" && image.file.startsWith("data:")) {
+            const uploadedUrl = await uploadImage(image.file, "handycraft/reference-images");
+            uploadedImages.push({ url: uploadedUrl, field });
+          } else if (typeof image.file === "string" && image.file.trim()) {
+            uploadedImages.push({ url: image.file, field });
+          }
+        } 
+        // Case 2: Image is a direct data URL string (legacy/other)
+        else if (typeof image === "string" && image.startsWith("data:")) {
+          const uploadedUrl = await uploadImage(image, "handycraft/reference-images");
+          uploadedImages.push({ url: uploadedUrl, field: "General" });
+        } 
+        // Case 3: Image is an existing URL string
+        else if (typeof image === "string" && image.trim()) {
+          uploadedImages.push({ url: image, field: "General" });
+        }
+        // Case 4: Image is already an object with { url, field } (from new optimized flow)
+        else if (image && typeof image === "object" && image.url) {
+          uploadedImages.push({ 
+            url: image.url, 
+            field: image.field || "General" 
+          });
+        }
+      } catch (uploadError) {
+        console.error('Failed to upload a customization image:', uploadError);
+        // Continue with other images even if one fails
       }
     }
 
@@ -51,9 +76,13 @@ async function uploadCustomizationImages(items) {
 async function createOrder(req, res, next) {
   try {
     const { customer, items, totalPrice, payment } = req.body;
+    
+    console.log(`[Order] Received creation request for customer: ${customer?.name || 'Unknown'}`);
+    console.log(`[Order] Items: ${items?.length || 0}, Total Price: ${totalPrice}`);
 
     // Step 1: Basic validation - required fields
     if (!customer || !items || !payment) {
+      console.warn('[Order] Validation failed: Missing required fields');
       return res.status(400).json({
         success: false,
         message: "Customer, items, and payment are required"
@@ -108,15 +137,14 @@ async function createOrder(req, res, next) {
     // Step 7: Upload customization images
     const itemsWithUploadedImages = await uploadCustomizationImages(sanitizedItems);
 
-    // Step 8: Upload receipt image if provided
-    let receiptImageUrl = "";
-    if (payment.receiptImage) {
+    // Step 8: Upload receipt image if provided (or use existing URL)
+    let receiptImageUrl = payment.receiptImageUrl || "";
+    if (payment.receiptImage && !receiptImageUrl) {
       try {
         receiptImageUrl = await uploadImage(payment.receiptImage, "handycraft/payment-receipts");
       } catch (uploadError) {
         console.error('Receipt image upload failed:', uploadError);
         // Receipt is optional, so continue even if upload fails
-        // but log the error for debugging
       }
     }
 
@@ -148,6 +176,8 @@ async function createOrder(req, res, next) {
       orderNumber,
       status: "Pending"
     });
+
+    console.log(`[Order] Successfully created order: ${orderNumber}`);
 
     res.status(201).json({
       success: true,

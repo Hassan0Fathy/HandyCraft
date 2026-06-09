@@ -41,9 +41,12 @@ function sanitizeCustomization(customization) {
   }
 
   result.shapes = Array.isArray(customization.shapes)
-    ? customization.shapes.map((s) => String(s).trim()).slice(0, 6)
+    ? customization.shapes.map((s) => String(s).trim()).slice(0, 20)
     : [];
-  result.images = Array.isArray(customization.images) ? customization.images.slice(0, 10) : [];
+  
+  // Preserve image objects (file/field) and remove the strict 10-image limit
+  // The actual upload and final mapping happens in the controller
+  result.images = Array.isArray(customization.images) ? customization.images : [];
 
   return result;
 }

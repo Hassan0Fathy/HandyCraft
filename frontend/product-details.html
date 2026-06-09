@@ -250,7 +250,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         if (!files || files.length === 0) return;
         
         const input = event.target;
-        const maxImages = parseInt(input.getAttribute("data-max-images")) || 9;
+        const maxImages = parseInt(input.getAttribute("data-max-images")) || 100;
         
         Array.from(files).forEach(file => {
             if (selectedImages[index].length < maxImages) {
@@ -299,7 +299,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
         const requiredMarker = f.required ? '<span class="text-red-500 ml-1">*</span>' : '';
         const minImages = f.minImages || 1;
-        const maxImages = f.maxImages || 9;
+        const maxImages = f.maxImages || 100;
 
         if (safeType === 'image') {
           return `
@@ -515,7 +515,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           const name = decodeURIComponent(el.getAttribute("data-field-name") || "");
           const required = el.getAttribute("data-required") === "true" || el.getAttribute("data-required") === true;
           const minImages = parseInt(el.getAttribute("data-min-images")) || 1;
-          const maxImages = parseInt(el.getAttribute("data-max-images")) || 9;
+          const maxImages = parseInt(el.getAttribute("data-max-images")) || 100;
           const errorMsg = document.querySelector(`.error-msg-${fieldIdx}`);
           
           if (!name) continue;
@@ -554,7 +554,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
                 for (const file of files) {
                   try {
                     const base64 = await fileToBase64(file);
-                    customization.images.push(base64);
+                    customization.images.push({ file: base64, field: name });
                   } catch (err) {
                     throw new Error(`Failed to read ${file.name}: ${err.message}`);
                   }

@@ -432,20 +432,115 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       };
   }
 
-  async function submitOrderToApi(receiptBase64) {
-      // 1. Prepare items by fetching images from IndexedDB
-      const itemsWithImages = [];
-      for (const item of cart) {
-          // Deep copy the customization object
-          const customization = JSON.parse(JSON.stringify(item.customization || { images: [] }));
+  function dataURLtoBlob(dataurl) {
+      const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while(n--) u8arr[n] = bstr.charCodeAt(n);
+      return new Uint8Array(u8arr);
+  }
+
+  async function uploadImageToApi(base64, fieldName, btn, current, total, stats) {
+      const start = Date.now();
+      try {
+          // Convert base64 to Blob
+          const arr = base64.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while(n--) u8arr[n] = bstr.charCodeAt(n);
+          const blob = new Blob([u8arr], { type: mime });
           
-          // If item has images, retrieve them from IndexedDB
+          const fileSize = blob.size;
+          stats.totalSize += fileSize;
+          
+          if (typeof current === 'number') {
+              console.log(`[Upload] Starting upload ${current}/${total} (${fieldName}) - Size: ${(fileSize/1024).toFixed(2)}KB`);
+              btn.innerText = `Uploading image ${current}/${total}...`;
+          } else {
+              console.log(`[Upload] Starting upload: ${fieldName} - Size: ${(fileSize/1024).toFixed(2)}KB`);
+              btn.innerText = `Uploading ${fieldName}...`;
+          }
+
+          const formData = new FormData();
+          formData.append('file', blob);
+
+          const response = await fetch(`${API_BASE_URL}/upload/public`, {
+              method: 'POST',
+              body: formData
+          });
+
+          const result = await response.json();
+          const duration = Date.now() - start;
+          
+          if (!response.ok || !result.success) {
+              console.error(`[Upload] Failed ${current}:`, result);
+              throw new Error(result.message || `Upload failed for ${fieldName}`);
+          }
+
+          if (typeof current === 'number') {
+              console.log(`[Upload] Completed ${current}/${total} in ${duration}ms. URL: ${result.url}`);
+          } else {
+              console.log(`[Upload] Completed ${fieldName} in ${duration}ms. URL: ${result.url}`);
+          }
+          return result.url;
+      } catch (error) {
+          console.error(`[Upload] Error in uploadImageToApi:`, error);
+          throw error;
+      }
+  }
+
+  async function submitOrderToApi(receiptBase64) {
+      const btn = document.getElementById('pay-btn');
+      const stats = {
+          totalSize: 0,
+          startTime: Date.now(),
+          uploadCount: 0
+      };
+
+      console.log('[Order] Starting order submission process...');
+      
+      // 1. Calculate total images for progress tracking
+      let totalImages = 0;
+      for (const item of cart) {
+          if (item.hasImages) {
+              const storedImages = await getImagesFromIndexedDB(item.id);
+              totalImages += (storedImages ? storedImages.length : 0);
+          }
+      }
+      
+      console.log(`[Order] Total images to upload: ${totalImages}`);
+
+      // 2. Prepare items by fetching and uploading images
+      const itemsWithImages = [];
+      let currentImageIdx = 0;
+
+      for (const item of cart) {
+          const customization = JSON.parse(JSON.stringify(item.customization || { images: [] }));
+          const uploadedImages = [];
+          
           if (item.hasImages && item.id) {
               const storedImages = await getImagesFromIndexedDB(item.id);
               if (storedImages && storedImages.length > 0) {
-                  customization.images = storedImages;
+                  for (const imgObj of storedImages) {
+                      currentImageIdx++;
+                      const uploadedUrl = await uploadImageToApi(
+                          imgObj.file, 
+                          imgObj.field || 'General', 
+                          btn, 
+                          currentImageIdx, 
+                          totalImages,
+                          stats
+                      );
+                      uploadedImages.push({
+                          url: uploadedUrl,
+                          field: imgObj.field || 'General'
+                      });
+                  }
               }
           }
+          
+          customization.images = uploadedImages;
 
           itemsWithImages.push({
               productId: item.baseId || item.id,
@@ -456,7 +551,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           });
       }
 
-      // 2. Build the final payload
+      // 3. Upload receipt if exists and is base64
+      let finalReceiptUrl = "";
+      if (receiptBase64 && receiptBase64.startsWith('data:')) {
+          console.log('[Order] Uploading payment receipt...');
+          btn.innerText = "Uploading receipt...";
+          finalReceiptUrl = await uploadImageToApi(receiptBase64, 'Receipt', btn, 'R', 'R', stats);
+      }
+
+      const uploadDuration = Date.now() - stats.startTime;
+      console.log(`[Stats] All uploads completed. Total Size: ${(stats.totalSize / (1024 * 1024)).toFixed(2)}MB, Duration: ${(uploadDuration / 1000).toFixed(2)}s`);
+
+      // 4. Build the final payload with URLs
       let paymentMethod = 'InstaPay';
       document.querySelectorAll('input[name="payment_method"]').forEach(r => {
           if (r.checked) paymentMethod = r.value;
@@ -474,11 +580,14 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           payment: {
               method: paymentMethod,
               transactionReference: document.querySelector('[name="transactionRef"]').value.trim(),
-              receiptImage: receiptBase64 || ""
+              receiptImageUrl: finalReceiptUrl // Use URL instead of base64
           }
       };
 
-      // 3. Submit to API (One-shot)
+      console.log('[Order] Creating order with payload:', payload);
+      btn.innerText = "Creating order...";
+
+      // 5. Submit to API
       const response = await fetch(`${API_BASE_URL}/orders`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -486,12 +595,16 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       });
 
       const result = await response.json();
+      console.log('[Order] API Response:', result);
+
       if (!response.ok) {
           const error = new Error(result.message || 'Failed to create order');
           error.errors = result.errors || [result.message];
           throw error;
       }
 
+      console.log('[Order] Success! Order Number:', result.data.orderNumber);
+      btn.innerText = "Order created successfully!";
       return result;
   }
 
