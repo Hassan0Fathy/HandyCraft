@@ -170,6 +170,7 @@ async function createOrder(req, res, next) {
       totalPrice: Number(totalPrice),
       payment: {
         method: sanitizedPayment.method,
+        gmail: sanitizedPayment.gmail,
         transactionReference: sanitizedPayment.transactionReference,
         receiptImageUrl
       },

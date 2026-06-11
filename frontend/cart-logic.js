@@ -26,6 +26,7 @@ function addToCart(product) {
       id: productId + '_' + Date.now(),
       baseId: productId,
       name: String(product.name || 'Unknown Product'),
+      subcategory: String(product.subcategory || '').trim(),
       price: Number(product.price) || 0,
       qty: Math.max(1, quantity),
       image: product.images?.[0] || product.image || '',

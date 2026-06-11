@@ -990,7 +990,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             
             <div class="bg-beige-soft/50 rounded-xl p-3 border border-brown-pale/40 mb-4 whitespace-nowrap overflow-hidden text-ellipsis text-xs text-brown-dark">
-              💳 <span class="tracking-wide">${safeText(o.payment?.transactionReference, 'N/A')}</span> <span class="text-brown-light">(${safeText(o.payment?.method, 'InstaPay')})</span>
+              📧 <span class="tracking-wide">${safeText(o.payment?.gmail, 'N/A')}</span> <span class="text-brown-light">(${safeText(o.payment?.method, 'InstaPay')})</span>
             </div>
           </div>
           
@@ -1122,7 +1122,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Name</span><span class="font-medium text-brown-dark">${safeText(o.customer?.name, 'N/A')}</span></div>
               <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Phone</span><span class="font-medium text-brown-dark">${safeText(o.customer?.phone, 'N/A')}</span></div>
               <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Instagram</span><span class="font-medium text-brown-dark">${safeText(o.customer?.instagram, 'N/A')}</span></div>
-              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Address</span><span class="text-brown-dark">${safeText(o.customer?.address, 'N/A')}</span></div>
+              <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Governorate</span><span class="font-medium text-brown-dark">${safeText(o.customer?.governorate, 'N/A')}</span></div>
+              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Address</span><span class="text-brown-dark">${safeText(o.customer?.address, 'N/A')}</span></div>
             </div>
           </div>
           <div class="bg-beige-soft rounded-xl p-5 border border-[#e8d8c8]/40 shadow-sm">
@@ -1133,7 +1134,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="grid grid-cols-2 gap-3 text-sm">
               <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Method</span><span class="text-brown-dark">${safeText(o.payment?.method, 'N/A')}</span></div>
               <div><span class="text-[10px] uppercase tracking-widest text-brown-light block">Status</span><span class="text-brown-dark">${escapeHtml(safeStatus(o.status))}</span></div>
-              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Transaction Reference Number</span><span class="font-medium tracking-wider text-brown-dark">${safeText(o.payment?.transactionReference, 'N/A')}</span></div>
+              <div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Gmail Address</span><span class="font-medium tracking-wider text-brown-dark">${safeText(o.payment?.gmail, 'N/A')}</span></div>
+              ${o.payment?.transactionReference ? `<div class="col-span-2"><span class="text-[10px] uppercase tracking-widest text-brown-light block">Legacy Trans. Ref</span><span class="font-medium tracking-wider text-brown-dark">${safeText(o.payment?.transactionReference)}</span></div>` : ''}
             </div>
             ${receiptHtml}
           </div>

@@ -6,6 +6,7 @@ function sanitizeCustomer(customer) {
     name: String(customer.name || '').trim().substring(0, 100),
     phone: String(customer.phone || '').trim().substring(0, 20),
     address: String(customer.address || '').trim().substring(0, 500),
+    governorate: String(customer.governorate || '').trim().substring(0, 50),
     instagram: String(customer.instagram || '').trim().substring(0, 50)
   };
 }
@@ -17,6 +18,7 @@ function sanitizeItems(items) {
   return items.map(item => ({
     productId: String(item.productId || '').trim(),
     name: String(item.name || '').trim().substring(0, 200),
+    subcategory: String(item.subcategory || '').trim().substring(0, 100),
     price: Number(item.price) || 0,
     quantity: Number(item.quantity || item.qty) || 1,
     customization: sanitizeCustomization(item.customization || {})
@@ -57,6 +59,7 @@ function sanitizeCustomization(customization) {
 function sanitizePayment(payment) {
   return {
     method: String(payment.method || '').trim(),
+    gmail: String(payment.gmail || '').trim(),
     transactionReference: String(payment.transactionReference || '').trim(),
     receiptImageUrl: payment.receiptImageUrl ? String(payment.receiptImageUrl || '').trim() : ''
   };

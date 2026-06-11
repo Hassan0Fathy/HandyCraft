@@ -579,14 +579,14 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
     document.addEventListener('DOMContentLoaded', renderFeaturedProducts);
 
-    // Secret admin access: 5 taps on logo in 600ms
+    // Secret admin access: 3 taps on logo in 600ms
     let logoTapCount = 0;
     let logoTapTimer = null;
-    
+
     function handleLogoTap() {
       logoTapCount++;
       if (logoTapTimer) clearTimeout(logoTapTimer);
-      if (logoTapCount >= 5) {
+      if (logoTapCount >= 3) {
         logoTapCount = 0;
         window.location.href = 'admin-login.html';
         return;

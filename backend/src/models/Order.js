@@ -12,6 +12,11 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    subcategory: {
+      type: String,
+      trim: true,
+      default: ""
+    },
     price: {
       type: Number,
       required: true,
@@ -36,6 +41,7 @@ const orderSchema = new mongoose.Schema(
       name: { type: String, required: true, trim: true },
       phone: { type: String, required: true, trim: true },
       address: { type: String, required: true, trim: true },
+      governorate: { type: String, required: true, trim: true, enum: ["Cairo", "Giza"] },
       instagram: { type: String, trim: true, default: "" }
     },
     items: {
@@ -55,10 +61,11 @@ const orderSchema = new mongoose.Schema(
     },
     payment: {
       method: { type: String, required: true, trim: true },
+      gmail: { type: String, required: true, trim: true },
       transactionReference: {
         type: String,
-        required: true,
-        match: [/^\d{11}$/, "Transaction reference must be exactly 11 digits"]
+        trim: true,
+        default: ""
       },
       receiptImageUrl: { type: String, default: "" }
     },

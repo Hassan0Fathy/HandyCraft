@@ -18,6 +18,10 @@ function validateCustomerData(customer) {
     errors.push('Address must be between 5 and 500 characters');
   }
 
+  if (!customer.governorate || !['Cairo', 'Giza'].includes(customer.governorate)) {
+    errors.push('Governorate must be Cairo or Giza');
+  }
+
   // Instagram is optional, but if provided, validate it
   if (customer.instagram && !validator.isLength(customer.instagram, { max: 50 })) {
     errors.push('Instagram handle must be max 50 characters');
@@ -71,8 +75,13 @@ function validatePaymentData(payment) {
     errors.push('Payment method must be one of: InstaPay, Telda, WE Pay');
   }
 
-  if (!payment.transactionReference || !/^\d{11}$/.test(payment.transactionReference)) {
-    errors.push('Transaction reference must be exactly 11 digits');
+  if (!payment.gmail || !validator.isEmail(payment.gmail)) {
+    errors.push('A valid Gmail address is required');
+  }
+
+  // transactionReference is now optional for backward compatibility
+  if (payment.transactionReference && !validator.isLength(payment.transactionReference, { max: 100 })) {
+    errors.push('Transaction reference is too long');
   }
 
   return {
@@ -92,17 +101,22 @@ function validateTotalPrice(totalPrice, items) {
     };
   }
 
-  // Basic check: total should roughly match item prices (within 10% tolerance for variations)
-  const calculatedTotal = items.reduce((sum, item) => {
+  // Shipping logic: 200 EGP if any item is a Frame
+  const hasFrames = items.some(item => (item.subcategory || '').toLowerCase() === 'frames');
+  const shipping = hasFrames ? 200 : 0;
+
+  const itemsTotal = items.reduce((sum, item) => {
     const q = item.qty || item.quantity || 0;
     return sum + (item.price * q);
   }, 0);
-  const tolerance = calculatedTotal * 0.1;
+  
+  const expectedTotal = itemsTotal + shipping;
+  const tolerance = expectedTotal * 0.1;
 
-  if (Math.abs(totalPrice - calculatedTotal) > tolerance) {
+  if (Math.abs(totalPrice - expectedTotal) > tolerance) {
     return {
       isValid: false,
-      errors: ['Total price does not match item prices']
+      errors: [`Total price does not match item prices (Expected: ${expectedTotal}, Got: ${totalPrice})`]
     };
   }
 

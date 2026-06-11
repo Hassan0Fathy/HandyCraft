@@ -151,6 +151,15 @@
 
   let cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
   
+  function calculateShipping(cartItems) {
+    const hasFrames = cartItems.some(item => {
+      const cat = (item.category || '').toLowerCase();
+      const sub = (item.subcategory || '').toLowerCase();
+      return cat.includes('frame') || sub.includes('frame');
+    });
+    return hasFrames ? 200 : 0;
+  }
+
   async function renderCart() {
     const c = document.getElementById('cart-items');
     const s = document.getElementById('cart-summary');
@@ -160,11 +169,11 @@
     if(!cart.length) { s.classList.add('hidden'); e.classList.remove('hidden'); return; }
     e.classList.add('hidden'); s.classList.remove('hidden');
     
-    let total = 0;
+    let itemsTotal = 0;
     for (let i = 0; i < cart.length; i++) {
       const it = cart[i];
       const qty = it.qty || 1;
-      total += it.price * qty;
+      itemsTotal += it.price * qty;
 
       // Load images from IndexedDB if available
       let customImages = it.customization?.images || [];
@@ -211,23 +220,33 @@
         </div>
       </div>`);
     }
-    document.getElementById('cart-total').textContent = 'EGP ' + total.toFixed(2);
+
+    const shipping = calculateShipping(cart);
+    const total = itemsTotal + shipping;
+    
+    let totalHtml = `EGP ${total.toFixed(2)}`;
+    if (shipping > 0) {
+      totalHtml = `<div class="text-right"><div class="text-[12px] text-brown-mid mb-1">Items: EGP ${itemsTotal.toFixed(2)}</div><div class="text-[12px] text-brown-mid mb-1">Shipping: EGP ${shipping.toFixed(2)}</div><div class="text-lg">Total: EGP ${total.toFixed(2)}</div></div>`;
+    }
+    
+    document.getElementById('cart-total').innerHTML = totalHtml;
     localStorage.setItem('hc_cart', JSON.stringify(cart));
     
     // Update badge
     updateCartBadge();
   }
   
-  function updateQty(i, d) { 
-    if(cart[i]) {
-      const newQty = (cart[i].qty || 1) + d;
+  function updateQty(targetId, d) { 
+    const item = cart.find(it => (it.cartId || it.id) === targetId);
+    if(item) {
+      const newQty = (item.qty || 1) + d;
       if(newQty > 0) {
-        cart[i].qty = newQty;
+        item.qty = newQty;
       } else {
-        const targetId = cart[i].cartId || cart[i].id;
-        deleteImagesFromIndexedDB(targetId);
+        deleteImagesFromIndexedDB(item.cartId || item.id);
         cart = cart.filter(it => (it.cartId || it.id) !== targetId);
       }
+      localStorage.setItem('hc_cart', JSON.stringify(cart));
       renderCart();
     }
   }
@@ -237,6 +256,7 @@
     if(item) {
       deleteImagesFromIndexedDB(item.cartId || item.id);
       cart = cart.filter(it => (it.cartId || it.id) !== targetId);
+      localStorage.setItem('hc_cart', JSON.stringify(cart));
       renderCart();
     }
   }
