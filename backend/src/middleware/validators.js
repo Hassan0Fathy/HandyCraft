@@ -18,8 +18,8 @@ function validateCustomerData(customer) {
     errors.push('Address must be between 5 and 500 characters');
   }
 
-  if (!customer.governorate || !['Cairo', 'Giza'].includes(customer.governorate)) {
-    errors.push('Governorate must be Cairo or Giza');
+  if (!customer.governorate) {
+    errors.push('Governorate is required');
   }
 
   // Instagram is optional, but if provided, validate it
@@ -93,7 +93,7 @@ function validatePaymentData(payment) {
 /**
  * Validate total price
  */
-function validateTotalPrice(totalPrice, items) {
+function validateTotalPrice(totalPrice, items, customer) {
   if (!Number.isFinite(totalPrice) || totalPrice < 0) {
     return {
       isValid: false,
@@ -101,9 +101,26 @@ function validateTotalPrice(totalPrice, items) {
     };
   }
 
-  // Shipping logic: 200 EGP if any item is a Frame
-  const hasFrames = items.some(item => (item.subcategory || '').toLowerCase() === 'frames');
-  const shipping = hasFrames ? 200 : 0;
+  // Shipping logic:
+  // 1. Graduation > Frames (Cairo/Giza) = 200 EGP
+  // 2. All other products: Cairo/Giza = 75 EGP, Others = 95 EGP
+  
+  const governorate = (customer?.governorate || '').toLowerCase();
+  const isCairoGiza = governorate === 'cairo' || governorate === 'giza';
+  
+  const hasGraduationFrames = items.some(item => 
+    (item.category || '').toLowerCase() === 'graduation' && 
+    (item.subcategory || '').toLowerCase() === 'frames'
+  );
+
+  let shipping = 0;
+  if (hasGraduationFrames && isCairoGiza) {
+    shipping = 200;
+  } else if (isCairoGiza) {
+    shipping = 75;
+  } else {
+    shipping = 95;
+  }
 
   const itemsTotal = items.reduce((sum, item) => {
     const q = item.qty || item.quantity || 0;
@@ -111,7 +128,7 @@ function validateTotalPrice(totalPrice, items) {
   }, 0);
   
   const expectedTotal = itemsTotal + shipping;
-  const tolerance = expectedTotal * 0.1;
+  const tolerance = 1; // 1 EGP tolerance for rounding
 
   if (Math.abs(totalPrice - expectedTotal) > tolerance) {
     return {

@@ -379,6 +379,8 @@ if (document.readyState === 'loading') {
       else cart.push({
         id: productId,
         baseId: productId,
+        category: String(p.category || '').trim(),
+        subcategory: String(p.subcategory || '').trim(),
         name: p.name,
         price: Number(p.price) || 0,
         qty: 1,

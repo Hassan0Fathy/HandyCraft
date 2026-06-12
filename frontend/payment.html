@@ -186,9 +186,10 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         </div>
         <div>
           <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Governorate <span class="text-red-400">*</span></label>
-          <select required name="governorate" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition appearance-none">
+          <select required name="governorate" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition appearance-none" onchange="updateTotal()">
             <option value="Cairo">Cairo</option>
             <option value="Giza">Giza</option>
+            <option value="Other">Other Governorates</option>
           </select>
         </div>
         <div>
@@ -347,22 +348,42 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   // Load API config dynamically (supports both dev and production)
   const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
 
-  function calculateShipping(cartItems) {
-    const hasFrames = cartItems.some(item => {
+  function calculateShipping(cartItems, governorate) {
+    if (!cartItems || cartItems.length === 0) return 0;
+    
+    const gov = (governorate || 'Cairo').toLowerCase();
+    const isCairoGiza = gov === 'cairo' || gov === 'giza';
+    
+    const hasGraduationFrame = cartItems.some(item => {
       const cat = (item.category || '').toLowerCase();
       const sub = (item.subcategory || '').toLowerCase();
-      return cat.includes('frame') || sub.includes('frame');
+      return cat === 'graduation' && sub === 'frames';
     });
-    return hasFrames ? 200 : 0;
+    
+    if (hasGraduationFrame && isCairoGiza) {
+      return 200;
+    } else if (isCairoGiza) {
+      return 75;
+    } else {
+      return 95;
+    }
   }
 
   const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
   if(cart.length === 0) location.href="products.html";
   
   const itemsTotal = cart.reduce((s, c) => s + (c.price * c.qty), 0);
-  const shipping = calculateShipping(cart);
-  const total = itemsTotal + shipping;
-  document.getElementById("final-amount").innerText = total;
+  let total = itemsTotal;
+
+  function updateTotal() {
+    const govSelect = document.querySelector('[name="governorate"]');
+    const shipping = calculateShipping(cart, govSelect ? govSelect.value : 'Cairo');
+    total = itemsTotal + shipping;
+    document.getElementById("final-amount").innerText = total;
+  }
+
+  // Initial update
+  updateTotal();
 
   function updatePaymentInstructions(detail, method) {
       document.getElementById('method-text').innerText = method;

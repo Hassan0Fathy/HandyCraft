@@ -120,7 +120,7 @@ async function createOrder(req, res, next) {
     }
 
     // Step 5: Validate total price
-    const priceValidation = validateTotalPrice(totalPrice, items);
+    const priceValidation = validateTotalPrice(totalPrice, items, customer);
     if (!priceValidation.isValid) {
       return res.status(400).json({
         success: false,
