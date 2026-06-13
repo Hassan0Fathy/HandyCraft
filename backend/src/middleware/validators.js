@@ -79,6 +79,11 @@ function validatePaymentData(payment) {
     errors.push('A valid Gmail address is required');
   }
 
+  // Payment screenshot is now REQUIRED
+  if (!payment.receiptImageUrl && !payment.receiptImage) {
+    errors.push('Payment screenshot is required');
+  }
+
   // transactionReference is now optional for backward compatibility
   if (payment.transactionReference && !validator.isLength(payment.transactionReference, { max: 100 })) {
     errors.push('Transaction reference is too long');
@@ -102,7 +107,7 @@ function validateTotalPrice(totalPrice, items, customer) {
   }
 
   // Shipping logic:
-  // 1. Graduation > Frames (Cairo/Giza) = 200 EGP
+  // 1. Graduation > Frames: Cairo/Giza = 200 EGP, Others = Not Allowed
   // 2. All other products: Cairo/Giza = 75 EGP, Others = 95 EGP
   
   const governorate = (customer?.governorate || '').toLowerCase();
@@ -113,8 +118,15 @@ function validateTotalPrice(totalPrice, items, customer) {
     (item.subcategory || '').toLowerCase() === 'frames'
   );
 
+  if (hasGraduationFrames && !isCairoGiza) {
+    return {
+      isValid: false,
+      errors: ['Graduation Frames are currently available only for delivery in Cairo and Giza.']
+    };
+  }
+
   let shipping = 0;
-  if (hasGraduationFrames && isCairoGiza) {
+  if (hasGraduationFrames) {
     shipping = 200;
   } else if (isCairoGiza) {
     shipping = 75;

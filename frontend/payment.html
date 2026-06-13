@@ -187,9 +187,33 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         <div>
           <label class="block text-[11px] uppercase tracking-widest text-[#9e7550] mb-2 font-medium">Governorate <span class="text-red-400">*</span></label>
           <select required name="governorate" class="w-full bg-[#faf5ef] rounded-xl px-4 py-3.5 text-sm text-[#6b4f35] border-2 border-[#e8d8c8] outline-none focus:ring-1 focus:ring-[#c4a882] focus:border-[#9e7550] transition appearance-none" onchange="updateTotal()">
-            <option value="Cairo">Cairo</option>
-            <option value="Giza">Giza</option>
-            <option value="Other">Other Governorates</option>
+            <option value="Alexandria">Alexandria (الإسكندرية)</option>
+            <option value="Aswan">Aswan (أسوان)</option>
+            <option value="Asyut">Asyut (أسيوط)</option>
+            <option value="Beheira">Beheira (البحيرة)</option>
+            <option value="Beni Suef">Beni Suef (بني سويف)</option>
+            <option value="Cairo" selected>Cairo (القاهرة)</option>
+            <option value="Dakahliya">Dakahliya (الدقهلية)</option>
+            <option value="Damietta">Damietta (دمياط)</option>
+            <option value="Fayoum">Fayoum (الفيوم)</option>
+            <option value="Gharbiya">Gharbiya (الغربية)</option>
+            <option value="Giza">Giza (الجيزة)</option>
+            <option value="Ismailia">Ismailia (الإسماعيلية)</option>
+            <option value="Kafr El Sheikh">Kafr El Sheikh (كفر الشيخ)</option>
+            <option value="Luxor">Luxor (الأقصر)</option>
+            <option value="Matrouh">Matrouh (مطروح)</option>
+            <option value="Minya">Minya (المنيا)</option>
+            <option value="Menofiya">Menofiya (المنوفية)</option>
+            <option value="New Valley">New Valley (الوادي الجديد)</option>
+            <option value="North Sinai">North Sinai (شمال سيناء)</option>
+            <option value="Port Said">Port Said (بورسعيد)</option>
+            <option value="Qalyubiya">Qalyubiya (القليوبية)</option>
+            <option value="Qena">Qena (قنا)</option>
+            <option value="Red Sea">Red Sea (البحر الأحمر)</option>
+            <option value="Sharqiya">Sharqiya (الشرقية)</option>
+            <option value="Sohag">Sohag (سوهاج)</option>
+            <option value="South Sinai">South Sinai (جنوب سيناء)</option>
+            <option value="Suez">Suez (السويس)</option>
           </select>
         </div>
         <div>
@@ -360,8 +384,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       return cat === 'graduation' && sub === 'frames';
     });
     
-    if (hasGraduationFrame && isCairoGiza) {
-      return 200;
+    if (hasGraduationFrame) {
+      return isCairoGiza ? 200 : 0; // 0 or logic to handle restricted delivery
     } else if (isCairoGiza) {
       return 75;
     } else {
@@ -404,13 +428,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       const screenshotHelp = document.getElementById('screenshotHelp');
       
       if (screenshotLabel) {
-          if (method === 'InstaPay') {
-              screenshotLabel.innerHTML = 'Screenshot (Optional)';
-              screenshotHelp.classList.add('hidden');
-          } else {
-              screenshotLabel.innerHTML = 'Screenshot <span class="text-red-400">*</span>';
-              screenshotHelp.classList.remove('hidden');
-          }
+          screenshotLabel.innerHTML = 'Screenshot <span class="text-red-400">*</span>';
+          screenshotHelp.classList.remove('hidden');
       }
   }
 
@@ -661,8 +680,22 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       const screenshotError = document.getElementById('screenshot-error');
       if (screenshotError) screenshotError.remove();
 
-      if ((paymentMethod === 'Telda' || paymentMethod === 'WE Pay') && fileInput.files.length === 0) {
+      if (fileInput.files.length === 0) {
           fileInput.parentElement.insertAdjacentHTML('afterend', '<p id="screenshot-error" class="text-red-500 text-xs mt-2 font-medium text-center">Payment screenshot is required for verification.</p>');
+          return;
+      }
+      
+      // Graduation Frame Restriction Validation
+      const gov = document.querySelector('[name="governorate"]').value;
+      const isCairoGiza = gov === 'Cairo' || gov === 'Giza';
+      const hasGraduationFrame = cart.some(item => {
+          const cat = (item.category || '').toLowerCase();
+          const sub = (item.subcategory || '').toLowerCase();
+          return cat === 'graduation' && sub === 'frames';
+      });
+
+      if (hasGraduationFrame && !isCairoGiza) {
+          alert("Graduation Frames are currently available only for delivery in Cairo and Giza.");
           return;
       }
       
