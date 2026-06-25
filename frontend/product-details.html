@@ -459,14 +459,19 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
           <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
             <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Quantity</h3>
-            <div class="flex items-center bg-[#faf5ef] rounded-lg border border-[#ecdccc] w-fit overflow-hidden">
+            <div class="flex items-center bg-[#faf5ef] rounded-lg border border-[#ecdccc] w-fit overflow-hidden mb-3">
               <button type="button" onclick="decreaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">−</button>
               <input id="qty-input" type="number" min="1" value="1" class="w-12 text-center border-0 bg-[#faf5ef] focus:ring-0 outline-none text-[#6b4f35] font-medium" />
               <button type="button" onclick="increaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">+</button>
             </div>
+            <p class="text-[11px] text-[#9e7550] leading-relaxed flex items-start gap-2">
+              <svg class="w-3.5 h-3.5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>Quantity applies to the same design only. If you need multiple different designs, add this design to cart first, then create another one.</span>
+            </p>
           </div>
 
           <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
+            <div id="design-counter"></div>
             <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Customization</h3>
             <div id="custom-fields-form">
               ${fieldsHtml}
@@ -484,12 +489,56 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         </div>
       `;
 
+      // Append Success Modal HTML
+      const modalHtml = `
+        <div id="success-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-5 hidden">
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeSuccessModal()"></div>
+          <div class="bg-white rounded-3xl w-full max-w-[420px] overflow-hidden shadow-2xl relative z-10 anim-modal-up">
+            <div class="p-8 text-center">
+              <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h2 class="font-cormorant text-3xl italic text-[#6b4f35] mb-2">Saved Successfully</h2>
+              <div class="text-[#9e7550] text-sm leading-relaxed mb-6">
+                <p class="mb-3">Your design has been saved successfully.</p>
+                <p class="text-[13px] font-medium border-t border-[#ecdccc]/50 pt-3">Need another design for the same product?</p>
+                <p class="text-[12px] opacity-80">Click 'Create Another Design' to add a completely different customization with different photos, text, or notes.</p>
+              </div>
+
+              <div class="bg-[#faf5ef] rounded-2xl p-4 mb-8 text-left border border-[#ecdccc]/50">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-[#9e7550] mb-2 flex items-center gap-2">
+                   <span>💡 Tip:</span>
+                </p>
+                <ul class="text-[11px] text-[#6b4f35] space-y-2 leading-snug">
+                  <li class="flex gap-2"><span>•</span> <span>Use <strong>Quantity</strong> when you want multiple copies of the <strong>same design</strong>.</span></li>
+                  <li class="flex gap-2"><span>•</span> <span>Use <strong>Create Another Design</strong> when you need <strong>different photos</strong> or customization.</span></li>
+                </ul>
+              </div>
+              
+              <div class="flex flex-col gap-3">
+                <button onclick="handleCreateAnother()" class="w-full bg-[#9e7550] text-white py-4 rounded-2xl text-[12px] uppercase tracking-widest hover:bg-[#7a5c3e] transition font-medium shadow-sm">
+                  Create Another Design
+                </button>
+                <button onclick="location.href='products.html'" class="w-full border-2 border-[#ecdccc] text-[#9e7550] py-4 rounded-2xl text-[12px] uppercase tracking-widest hover:bg-[#faf5ef] transition font-medium">
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+
       document.getElementById("add-to-cart-btn").addEventListener("click", () => addToCartWithCustomization(product));
       
       // Auto-select first variant if present
       if (product.hasVariants && product.variants && product.variants.length > 0) {
         selectVariant(0);
       }
+
+      updateDesignCounter(); // Initial count
     }
 
     async function fileToBase64(file) {
@@ -595,13 +644,24 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           }
         }
 
-        // Must treat different variants as different cart items
-        const existingItem = cart.find(item => item.baseId === (activeProduct._id || activeProduct.id) && item.variantName === variantName);
+        // If product is customizable, or it's a "newDesign" flow, we MUST create a new cart item and NOT merge
+        const isProductCustomizable = inputs.length > 0;
+        const params = new URLSearchParams(window.location.search);
+        const forceNewDesign = params.get('newDesign') === 'true';
+
+        let existingItem = null;
+        // Only attempt to merge if it's NOT customizable and NOT a forced new design
+        if (!isProductCustomizable && !forceNewDesign) {
+            existingItem = cart.find(item => item.baseId === (activeProduct._id || activeProduct.id) && item.variantName === variantName);
+        }
         
         if (existingItem) {
           existingItem.qty = (existingItem.qty || 1) + qty;
         } else {
-          const cartItemId = crypto.randomUUID();
+          // Generate fresh unique ID with fallback for older browsers
+          const cartItemId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
+            ? crypto.randomUUID() 
+            : Date.now().toString(36) + Math.random().toString(36).substr(2);
           
           // Create cart item WITHOUT images in localStorage (to avoid quota exceeded)
           const customizationForStorage = { ...customization, images: [] };
@@ -638,6 +698,13 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         
         try {
           localStorage.setItem("hc_cart", JSON.stringify(cart));
+          
+          // CLEANUP: Remove newDesign flag from URL so page behaves normally on refresh
+          if (forceNewDesign) {
+              params.delete('newDesign');
+              const newQuery = params.toString() ? '?' + params.toString() : '';
+              window.history.replaceState({}, '', window.location.pathname + newQuery);
+          }
         } catch (err) {
           if (err.name === 'QuotaExceededError') {
             throw new Error('Cart storage is full. Please clear some items and try again.');
@@ -646,6 +713,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
         }
         
         window.updateCartBadge && window.updateCartBadge();
+        updateDesignCounter(); // Update UI counter
+        openSuccessModal(); // Show workflow modal
         
         btn.textContent = '✓ Added to cart!';
         btn.style.backgroundColor = '#2e8b57';
@@ -653,21 +722,18 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           btn.textContent = originalText;
           btn.style.backgroundColor = '';
           btn.disabled = false;
-          isAddingToCart = false;
         }, 2000);
       } 
       catch (error) {
        if (error.message === 'Please fix the errors above') {
       btn.textContent = originalText;
       btn.disabled = false;
-      isAddingToCart = false;
   } else {
     btn.textContent = 'Error - try again';
     console.error('Add to cart error:', error);
     setTimeout(() => {
       btn.textContent = originalText;
       btn.disabled = false;
-      isAddingToCart = false;
     }, 2000);
   }
 }
@@ -701,6 +767,89 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       const val = parseInt(input.value) || 1;
       input.value = val + 1;
     }
+
+    // --- NEW WORKFLOW FUNCTIONS ---
+
+    function openSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function resetCustomizationForm() {
+      const container = document.getElementById('custom-fields-form');
+      if (container) {
+        // Clear all inputs (text, file, etc)
+        const inputs = container.querySelectorAll('input');
+        inputs.forEach(input => {
+          if (input.type === 'file') input.value = '';
+          else if (input.type === 'radio' || input.type === 'checkbox') input.checked = false;
+          else input.value = '';
+        });
+        
+        // Clear all textareas
+        const textareas = container.querySelectorAll('textarea');
+        textareas.forEach(ta => ta.value = '');
+        
+        // Clear all selects
+        const selects = container.querySelectorAll('select');
+        selects.forEach(s => s.selectedIndex = 0);
+      }
+      
+      // Reset internal image state
+      selectedImages = [];
+      
+      // Clear all UI previews
+      const previews = document.querySelectorAll('[id^="preview_"]');
+      previews.forEach(p => p.innerHTML = '');
+      
+      // Reset quantity to 1
+      const qtyInput = document.getElementById('qty-input');
+      if (qtyInput) qtyInput.value = '1';
+    }
+
+    function updateDesignCounter() {
+      const cart = JSON.parse(localStorage.getItem('hc_cart') || '[]');
+      const currentPid = activeProduct ? (activeProduct._id || activeProduct.id) : productId;
+      
+      // Count unique designs (different cart items) for this base product
+      const designCount = cart.filter(item => item.baseId === currentPid).length;
+      
+      const counterEl = document.getElementById('design-counter');
+      if (counterEl) {
+        if (designCount > 0) {
+          counterEl.innerHTML = `
+            <div class="flex items-center gap-2 text-[11px] font-medium text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-100 mb-4 animate-fade-in shrink-0 w-fit">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              ${designCount} ${designCount === 1 ? 'Design' : 'Designs'} Added
+            </div>
+          `;
+        } else {
+          counterEl.innerHTML = '';
+        }
+      }
+    }
+
+    function handleCreateAnother() {
+      closeSuccessModal();
+      resetCustomizationForm();
+    }
+
+    window.openSuccessModal = openSuccessModal;
+    window.closeSuccessModal = closeSuccessModal;
+    window.handleCreateAnother = handleCreateAnother;
+    window.updateDesignCounter = updateDesignCounter;
+    window.resetCustomizationForm = resetCustomizationForm;
 
     window.setMainImage = setMainImage;
     window.decreaseQty = decreaseQty;

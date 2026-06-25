@@ -93,6 +93,39 @@
   </div>
 </main>
 
+<!-- Customization Choice Modal -->
+<div id="custom-choice-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-5 hidden">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeCustomModal()"></div>
+  <div class="bg-white rounded-3xl w-full max-w-[400px] overflow-hidden shadow-2xl relative z-10 anim-modal-up">
+    <div class="p-8">
+      <h2 class="font-cormorant text-3xl italic text-[#6b4f35] mb-3 text-center">Add Another Item</h2>
+      <p class="text-[#9e7550] text-sm text-center leading-relaxed mb-8">
+        Would you like another copy of the same design or create a new design?
+      </p>
+      
+      <div class="flex flex-col gap-3">
+        <button onclick="handleSameDesign()" class="w-full bg-[#9e7550] text-white py-4 rounded-2xl text-[12px] uppercase tracking-widest hover:bg-[#7a5c3e] transition font-medium shadow-sm flex items-center justify-center gap-2">
+          <span>✓ Same Design</span>
+        </button>
+        <button onclick="handleNewDesign()" class="w-full border-2 border-[#ecdccc] text-[#9e7550] py-4 rounded-2xl text-[12px] uppercase tracking-widest hover:bg-[#faf5ef] transition font-medium flex items-center justify-center gap-2">
+          <span>➕ Create New Design</span>
+        </button>
+        <button onclick="closeCustomModal()" class="w-full text-[#c4a882] py-3 text-[11px] uppercase tracking-widest hover:text-[#9e7550] transition font-medium">
+          ✕ Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes modalUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .anim-modal-up { animation: modalUp 0.3s ease-out; }
+</style>
+
 <script>
   // IndexedDB Helper
   const DB_NAME = 'HandyCraftDB';
@@ -238,7 +271,68 @@
     updateCartBadge();
   }
   
+  let pendingQtyUpdateId = null;
+
+  function openCustomModal() {
+    const modal = document.getElementById('custom-choice-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeCustomModal() {
+    const modal = document.getElementById('custom-choice-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    pendingQtyUpdateId = null;
+  }
+
+  function isProductCustomized(item) {
+    if (!item) return false;
+    
+    // 1. Check if it has images (linked in IndexedDB)
+    if (item.hasImages) return true;
+
+    // 2. Check if it has any non-empty text customization fields
+    if (item.customization) {
+      const hasTextFields = Object.keys(item.customization).some(key => 
+        key !== 'images' && 
+        item.customization[key] !== null &&
+        String(item.customization[key]).trim() !== ""
+      );
+      if (hasTextFields) return true;
+    }
+
+    // 3. Check for specific message fields (used by legacy products)
+    if (item.messages) {
+      const hasMessages = Object.values(item.messages).some(val => 
+        val !== null &&
+        String(val).trim() !== ""
+      );
+      if (hasMessages) return true;
+    }
+
+    return false;
+  }
+
   function updateQty(targetId, d) { 
+    const item = cart.find(it => (it.cartId || it.id) === targetId);
+    if (!item) return;
+
+    // Trigger modal ONLY when INCREASING quantity of a CUSTOMIZED product
+    if (d > 0 && isProductCustomized(item)) {
+      pendingQtyUpdateId = targetId;
+      openCustomModal();
+      return;
+    }
+
+    applyQtyUpdate(targetId, d);
+  }
+
+  function applyQtyUpdate(targetId, d) {
     const item = cart.find(it => (it.cartId || it.id) === targetId);
     if(item) {
       const newQty = (item.qty || 1) + d;
@@ -250,6 +344,23 @@
       }
       localStorage.setItem('hc_cart', JSON.stringify(cart));
       renderCart();
+    }
+  }
+
+  function handleSameDesign() {
+    if (pendingQtyUpdateId) {
+      applyQtyUpdate(pendingQtyUpdateId, 1);
+      closeCustomModal();
+    }
+  }
+
+  function handleNewDesign() {
+    if (pendingQtyUpdateId) {
+      const item = cart.find(it => (it.cartId || it.id) === pendingQtyUpdateId);
+      if (item) {
+        const productId = item.baseId || item.id;
+        location.href = `product-details.html?id=${productId}&newDesign=true`;
+      }
     }
   }
   
