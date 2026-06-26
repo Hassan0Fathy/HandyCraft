@@ -18,12 +18,18 @@ const variantSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
+    sku: { type: String, trim: true, unique: true, sparse: true },
     price: { type: Number, required: true, min: 0 },
     category: { type: String, required: true, trim: true },
     subcategory: { type: String, trim: true, default: "" },
     description: { type: String, required: true, trim: true },
     images: { type: [String], default: [] },
     bestSeller: { type: Boolean, default: false },
+    status: { 
+      type: String, 
+      enum: ['active', 'hidden', 'out-of-stock'], 
+      default: 'active' 
+    },
     customFields: { type: [customFieldSchema], default: [] },
     hasVariants: { type: Boolean, default: false },
     variants: { type: [variantSchema], default: [] }

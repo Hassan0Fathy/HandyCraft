@@ -149,6 +149,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <main class="max-w-[1000px] mx-auto px-6 pt-24 pb-20">
+  
+  <!-- NAVIGATION CARDS -->
+  <section class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+    <a href="admin-products.html" class="bg-white p-6 rounded-2xl border border-brown-pale/50 shadow-sm hover:shadow-md transition text-center">
+      <div class="text-brown-mid mb-2"><svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg></div>
+      <p class="text-xs uppercase tracking-widest font-bold text-brown-dark">Manage Products</p>
+    </a>
+    <a href="admin-categories.html" class="bg-white p-6 rounded-2xl border border-brown-pale/50 shadow-sm hover:shadow-md transition text-center">
+      <div class="text-brown-mid mb-2"><svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25a2.25 2.25 0 0 1 4.5 0v2.25a2.25 2.25 0 0 1-4.5 0V6zM3.75 15.75a2.25 2.25 0 0 1 2.25-2.25h2.25a2.25 2.25 0 0 1 4.5 0V18a2.25 2.25 0 0 1-4.5 0v-2.25zM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 4.5 0v2.25a2.25 2.25 0 0 1-4.5 0V6zM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 4.5 0V18a2.25 2.25 0 0 1-4.5 0v-2.25z"/></svg></div>
+      <p class="text-xs uppercase tracking-widest font-bold text-brown-dark">Manage Categories</p>
+    </a>
+    <div class="bg-white p-6 rounded-2xl border border-brown-pale/50 shadow-sm hover:shadow-md transition text-center opacity-50 cursor-not-allowed">
+      <div class="text-brown-mid mb-2"><svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg></div>
+      <p class="text-xs uppercase tracking-widest font-bold text-brown-dark">Orders</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl border border-brown-pale/50 shadow-sm hover:shadow-md transition text-center opacity-50 cursor-not-allowed">
+      <div class="text-brown-mid mb-2"><svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.5 0-9.337 9.337 0 0 0-4.121.952 4.125 4.125 0 0 0-7.5 0 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.5 0"/></svg></div>
+      <p class="text-xs uppercase tracking-widest font-bold text-brown-dark">Customers</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl border border-brown-pale/50 shadow-sm hover:shadow-md transition text-center opacity-50 cursor-not-allowed">
+      <div class="text-brown-mid mb-2"><svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.167.85.142 1.205-.068l.79-.479a1.125 1.125 0 0 1 1.345.132l.773.774a1.125 1.125 0 0 1 .132 1.345l-.479.79c-.21.355-.235.807-.068 1.205.166.396.506.71.93.78l.894.15c.542.09.94.56.94 1.11v1.093c0 .55-.398 1.02-.94 1.11l-.894.15c-.424.07-.764.384-.93.78-.167.398-.142.85.068 1.205l.479.79a1.125 1.125 0 0 1-.132 1.345l-.774.773a1.125 1.125 0 0 1-1.345.132l-.79-.479a1.125 1.125 0 0 1-1.205.068c-.396-.166-.71-.506-.78-.93l-.15-.894a1.125 1.125 0 0 1-.09-.56"/></svg></div>
+      <p class="text-xs uppercase tracking-widest font-bold text-brown-dark">Settings</p>
+    </div>
+  </section>
+
   <section class="bg-white rounded-2xl border border-[#e8d8c8]/50 shadow-sm p-6 mb-8">
     <h2 class="font-cormorant text-2xl italic text-[#6b4f35] mb-2">Add Product</h2>
     <p class="text-sm text-[#9e7550] mb-5">Create new products and save them to MongoDB.</p>
