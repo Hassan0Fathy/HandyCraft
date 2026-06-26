@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category Management | Admin | Handy Crafts</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brown:{dark:'#6b4f35',mid:'#9e7550',light:'#c4a882',pale:'#ecdccc'},beige:{soft:'#faf5ef',cream:'#fffdf9'}}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+  <style>
+    body{font-family:'Jost',sans-serif;background-color:#faf5ef;color:#6b4f35}
+    .font-cormorant{font-family:'Cormorant Garamond',serif}
+    .badge-active { background: #fffdf9; color: #2e8b57; border: 1px solid #9acd32; }
+    .badge-inactive { background: #fffdf9; color: #cd5c5c; border: 1px solid #f08080; }
+  </style>
+</head>
+<body class="min-h-screen font-light">
+
+<!-- NAVBAR & DRAWER -->
+<nav class="sticky top-0 z-50 bg-[#fffdf9]/95 backdrop-blur-md border-b border-[#ecdccc]/60">
+<div class="max-w-[1000px] mx-auto px-6 h-16 flex items-center justify-between">
+  
+  <div class="flex items-center w-1/4">
+    <button id="menu-open-btn" aria-label="Open Menu" class="text-[#9e7550] hover:text-[#6b4f35] transition-colors p-1 -ml-1">
+      <svg class="w-[26px] h-[26px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="w-2/4 flex justify-center">
+    <a href="index.html" class="flex flex-col items-center group">
+      <img src="images/logo.png" alt="Handy Crafts" class="h-10 sm:h-12 w-auto transition-transform duration-500 group-hover:scale-105" 
+        onerror="this.style.display='none';document.getElementById('logo-nav-txt').classList.remove('hidden')" />
+      <span id="logo-nav-txt" class="font-cormorant text-xl italic text-brown-mid leading-none hidden">
+        Handy crafts
+      </span>
+    </a>
+  </div>
+
+  <div class="flex items-center justify-end w-1/4 gap-3 sm:gap-4">
+    <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" aria-label="Instagram" class="text-[#c4a882] hover:text-[#9e7550] transition-colors hidden sm:block">
+      <svg class="w-[22px] h-[22px] fill-current" viewBox="0 0 24 24">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </a>
+    <button id="logout-btn" class="text-red-500 hover:text-red-700 transition-colors p-1 text-sm font-medium flex items-center gap-1" title="Logout">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      </svg>
+      <span class="hidden sm:inline">Logout</span>
+    </button>
+  </div>
+</div>
+</nav>
+
+<div id="mobile-drawer-wrapper" class="fixed inset-0 z-[60] pointer-events-none">
+<div id="drawer-backdrop" class="absolute inset-0 bg-black/20 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeDrawer()"></div>
+<div id="drawer-panel" class="absolute top-0 left-0 bottom-0 w-[260px] bg-[#fffdf9] shadow-2xl -translate-x-full transition-transform duration-300 ease-out flex flex-col">
+  <div class="p-6 flex items-center justify-between border-b border-[#ecdccc]/50">
+    <span class="font-cormorant text-2xl italic text-[#6b4f35]">Menu</span>
+    <button onclick="closeDrawer()" class="text-[#c4a882] hover:text-[#6b4f35] p-1">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+    </button>
+  </div>
+  <div class="p-6 flex flex-col gap-6 text-[12px] tracking-widest uppercase font-medium">
+    <a href="admin.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5z"></path></svg> Admin Dashboard</a>
+    <a href="admin-categories.html" class="flex items-center gap-3 text-[#6b4f35] hover:text-[#6b4f35] transition-colors font-bold"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25a2.25 2.25 0 0 1 4.5 0v2.25a2.25 2.25 0 0 1-4.5 0V6zM3.75 15.75a2.25 2.25 0 0 1 2.25-2.25h2.25a2.25 2.25 0 0 1 4.5 0V18a2.25 2.25 0 0 1-4.5 0v-2.25zM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 4.5 0v2.25a2.25 2.25 0 0 1-4.5 0V6zM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 4.5 0V18a2.25 2.25 0 0 1-4.5 0v-2.25z"></path></svg> Categories</a>
+    <a href="index.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.592 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path></svg> Home</a>
+    <a href="products.html" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg> Shop Products</a>
+    <a href="https://wa.me/201012345678" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.595-5.236-3.935-6.831-6.831l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"></path></svg> Contact Us</a>
+    <a href="https://www.instagram.com/handy_crafts1_/" target="_blank" class="flex items-center gap-3 text-[#9e7550] hover:text-[#6b4f35] transition-colors"><svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.98-6.98 6.344-.059 1.28-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 1.98 6.78 6.344 6.98 1.28.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.981 6.979-6.344.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-1.978-6.782-6.344-6.98-1.28-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg> Instagram</a>
+  </div>
+</div>
+</div>
+
+<script>
+// Drawer management
+window.openDrawer = function() {
+  const w = document.getElementById('mobile-drawer-wrapper');
+  if(!w) return;
+  w.classList.remove('pointer-events-none');
+  document.getElementById('drawer-backdrop').classList.remove('opacity-0');
+  document.getElementById('drawer-panel').classList.remove('-translate-x-full');
+};
+
+window.closeDrawer = function() {
+  const w = document.getElementById('mobile-drawer-wrapper');
+  if(!w) return;
+  w.classList.add('pointer-events-none');
+  document.getElementById('drawer-backdrop').classList.add('opacity-0');
+  document.getElementById('drawer-panel').classList.add('-translate-x-full');
+};
+
+// Navbar event listeners
+function initializeNavbarListeners() {
+  const menuBtn = document.getElementById('menu-open-btn');
+  if(menuBtn && !menuBtn.dataset.eventBound) {
+    menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.openDrawer();
+    });
+    menuBtn.dataset.eventBound = 'true';
+  }
+  
+  const logoutBtn = document.getElementById('logout-btn');
+  if(logoutBtn && !logoutBtn.dataset.eventBound) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-login.html';
+    });
+    logoutBtn.dataset.eventBound = 'true';
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initializeNavbarListeners();
+});
+</script>
+
+<main class="max-w-[1000px] mx-auto px-6 pt-24 pb-20">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
+    <div>
+      <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">Categories & Subcategories</h1>
+      <p class="text-[#9e7550] mt-1 text-sm">Manage product categories, subcategories and their sorting order.</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="openAddCategoryModal()" class="bg-[#9e7550] hover:bg-[#7a5c3e] text-white px-5 py-2.5 rounded-lg text-xs uppercase tracking-widest transition">
+        + Add Category
+      </button>
+    </div>
+  </div>
+
+  <!-- CATEGORIES CONTAINER -->
+  <div id="categories-list" class="grid grid-cols-1 gap-8">
+    <div class="text-center py-12 text-[#9e7550]">Loading categories...</div>
+  </div>
+</main>
+
+<!-- ADD CATEGORY MODAL -->
+<div id="add-category-modal" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+  <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeAddCategoryModal()"></div>
+  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300 animate-modal" id="add-cat-modal-content">
+    <div class="p-6 border-b border-[#ecdccc] flex justify-between items-center bg-[#faf5ef]">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Add Category</h2>
+      <button onclick="closeAddCategoryModal()" class="text-[#c4a882] hover:text-[#6b4f35] p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="p-6 overflow-y-auto">
+      <form id="add-category-form" class="space-y-4">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Category Name</label>
+          <input id="cat-name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Image (Optional)</label>
+          <input id="cat-image-file" type="file" accept="image/*" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer focus:outline-none">
+          <p class="text-[10px] text-[#c4a882] mt-1">Leave blank to not use any image.</p>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Display Order</label>
+          <input id="cat-order" type="number" value="0" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="cat-active" checked class="w-4 h-4 rounded cursor-pointer">
+          <label for="cat-active" class="text-sm text-[#9e7550] cursor-pointer">Is Active (Visible on public site)</label>
+        </div>
+        <button type="submit" id="add-cat-submit-btn" class="w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3 rounded-lg text-xs uppercase tracking-widest transition">Add Category</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT CATEGORY MODAL -->
+<div id="edit-category-modal" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+  <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeEditCategoryModal()"></div>
+  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300" id="edit-cat-modal-content">
+    <div class="p-6 border-b border-[#ecdccc] flex justify-between items-center bg-[#faf5ef]">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Edit Category</h2>
+      <button onclick="closeEditCategoryModal()" class="text-[#c4a882] hover:text-[#6b4f35] p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="p-6 overflow-y-auto">
+      <form id="edit-category-form" class="space-y-4">
+        <input type="hidden" id="edit-cat-id">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Category Name</label>
+          <input id="edit-cat-name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Image (Optional, upload to replace)</label>
+          <input id="edit-cat-image-file" type="file" accept="image/*" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer focus:outline-none">
+          <p class="text-[10px] text-[#c4a882] mt-1">Leave empty to keep current image.</p>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Display Order</label>
+          <input id="edit-cat-order" type="number" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <button type="submit" id="edit-cat-submit-btn" class="w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3 rounded-lg text-xs uppercase tracking-widest transition">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SUBCATEGORY MODAL -->
+<div id="add-subcategory-modal" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+  <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeAddSubcategoryModal()"></div>
+  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300" id="add-sub-modal-content">
+    <div class="p-6 border-b border-[#ecdccc] flex justify-between items-center bg-[#faf5ef]">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Add Subcategory</h2>
+      <button onclick="closeAddSubcategoryModal()" class="text-[#c4a882] hover:text-[#6b4f35] p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="p-6 overflow-y-auto">
+      <form id="add-subcategory-form" class="space-y-4">
+        <input type="hidden" id="add-sub-cat-id">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Parent Category</label>
+          <input id="add-sub-parent-name" type="text" readonly disabled class="w-full rounded-lg border border-[#ecdccc] bg-gray-50 px-4 py-2.5 text-gray-500 font-medium">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Subcategory Name</label>
+          <input id="sub-name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Image (Optional)</label>
+          <input id="sub-image-file" type="file" accept="image/*" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Display Order</label>
+          <input id="sub-order" type="number" value="0" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <button type="submit" id="add-sub-submit-btn" class="w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3 rounded-lg text-xs uppercase tracking-widest transition">Add Subcategory</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SUBCATEGORY MODAL -->
+<div id="edit-subcategory-modal" class="fixed inset-0 z-[70] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+  <div class="absolute inset-0 bg-[#4a3728]/40 backdrop-blur-sm" onclick="closeEditSubcategoryModal()"></div>
+  <div class="bg-white w-full max-w-[500px] max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl relative flex flex-col transform scale-95 transition-transform duration-300" id="edit-sub-modal-content">
+    <div class="p-6 border-b border-[#ecdccc] flex justify-between items-center bg-[#faf5ef]">
+      <h2 class="font-cormorant text-2xl italic text-[#6b4f35]">Edit Subcategory</h2>
+      <button onclick="closeEditSubcategoryModal()" class="text-[#c4a882] hover:text-[#6b4f35] p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="p-6 overflow-y-auto">
+      <form id="edit-subcategory-form" class="space-y-4">
+        <input type="hidden" id="edit-sub-id">
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Subcategory Name</label>
+          <input id="edit-sub-name" type="text" required class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Image (Optional, upload to replace)</label>
+          <input id="edit-sub-image-file" type="file" accept="image/*" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer focus:outline-none">
+          <p class="text-[10px] text-[#c4a882] mt-1">Leave empty to keep current image.</p>
+        </div>
+        <div>
+          <label class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Display Order</label>
+          <input id="edit-sub-order" type="number" class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 focus:outline-none focus:border-[#9e7550]">
+        </div>
+        <button type="submit" id="edit-sub-submit-btn" class="w-full bg-[#9e7550] hover:bg-[#7a5c3e] text-white py-3 rounded-lg text-xs uppercase tracking-widest transition">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
+
+  function checkAuth() {
+    const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+    if (!isAuthenticated) {
+      window.location.href = 'admin-login.html';
+      return false;
+    }
+    return localStorage.getItem('adminToken') || '';
+  }
+
+  function getAuthHeaders(token) {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  }
+
+  function handleAuthError(response) {
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminAuthenticated');
+      window.location.href = 'admin-login.html';
+      return true;
+    }
+    return false;
+  }
+
+  const adminToken = checkAuth();
+  if (adminToken === false) {
+    throw new Error('Unauthorized');
+  }
+
+  let categories = [];
+  let subcategories = [];
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  async function compressImage(file) {
+    if (!file.type.startsWith('image/')) return file;
+    const options = {
+      maxSizeMB: 1.0,
+      maxWidthOrHeight: 1200,
+      useWebWorker: true,
+      fileType: 'image/jpeg',
+      initialQuality: 0.8
+    };
+    try {
+      return await imageCompression(file, options);
+    } catch (error) {
+      console.warn('Compression failed, using original file:', error);
+      return file;
+    }
+  }
+
+  async function uploadImageToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/upload/image`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${adminToken}` },
+      body: formData
+    });
+
+    const data = await response.json();
+    if (!data.success) throw new Error(data.message || 'Upload failed');
+    return data.url;
+  }
+
+  async function fetchAllData() {
+    try {
+      // Fetch categories
+      const catResponse = await fetch(`${API_BASE_URL}/categories`);
+      const catResult = await catResponse.json();
+      categories = catResult.data || [];
+
+      // Fetch subcategories
+      const subResponse = await fetch(`${API_BASE_URL}/subcategories`);
+      const subResult = await subResponse.json();
+      subcategories = subResult.data || [];
+
+      renderUI();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      document.getElementById('categories-list').innerHTML = `<div class="text-center py-12 text-red-600 font-medium">Error loading Categories: ${escapeHtml(error.message)}</div>`;
+    }
+  }
+
+  function renderUI() {
+    const list = document.getElementById('categories-list');
+    if (categories.length === 0) {
+      list.innerHTML = `<div class="text-center py-12 text-[#9e7550] font-medium bg-white rounded-2xl border border-[#ecdccc]/50">No categories found. Click "+ Add Category" to create one.</div>`;
+      return;
+    }
+
+    list.innerHTML = '';
+
+    categories.forEach((cat, index) => {
+      const catSubs = subcategories.filter(sub => sub.categoryId === cat._id);
+
+      // Create category card template
+      const catCard = document.createElement('div');
+      catCard.className = "bg-white rounded-2xl border border-[#e8d8c8]/50 shadow-sm p-6 hover:shadow-md transition duration-300";
+      
+      const badgeClass = cat.isActive ? 'badge-active' : 'badge-inactive';
+      const activeText = cat.isActive ? 'Active' : 'Disabled';
+      const toggleBtnText = cat.isActive ? 'Disable' : 'Enable';
+
+      catCard.innerHTML = `
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brown-pale/30 pb-4 mb-6">
+          <div class="flex items-center gap-4">
+            ${cat.image ? `<img src="${escapeHtml(cat.image)}" class="w-12 h-12 object-cover rounded-lg border border-brown-pale" onerror="this.style.display='none'">` : `<div class="w-12 h-12 rounded-lg bg-beige-soft flex items-center justify-center text-brown-mid text-xs font-bold uppercase">No Img</div>`}
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-cormorant text-2xl italic text-brown-dark font-semibold">${escapeHtml(cat.name)}</h3>
+                <span class="text-[9px] uppercase tracking-widest font-semibold py-0.5 px-2 rounded-md ${badgeClass}">${activeText}</span>
+              </div>
+              <p class="text-[11px] text-brown-light mt-0.5 font-mono">Slug: ${escapeHtml(cat.slug)} · Order: ${cat.order}</p>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Reorder Controls -->
+            <button onclick="moveCategory(${index}, 'up')" ${index === 0 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-beige-soft text-brown-mid"'} title="Move Up" class="p-1.5 rounded border border-brown-pale/40 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+            </button>
+            <button onclick="moveCategory(${index}, 'down')" ${index === categories.length - 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-beige-soft text-brown-mid"'} title="Move Down" class="p-1.5 rounded border border-brown-pale/40 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+
+            <!-- Actions -->
+            <button onclick="toggleCategoryActive('${cat._id}')" class="px-3 py-1.5 text-[10px] uppercase font-bold tracking-widest text-brown-dark bg-beige-soft hover:bg-[#ebdccc] rounded-lg transition">${toggleBtnText}</button>
+            <button onclick="openEditCategoryModal('${cat._id}')" class="px-3 py-1.5 text-[10px] uppercase font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-100 hover:bg-blue-100 rounded-lg transition">Edit</button>
+            <button onclick="deleteCategory('${cat._id}')" class="px-3 py-1.5 text-[10px] uppercase font-bold tracking-widest text-red-600 bg-red-50 border border-red-100 hover:bg-red-100 rounded-lg transition">Delete</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <h4 class="text-xs uppercase tracking-widest text-brown-mid font-medium">Subcategories (${catSubs.length})</h4>
+            <button onclick="openAddSubcategoryModal('${cat._id}', '${escapeHtml(cat.name)}')" class="text-[10px] uppercase tracking-widest font-bold text-brown-mid border border-brown-pale/60 px-3 py-1.5 rounded-lg hover:bg-beige-soft transition">
+              + Add Subcategory
+            </button>
+          </div>
+
+          <!-- SUBCATEGORIES LIST -->
+          ${catSubs.length === 0 ? `
+            <div class="text-center py-4 text-xs text-brown-light italic bg-beige-soft/40 rounded-xl border border-dashed border-brown-pale/40">No subcategories created for this category yet.</div>
+          ` : `
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-brown-dark">
+                <thead>
+                  <tr class="border-b border-brown-pale/30 text-[10px] uppercase tracking-wider text-brown-light">
+                    <th class="py-2">Image</th>
+                    <th class="py-2">Subcategory Name</th>
+                    <th class="py-2">Status</th>
+                    <th class="py-2">Slug</th>
+                    <th class="py-2 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${catSubs.map((sub, sIdx) => {
+                    const subBadgeClass = sub.isActive ? 'badge-active' : 'badge-inactive';
+                    const subActiveText = sub.isActive ? 'Active' : 'Disabled';
+                    const subToggleBtnText = sub.isActive ? 'Disable' : 'Enable';
+                    
+                    return `
+                      <tr class="border-b border-brown-pale/20 hover:bg-beige-soft/30 transition">
+                        <td class="py-2.5">
+                          ${sub.image ? `<img src="${escapeHtml(sub.image)}" class="w-8 h-8 object-cover rounded-md border border-brown-pale">` : `<div class="w-8 h-8 rounded-md bg-beige-soft flex items-center justify-center text-[8px] font-bold text-brown-light">None</div>`}
+                        </td>
+                        <td class="py-2.5 font-medium text-sm text-brown-dark">${escapeHtml(sub.name)}</td>
+                        <td class="py-2.5">
+                          <span class="text-[8px] uppercase tracking-wider font-semibold py-0.5 px-1.5 rounded ${subBadgeClass}">${subActiveText}</span>
+                        </td>
+                        <td class="py-2.5 font-mono text-[10px] text-brown-light">${escapeHtml(sub.slug)} · Order: ${sub.order}</td>
+                        <td class="py-2.5 text-right flex items-center justify-end gap-1">
+                          <!-- Subcategory Order Controls -->
+                          <button onclick="moveSubcategory('${sub._id}', 'up')" ${sIdx === 0 ? 'disabled class="opacity-20 cursor-not-allowed text-brown-light"' : 'class="hover:bg-beige-soft text-brown-mid"'} class="p-1 rounded transition border border-transparent">
+                            ▲
+                          </button>
+                          <button onclick="moveSubcategory('${sub._id}', 'down')" ${sIdx === catSubs.length - 1 ? 'disabled class="opacity-20 cursor-not-allowed text-brown-light"' : 'class="hover:bg-beige-soft text-brown-mid"'} class="p-1 rounded transition border border-transparent">
+                            ▼
+                          </button>
+
+                          <button onclick="toggleSubcategoryActive('${sub._id}')" class="px-2 py-1 text-[9px] font-bold uppercase rounded hover:bg-beige-soft text-brown-dark transition">${subToggleBtnText}</button>
+                          <button onclick="openEditSubcategoryModal('${sub._id}')" class="px-2 py-1 text-[9px] font-bold uppercase rounded text-blue-600 hover:bg-blue-50 transition">Edit</button>
+                          <button onclick="deleteSubcategory('${sub._id}')" class="px-2 py-1 text-[9px] font-bold uppercase rounded text-red-600 hover:bg-red-50 transition">Delete</button>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+
+      list.appendChild(catCard);
+    });
+  }
+
+  // CATEGORIES CRUD operations
+  window.openAddCategoryModal = function() {
+    const modal = document.getElementById('add-category-modal');
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    document.getElementById('add-cat-modal-content').classList.remove('scale-95');
+  };
+
+  window.closeAddCategoryModal = function() {
+    const modal = document.getElementById('add-category-modal');
+    modal.classList.add('pointer-events-none', 'opacity-0');
+    document.getElementById('add-cat-modal-content').classList.add('scale-95');
+  };
+
+  document.getElementById('add-category-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('add-cat-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const name = document.getElementById('cat-name').value.trim();
+    const order = parseInt(document.getElementById('cat-order').value) || 0;
+    const isActive = document.getElementById('cat-active').checked;
+    const imgFile = document.getElementById('cat-image-file').files[0];
+
+    try {
+      let image = '';
+      if (imgFile) {
+        btn.textContent = 'Optimizing image...';
+        const compressed = await compressImage(imgFile);
+        btn.textContent = 'Uploading image...';
+        image = await uploadImageToCloudinary(compressed);
+      }
+
+      btn.textContent = 'Creating...';
+      const response = await fetch(`${API_BASE_URL}/categories`, {
+        method: 'POST',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify({ name, image, order, isActive })
+      });
+
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to create category');
+
+      document.getElementById('add-category-form').reset();
+      closeAddCategoryModal();
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Add Category';
+    }
+  });
+
+  window.openEditCategoryModal = function(id) {
+    const cat = categories.find(c => c._id === id);
+    if (!cat) return;
+    document.getElementById('edit-cat-id').value = cat._id;
+    document.getElementById('edit-cat-name').value = cat.name;
+    document.getElementById('edit-cat-order').value = cat.order;
+
+    const modal = document.getElementById('edit-category-modal');
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    document.getElementById('edit-cat-modal-content').classList.remove('scale-95');
+  };
+
+  window.closeEditCategoryModal = function() {
+    const modal = document.getElementById('edit-category-modal');
+    modal.classList.add('pointer-events-none', 'opacity-0');
+    document.getElementById('edit-cat-modal-content').classList.add('scale-95');
+  };
+
+  document.getElementById('edit-category-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('edit-cat-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const id = document.getElementById('edit-cat-id').value;
+    const name = document.getElementById('edit-cat-name').value.trim();
+    const order = parseInt(document.getElementById('edit-cat-order').value) || 0;
+    const imgFile = document.getElementById('edit-cat-image-file').files[0];
+
+    try {
+      const payload = { name, order };
+      
+      if (imgFile) {
+        btn.textContent = 'Optimizing image...';
+        const compressed = await compressImage(imgFile);
+        btn.textContent = 'Uploading image...';
+        payload.image = await uploadImageToCloudinary(compressed);
+      }
+
+      btn.textContent = 'Saving...';
+      const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify(payload)
+      });
+
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to update category');
+
+      document.getElementById('edit-category-form').reset();
+      closeEditCategoryModal();
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Changes';
+    }
+  });
+
+  window.toggleCategoryActive = async function(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/categories/${id}/toggle-active`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(adminToken)
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to toggle status');
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  window.deleteCategory = async function(id) {
+    if (!confirm('Are you sure you want to delete this category? All subcategories will remain but won\'t have parent. Confirm?')) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(adminToken)
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) {
+        // Handle specifically data safety warning
+        throw new Error(result.message || 'Failed to delete category');
+      }
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // SUBCATEGORIES CRUD operations
+  window.openAddSubcategoryModal = function(catId, catName) {
+    document.getElementById('add-sub-cat-id').value = catId;
+    document.getElementById('add-sub-parent-name').value = catName;
+
+    const modal = document.getElementById('add-subcategory-modal');
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    document.getElementById('add-sub-modal-content').classList.remove('scale-95');
+  };
+
+  window.closeAddSubcategoryModal = function() {
+    const modal = document.getElementById('add-subcategory-modal');
+    modal.classList.add('pointer-events-none', 'opacity-0');
+    document.getElementById('add-sub-modal-content').classList.add('scale-95');
+  };
+
+  document.getElementById('add-subcategory-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('add-sub-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const categoryId = document.getElementById('add-sub-cat-id').value;
+    const name = document.getElementById('sub-name').value.trim();
+    const order = parseInt(document.getElementById('sub-order').value) || 0;
+    const imgFile = document.getElementById('sub-image-file').files[0];
+
+    try {
+      let image = '';
+      if (imgFile) {
+        btn.textContent = 'Optimizing image...';
+        const compressed = await compressImage(imgFile);
+        btn.textContent = 'Uploading image...';
+        image = await uploadImageToCloudinary(compressed);
+      }
+
+      btn.textContent = 'Creating...';
+      const response = await fetch(`${API_BASE_URL}/subcategories`, {
+        method: 'POST',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify({ categoryId, name, image, order, isActive: true })
+      });
+
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to create subcategory');
+
+      document.getElementById('add-subcategory-form').reset();
+      closeAddSubcategoryModal();
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Add Subcategory';
+    }
+  });
+
+  window.openEditSubcategoryModal = function(id) {
+    const sub = subcategories.find(s => s._id === id);
+    if (!sub) return;
+    document.getElementById('edit-sub-id').value = sub._id;
+    document.getElementById('edit-sub-name').value = sub.name;
+    document.getElementById('edit-sub-order').value = sub.order;
+
+    const modal = document.getElementById('edit-subcategory-modal');
+    modal.classList.remove('pointer-events-none', 'opacity-0');
+    document.getElementById('edit-sub-modal-content').classList.remove('scale-95');
+  };
+
+  window.closeEditSubcategoryModal = function() {
+    const modal = document.getElementById('edit-subcategory-modal');
+    modal.classList.add('pointer-events-none', 'opacity-0');
+    document.getElementById('edit-sub-modal-content').classList.add('scale-95');
+  };
+
+  document.getElementById('edit-subcategory-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('edit-sub-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const id = document.getElementById('edit-sub-id').value;
+    const name = document.getElementById('edit-sub-name').value.trim();
+    const order = parseInt(document.getElementById('edit-sub-order').value) || 0;
+    const imgFile = document.getElementById('edit-sub-image-file').files[0];
+
+    try {
+      const payload = { name, order };
+
+      if (imgFile) {
+        btn.textContent = 'Optimizing image...';
+        const compressed = await compressImage(imgFile);
+        btn.textContent = 'Uploading image...';
+        payload.image = await uploadImageToCloudinary(compressed);
+      }
+
+      btn.textContent = 'Saving...';
+      const response = await fetch(`${API_BASE_URL}/subcategories/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify(payload)
+      });
+
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to update subcategory');
+
+      document.getElementById('edit-subcategory-form').reset();
+      closeEditSubcategoryModal();
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Changes';
+    }
+  });
+
+  window.toggleSubcategoryActive = async function(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/subcategories/${id}/toggle-active`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(adminToken)
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to toggle status');
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  window.deleteSubcategory = async function(id) {
+    if (!confirm('Are you sure you want to delete this subcategory?')) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/subcategories/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(adminToken)
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) {
+        // Handle specifically data safety warning
+        throw new Error(result.message || 'Failed to delete subcategory');
+      }
+      fetchAllData();
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // REORDER LOGIC
+  window.moveCategory = async function(index, direction) {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === categories.length - 1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    // Swap elements locally
+    const temp = categories[index];
+    categories[index] = categories[targetIndex];
+    categories[targetIndex] = temp;
+
+    // Build the orderMap
+    const orderMap = {};
+    categories.forEach((cat, idx) => {
+      cat.order = idx; // Update local state representation
+      orderMap[cat._id] = idx;
+    });
+
+    // Rerender instantly
+    renderUI();
+
+    // Persist to database automatically
+    try {
+      const response = await fetch(`${API_BASE_URL}/categories/reorder`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify({ orderMap })
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to persist category order');
+    } catch (error) {
+      console.error('Failed to save category order:', error);
+      alert('Failed to save order to server: ' + error.message);
+      fetchAllData(); // Rollback to actual state
+    }
+  };
+
+  window.moveSubcategory = async function(subId, direction) {
+    const sub = subcategories.find(s => s._id === subId);
+    if (!sub) return;
+
+    const catSubs = subcategories.filter(s => s.categoryId === sub.categoryId);
+    const index = catSubs.findIndex(s => s._id === subId);
+
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === catSubs.length - 1) return;
+
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+    // Swap elements in subcategories list
+    const originalGlobalIdx = subcategories.findIndex(s => s._id === subId);
+    const targetGlobalIdx = subcategories.findIndex(s => s._id === catSubs[targetIndex]._id);
+
+    const temp = subcategories[originalGlobalIdx];
+    subcategories[originalGlobalIdx] = subcategories[targetGlobalIdx];
+    subcategories[targetGlobalIdx] = temp;
+
+    // Recompute orders for the subset of subcategories belonging to this category
+    const orderMap = {};
+    const updatedCatSubs = subcategories.filter(s => s.categoryId === sub.categoryId);
+    updatedCatSubs.forEach((s, idx) => {
+      s.order = idx; // Update local state representation
+      orderMap[s._id] = idx;
+    });
+
+    // Rerender instantly
+    renderUI();
+
+    // Persist to database automatically
+    try {
+      const response = await fetch(`${API_BASE_URL}/subcategories/reorder`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(adminToken),
+        body: JSON.stringify({ orderMap })
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Failed to persist subcategory order');
+    } catch (error) {
+      console.error('Failed to save subcategory order:', error);
+      alert('Failed to save subcategory order to server: ' + error.message);
+      fetchAllData(); // Rollback to actual state
+    }
+  };
+
+  // Start initialization
+  fetchAllData();
+</script>
+</body>
+</html>
