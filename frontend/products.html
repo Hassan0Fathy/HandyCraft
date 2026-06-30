@@ -220,24 +220,39 @@ if (document.readyState === 'loading') {
 
 
 <!-- ═══════ PAGE HEADER ═══════ -->
-  <div class="max-w-[520px] mx-auto px-6 pt-12 pb-2 anim-1">
-    <a href="index.html" id="back-btn"
-       class="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition mb-7">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-      </svg>
-      Back
-    </a>
-    <h1 id="page-title" class="font-cormorant italic text-[42px] leading-tight text-[#6b4f35] mb-1">
-      All Products
-    </h1>
-    <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-10">
-      Custom-made just for you ✦
-    </p>
-  </div>
+<div class="max-w-[520px] mx-auto px-6 pt-12 pb-2 anim-1">
+  <a href="index.html" id="back-btn"
+     class="inline-flex items-center gap-1.5 text-[11px] tracking-[0.2em] uppercase text-[#c4a882] hover:text-[#9e7550] transition mb-7">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+    </svg>
+    Back
+  </a>
+  <h1 id="page-title" class="font-cormorant italic text-[42px] leading-tight text-[#6b4f35] mb-1">
+    All Products
+  </h1>
+  <p class="text-[11px] tracking-[0.2em] uppercase text-[#c4a882] mb-10">
+    Custom-made just for you ✦
+  </p>
+</div>
 
-  <!-- ═══════ FILTER TABS ═══════ -->
-  <div class="max-w-[520px] mx-auto px-6 mb-4 anim-2">
+<!-- ═══════ SEARCH BAR ═══════ -->
+<div class="max-w-[520px] mx-auto px-6 mb-6 anim-2">
+  <div class="relative group">
+    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      <svg class="w-4 h-4 text-[#c4a882] group-focus-within:text-[#9e7550] transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+    <input type="text" id="product-search" 
+      placeholder="Search products, categories..." 
+      class="w-full pl-11 pr-4 py-3 bg-white border border-[#ecdccc] rounded-full text-sm text-[#6b4f35] placeholder-[#c4a882] focus:outline-none focus:ring-2 focus:ring-[#9e7550]/20 focus:border-[#9e7550] transition-all duration-200"
+    />
+  </div>
+</div>
+
+<!-- ═══════ FILTER TABS ═══════ -->
+<div class="max-w-[520px] mx-auto px-6 mb-4 anim-2">
     <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
     </div>
   </div>
@@ -246,8 +261,12 @@ if (document.readyState === 'loading') {
 
   <!-- ═══════ PRODUCT GRID ═══════ -->
   <section class="max-w-7xl mx-auto px-6 pb-28 anim-3">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="product-grid">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8" id="product-grid">
       <!-- Products will be rendered here by JavaScript -->
+    </div>
+    <div id="no-products-found" class="hidden text-center py-20">
+      <p class="font-cormorant italic text-2xl text-[#9e7550]">No products found.</p>
+      <p class="text-[11px] tracking-widest uppercase text-[#c4a882] mt-2">Try adjusting your search or filters</p>
     </div>
   </section>
 
@@ -368,6 +387,16 @@ if (document.readyState === 'loading') {
         card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
         card.dataset.cat = product.category;
         card.dataset.subcat = product.subcategory || '';
+        
+        // Searchable metadata: name, category, subcategory, and SKU
+        const searchTerms = [
+          product.name,
+          product.category,
+          product.subcategory,
+          product.sku
+        ].filter(Boolean).join(' ').toLowerCase();
+        card.dataset.searchText = searchTerms;
+
         card.onclick = () => window.location.href = `product-details.html?id=${encodeURIComponent(product._id)}`;
 
         card.innerHTML = `
@@ -385,6 +414,7 @@ if (document.readyState === 'loading') {
 
     let currentCat = 'all';
     let currentSubCat = 'all';
+    let searchQuery = '';
 
     function filterCat(catName) {
       currentCat = catName;
@@ -408,15 +438,40 @@ if (document.readyState === 'loading') {
     }
 
     function applyFilters() {
+      let visibleCount = 0;
       document.querySelectorAll('#product-grid .prod-card').forEach(card => {
         const matchesCat = currentCat === 'all' || card.dataset.cat === currentCat;
         const matchesSubCat = currentSubCat === 'all' || card.dataset.subcat === currentSubCat;
-        card.style.display = (matchesCat && matchesSubCat) ? '' : 'none';
+        
+        // Search match using dedicated searchable metadata attribute
+        const searchTerms = card.dataset.searchText || '';
+        const matchesSearch = searchQuery === '' || searchTerms.includes(searchQuery.toLowerCase());
+        
+        if (matchesCat && matchesSubCat && matchesSearch) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
       });
+
+      const emptyState = document.getElementById('no-products-found');
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', visibleCount > 0);
+      }
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', fetchData);
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchData();
+      const searchInput = document.getElementById('product-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          applyFilters();
+        });
+      }
+    });
 
   </script>
 </body>
