@@ -362,6 +362,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       activeProduct = product;
       currentVariant = null;
 
+      const isOutOfStock = product.status === 'out-of-stock';
+
       // Get images array - support both old (image) and new (images) formats
       let images = [];
       if (Array.isArray(product.images) && product.images.length > 0) {
@@ -426,8 +428,15 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
       productContainer.innerHTML = `
         <div class="anim-1">
-          <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc] bg-[#f5ede3]">
-            <img id="main-image" src="${mainImage}" class="w-full h-full object-cover transition duration-300" onerror="this.src='images/placeholder.png'" />
+          <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc] bg-[#f5ede3] relative">
+            <img id="main-image" src="${mainImage}" class="w-full h-full object-cover transition duration-300 ${isOutOfStock ? 'opacity-60' : ''}" onerror="this.src='images/placeholder.png'" />
+            ${isOutOfStock ? `
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="bg-red-500 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
+                  Out of Stock
+                </div>
+              </div>
+            ` : ''}
           </div>
           
           ${variantThumbnailsHtml}
@@ -437,7 +446,12 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           </div>
           
           <div class="flex justify-between items-start mb-2 mt-6">
-            <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name || 'Product'}</h1>
+            <div class="flex flex-col">
+              <h1 class="font-cormorant text-3xl italic text-[#6b4f35]">${product.name || 'Product'}</h1>
+              ${isOutOfStock ? `
+                <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest mt-1">Currently Unavailable</span>
+              ` : ''}
+            </div>
             <span id="product-price" class="text-lg font-medium text-[#9e7550]">${priceDisplay} EGP</span>
           </div>
           <p class="text-[10px] tracking-[0.2em] text-[#c4a882] mb-6">${product.category || 'Handmade Gift'}</p>
@@ -459,7 +473,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
           <div class="bg-white rounded-2xl p-5 border border-[#ecdccc]/50 mb-6">
             <h3 class="text-[10px] uppercase tracking-widest text-[#9e7550] mb-4">Quantity</h3>
-            <div class="flex items-center bg-[#faf5ef] rounded-lg border border-[#ecdccc] w-fit overflow-hidden mb-3">
+            <div class="flex items-center bg-[#faf5ef] rounded-lg border border-[#ecdccc] w-fit overflow-hidden mb-3 ${isOutOfStock ? 'opacity-50 pointer-events-none' : ''}">
               <button type="button" onclick="decreaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">−</button>
               <input id="qty-input" type="number" min="1" value="1" class="w-12 text-center border-0 bg-[#faf5ef] focus:ring-0 outline-none text-[#6b4f35] font-medium" />
               <button type="button" onclick="increaseQty()" class="px-3 py-2 text-[#9e7550] hover:bg-white transition font-medium">+</button>
@@ -479,8 +493,8 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
           </div>
 
           <div class="flex gap-3">
-            <button id="add-to-cart-btn" class="flex-1 bg-[#9e7550] text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
-              Add to cart
+            <button id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} class="flex-1 bg-[#9e7550] text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
+              ${isOutOfStock ? 'Out of Stock' : 'Add to cart'}
             </button>
             <a href="products.html" class="flex-1 bg-[#f5ede3] text-[#9e7550] py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#ebdccc] transition text-center border border-[#ecdccc]">
               Back

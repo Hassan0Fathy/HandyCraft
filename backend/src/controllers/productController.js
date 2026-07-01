@@ -31,10 +31,11 @@ async function deleteProduct(req, res, next) {
 
 async function updateProduct(req, res, next) {
   try {
-    const { name, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body;
+    const { name, sku, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants, status } = req.body;
     
     const updateData = {
       name,
+      sku,
       price,
       category,
       subcategory,
@@ -43,7 +44,8 @@ async function updateProduct(req, res, next) {
       hasVariants,
       images,
       customFields,
-      variants
+      variants,
+      status
     };
 
     // Remove undefined fields to avoid overwriting with null if they weren't provided

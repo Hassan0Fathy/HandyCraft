@@ -10,18 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-  <style>
-    body{font-family:'Jost',sans-serif;background-color:#faf5ef;color:#6b4f35}
-    .font-cormorant{font-family:'Cormorant Garamond',serif}
-    .filter-tab.active { background: #6b4f35; color: #fffdf9; border-color: #6b4f35; }
-    .status-Pending { background: #fffdf9; color: #b8860b; border: 1px solid #ffe4b5; }
-    .status-Paid { background: #fffdf9; color: #4682b4; border: 1px solid #b0d4ff; }
-    .status-Completed { background: #fffdf9; color: #2e8b57; border: 1px solid #9acd32; }
-    .status-Rejected { background: #fffdf9; color: #cd5c5c; border: 1px solid #f08080; }
-  </style>
-</head>
-<body class="min-h-screen font-light">
+      <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+      <script src="image-manager.js"></script>
+      <style>
+        body{font-family:'Jost',sans-serif;background-color:#faf5ef;color:#6b4f35}
+        .font-cormorant{font-family:'Cormorant Garamond',serif}
+        .filter-tab.active { background: #6b4f35; color: #fffdf9; border-color: #6b4f35; }
+        .status-Pending { background: #fffdf9; color: #b8860b; border: 1px solid #ffe4b5; }
+        .status-Paid { background: #fffdf9; color: #4682b4; border: 1px solid #b0d4ff; }
+        .status-Completed { background: #fffdf9; color: #2e8b57; border: 1px solid #9acd32; }
+        .status-Rejected { background: #fffdf9; color: #cd5c5c; border: 1px solid #f08080; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      </style>
+    </head>
+    <body class="min-h-screen font-light">
 
 
 <!-- NAVBAR & DRAWER -->
@@ -212,9 +215,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <label for="bestseller" class="text-sm text-[#9e7550] cursor-pointer">Add to Best Sellers</label>
       </div>
       <div>
-        <label for="image" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Images (Multiple)</label>
-        <input type="file" id="image" name="image" accept="image/*" multiple class="w-full rounded-lg border border-[#ecdccc] px-4 py-2.5 bg-white cursor-pointer">
-        <p class="text-[10px] text-[#c4a882] mt-1">You can select multiple images. They will be displayed as a gallery on the product page.</p>
+        <label for="image" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Product Images</label>
+        <div id="add-product-images-manager"></div>
+        <input type="hidden" id="image-urls" name="image-urls">
       </div>
       <div class="md:col-span-2">
         <label for="description" class="block text-xs uppercase tracking-widest text-[#9e7550] mb-2">Description</label>
@@ -457,6 +460,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return response.json();
   }
 
+  // Initialize Image Manager for Add Product
+  let imageManager;
+  document.addEventListener('DOMContentLoaded', () => {
+    imageManager = new ImageManager('add-product-images-manager', [], (imgs) => {
+        document.getElementById('image-urls').value = JSON.stringify(imgs);
+    });
+  });
+
   async function createProduct(event) {
     event.preventDefault();
 
@@ -487,39 +498,9 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("Price must be a positive number");
       }
 
-      const imageFiles = document.getElementById("image").files;
-      if (imageFiles.length === 0) {
-        throw new Error("Please choose at least one product image");
-      }
-
-      const uploadedImages = [];
-
-      for (let i = 0; i < imageFiles.length; i++) {
-        let file = imageFiles[i];
-
-        if (!file.type.startsWith('image/')) {
-          throw new Error(`File ${file.name} is not an image`);
-        }
-
-        // Safe limit for extremely large files before compression
-        if (file.size > 50 * 1024 * 1024) {
-          throw new Error(`File ${file.name} is too large (max 50MB before optimization)`);
-        }
-
-        try {
-          submitBtn.textContent = `Optimizing image ${i + 1}/${imageFiles.length}...`;
-          file = await compressImage(file);
-          
-          submitBtn.textContent = `Uploading image ${i + 1}/${imageFiles.length}...`;
-          const url = await uploadImageToCloudinary(file);
-          uploadedImages.push(url);
-        } catch (uploadErr) {
-          throw new Error(`Failed to upload ${file.name}: ${uploadErr.message}`);
-        }
-      }
-
+      const uploadedImages = imageManager.getImages();
       if (uploadedImages.length === 0) {
-        throw new Error("No images were successfully uploaded");
+        throw new Error("Please add at least one product image");
       }
 
       const customFields = readCustomFields();
@@ -565,6 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
       messageEl.className = 'text-sm text-green-600 font-medium';
 
       form.reset();
+      imageManager.setImages([]);
       document.getElementById("custom-fields-list").innerHTML = "";
 
       setTimeout(() => {

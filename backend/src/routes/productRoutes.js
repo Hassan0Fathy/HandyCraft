@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.get("/", async (req, res, next) => {
   try {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const isAdmin = req.query.admin === 'true';
+    const filter = isAdmin ? {} : { status: { $ne: 'hidden' } };
+    const products = await Product.find(filter).sort({ createdAt: -1 });
     return res.json(products);
   } catch (err) {
     return next(err);
@@ -18,6 +20,12 @@ router.get("/:id", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ error: "Not found" });
+    
+    const isAdmin = req.query.admin === 'true';
+    if (!isAdmin && product.status === 'hidden') {
+      return res.status(404).json({ error: "Not found" });
+    }
+    
     return res.json(product);
   } catch (err) {
     return next(err);
@@ -26,13 +34,14 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", verifyAuth, async (req, res) => {
   try {
-    const { name, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body || {};
+    const { name, sku, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body || {};
     if (!name || !price || !category || !description) {
       return res.status(400).json({ error: "Missing required fields: name, price, category, description" });
     }
 
     const product = await Product.create({
       name: String(name).trim(),
+      sku: sku ? String(sku).trim() : undefined,
       price: Number(price),
       category: String(category).trim(),
       subcategory: String(subcategory || "").trim(),

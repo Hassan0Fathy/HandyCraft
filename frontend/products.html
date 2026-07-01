@@ -377,18 +377,21 @@ if (document.readyState === 'loading') {
       grid.innerHTML = '';
 
       allProducts.forEach((product) => {
+        if (product.status === 'hidden') return;
+
         let mainImage = 'images/placeholder.png';
         
         if (Array.isArray(product.images) && product.images.length > 0) {
           mainImage = product.images[0];
         }
 
+        const isOutOfStock = product.status === 'out-of-stock';
+
         const card = document.createElement('div');
-        card.className = 'prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer';
+        card.className = `prod-card group bg-white rounded-lg overflow-hidden ring-1 ring-[#ecdccc]/50 hover:ring-[#9e7550]/70 hover:shadow-xl transition-all duration-300 cursor-pointer ${isOutOfStock ? 'opacity-75' : ''}`;
         card.dataset.cat = product.category;
         card.dataset.subcat = product.subcategory || '';
         
-        // Searchable metadata: name, category, subcategory, and SKU
         const searchTerms = [
           product.name,
           product.category,
@@ -400,8 +403,13 @@ if (document.readyState === 'loading') {
         card.onclick = () => window.location.href = `product-details.html?id=${encodeURIComponent(product._id)}`;
 
         card.innerHTML = `
-          <div class="aspect-square overflow-hidden bg-[#f5ede3]">
+          <div class="aspect-square overflow-hidden bg-[#f5ede3] relative">
             <img src="${mainImage}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='images/placeholder.png'" />
+            ${isOutOfStock ? `
+              <div class="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm shadow-sm">
+                Out of Stock
+              </div>
+            ` : ''}
           </div>
           <div class="p-4 md:p-5 flex flex-col">
             <h3 class="text-sm md:text-base font-medium text-[#6b4f35] mb-1 line-clamp-2">${product.name}</h3>
