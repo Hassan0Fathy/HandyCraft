@@ -2,7 +2,6 @@ const express = require("express");
 const cloudinary = require("../config/cloudinary");
 const { verifyAuth } = require("../middleware/auth");
 const multer = require("multer");
-const streamifier = require("streamifier");
 
 const router = express.Router();
 const upload = multer({
@@ -21,23 +20,17 @@ router.post("/image", verifyAuth, upload.single("file"), async (req, res) => {
     console.time("BackendTotalTime");
     console.time("CloudinaryUpload");
 
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "handycraft/products",
-        timeout: 120000
-      },
-      (error, result) => {
-        console.timeEnd("CloudinaryUpload");
-        if (error) {
-          console.error("Cloudinary upload error:", error);
-          return res.status(500).json({ success: false, message: error.message });
-        }
-        console.timeEnd("BackendTotalTime");
-        return res.json({ success: true, url: result.secure_url });
-      }
-    );
+    // Convert buffer to base64 data URI to use upload() instead of upload_stream()
+    const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-    streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+    const result = await cloudinary.uploader.upload(base64Image, {
+      folder: "handycraft/products",
+    });
+
+    console.timeEnd("CloudinaryUpload");
+    console.timeEnd("BackendTotalTime");
+    
+    return res.json({ success: true, url: result.secure_url });
 
   } catch (err) {
     console.error("Upload error:", err);
