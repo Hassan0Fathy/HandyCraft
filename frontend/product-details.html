@@ -492,11 +492,14 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
             </div>
           </div>
 
-          <div class="flex gap-3">
-            <button id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} class="flex-1 bg-[#9e7550] text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
+          <div class="flex flex-col gap-3">
+            <button id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-[#9e7550] text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#6b4f35] disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
               ${isOutOfStock ? 'Out of Stock' : 'Add to cart'}
             </button>
-            <a href="products.html" class="flex-1 bg-[#f5ede3] text-[#9e7550] py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#ebdccc] transition text-center border border-[#ecdccc]">
+            <button id="buy-now-btn" ${isOutOfStock ? 'disabled' : ''} class="w-full bg-black text-white py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium">
+              ${isOutOfStock ? 'Out of Stock' : 'Buy Now'}
+            </button>
+            <a href="products.html" class="w-full bg-[#f5ede3] text-[#9e7550] py-3 rounded-xl text-[12px] uppercase tracking-widest hover:bg-[#ebdccc] transition text-center border border-[#ecdccc]">
               Back
             </a>
           </div>
@@ -504,6 +507,7 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       `;
 
       // Append Success Modal HTML
+
       const modalHtml = `
         <div id="success-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-5 hidden">
           <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeSuccessModal()"></div>
@@ -545,9 +549,11 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       `;
       document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-      document.getElementById("add-to-cart-btn").addEventListener("click", () => addToCartWithCustomization(product));
+      document.getElementById("add-to-cart-btn").addEventListener("click", () => processPurchase(product, false));
+      document.getElementById("buy-now-btn").addEventListener("click", () => processPurchase(product, true));
       
       // Auto-select first variant if present
+
       if (product.hasVariants && product.variants && product.variants.length > 0) {
         selectVariant(0);
       }
@@ -564,198 +570,188 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
       });
     }
 
-    async function addToCartWithCustomization(product) {
-      const btn = document.getElementById("add-to-cart-btn");
-      const originalText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = 'Adding...';
+    async function validateAndBuildCustomization() {
+      const container = document.getElementById("custom-fields-form");
+      const inputs = container ? Array.from(container.querySelectorAll("[data-field-type]")) : [];
+      const customization = { images: [] };
+      let hasError = false;
 
-      try { // Added missing 'try' keyword
-        // Clear previous errors
-        document.querySelectorAll('.error-msg-0, .error-msg-1, .error-msg-2, .error-msg-3, .error-msg-4, .error-msg-5').forEach(el => {
-          el.classList.add('hidden');
-          el.textContent = '';
-        });
+      // Clear previous errors
+      document.querySelectorAll('[class*="error-msg-"]').forEach(el => {
+        el.classList.add('hidden');
+        el.textContent = '';
+      });
 
-        const customization = { images: [] };
-        const container = document.getElementById("custom-fields-form");
-        const inputs = container ? Array.from(container.querySelectorAll("[data-field-type]")) : [];
-        let hasError = false;
+      for (let fieldIdx = 0; fieldIdx < inputs.length; fieldIdx++) {
+        const el = inputs[fieldIdx];
+        const type = el.getAttribute("data-field-type");
+        const name = decodeURIComponent(el.getAttribute("data-field-name") || "");
+        const required = el.getAttribute("data-required") === "true" || el.getAttribute("data-required") === true;
+        const minImages = parseInt(el.getAttribute("data-min-images")) || 1;
+        const maxImages = parseInt(el.getAttribute("data-max-images")) || 100;
+        const errorMsg = document.querySelector(`.error-msg-${fieldIdx}`);
+        
+        if (!name) continue;
 
-        for (let fieldIdx = 0; fieldIdx < inputs.length; fieldIdx++) {
-          const el = inputs[fieldIdx];
-          const type = el.getAttribute("data-field-type");
-          const name = decodeURIComponent(el.getAttribute("data-field-name") || "");
-          const required = el.getAttribute("data-required") === "true" || el.getAttribute("data-required") === true;
-          const minImages = parseInt(el.getAttribute("data-min-images")) || 1;
-          const maxImages = parseInt(el.getAttribute("data-max-images")) || 100;
-          const errorMsg = document.querySelector(`.error-msg-${fieldIdx}`);
-          
-          if (!name) continue;
-
-          if (type === "text") {
-            const value = String(el.value || "").trim();
-            if (required && !value) {
-              if (errorMsg) {
-                errorMsg.textContent = `${name} is required`;
-                errorMsg.classList.remove('hidden');
-              }
-              hasError = true;
-            } else if (value) {
-              customization[name] = value;
+        if (type === "text") {
+          const value = String(el.value || "").trim();
+          if (required && !value) {
+            if (errorMsg) {
+              errorMsg.textContent = `${name} is required`;
+              errorMsg.classList.remove('hidden');
             }
-          } else if (type === "image") {
-            const files = selectedImages[fieldIdx] || [];
-            const fileCount = files.length;
+            hasError = true;
+          } else if (value) {
+            customization[name] = value;
+          }
+        } else if (type === "image") {
+          const files = selectedImages[fieldIdx] || [];
+          const fileCount = files.length;
 
-            if (required && fileCount === 0) {
+          if (required && fileCount === 0) {
+            if (errorMsg) {
+              errorMsg.textContent = `Please upload at least ${minImages} photo(s)`;
+              errorMsg.classList.remove('hidden');
+            }
+            hasError = true;
+          } else if (fileCount > 0) {
+            if (fileCount < minImages || fileCount > maxImages) {
               if (errorMsg) {
-                errorMsg.textContent = `Please upload at least ${minImages} photo(s)`;
+                errorMsg.textContent = `Please upload between ${minImages} and ${maxImages} photos (${fileCount} selected)`;
                 errorMsg.classList.remove('hidden');
               }
               hasError = true;
-            } else if (fileCount > 0) {
-              if (fileCount < minImages || fileCount > maxImages) {
-                if (errorMsg) {
-                  errorMsg.textContent = `Please upload between ${minImages} and ${maxImages} photos (${fileCount} selected)`;
-                  errorMsg.classList.remove('hidden');
-                }
-                hasError = true;
-              } else {
-                btn.textContent = `Reading photos...`;
-                console.log("UPLOAD START");
-                for (const file of files) {
-                  try {
-                    const base64 = await fileToBase64(file);
-                    customization.images.push({ file: base64, field: name });
-                  } catch (err) {
-                    throw new Error(`Failed to read ${file.name}: ${err.message}`);
-                  }
+            } else {
+              for (const file of files) {
+                try {
+                  const base64 = await fileToBase64(file);
+                  customization.images.push({ file: base64, field: name });
+                } catch (err) {
+                  throw new Error(`Failed to read ${file.name}: ${err.message}`);
                 }
               }
             }
           }
         }
+      }
 
-        if (hasError) {
-          throw new Error('Please fix the errors above');
-        }
-
-        const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
-        const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
-        
-        let finalPrice = Number(activeProduct.price) || 0;
-        let finalName = activeProduct.name;
-        let finalImg = activeProduct.images?.[0] || activeProduct.image || '';
-        let variantName = null;
-
-        if (currentVariant) {
-          finalName = `${activeProduct.name} - ${currentVariant.name}`;
-          variantName = currentVariant.name;
-          finalImg = currentVariant.images?.[0] || finalImg;
-          if (currentVariant.price !== undefined && currentVariant.price !== null) {
-            finalPrice = Number(currentVariant.price);
-          }
-        }
-
-        // If product is customizable, or it's a "newDesign" flow, we MUST create a new cart item and NOT merge
-        const isProductCustomizable = inputs.length > 0;
-        const params = new URLSearchParams(window.location.search);
-        const forceNewDesign = params.get('newDesign') === 'true';
-
-        let existingItem = null;
-        // Only attempt to merge if it's NOT customizable and NOT a forced new design
-        if (!isProductCustomizable && !forceNewDesign) {
-            existingItem = cart.find(item => item.baseId === (activeProduct._id || activeProduct.id) && item.variantName === variantName);
-        }
-        
-        if (existingItem) {
-          existingItem.qty = (existingItem.qty || 1) + qty;
-        } else {
-          // Generate fresh unique ID with fallback for older browsers
-          const cartItemId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
-            ? crypto.randomUUID() 
-            : Date.now().toString(36) + Math.random().toString(36).substr(2);
-          
-          // Create cart item WITHOUT images in localStorage (to avoid quota exceeded)
-          const customizationForStorage = { ...customization, images: [] };
-          
-          const cartItem = {
-            id: cartItemId,
-            cartId: cartItemId,
-            baseId: activeProduct._id || activeProduct.id,
-            category: String(activeProduct.category || '').trim(),
-            subcategory: String(activeProduct.subcategory || '').trim(),
-            variantId: currentVariant?._id || currentVariant?.id || null,
-            variantName: variantName,
-            name: finalName,
-            price: finalPrice,
-            qty: Math.max(1, qty),
-            img: finalImg,
-            customization: customizationForStorage,
-            hasImages: customization.images.length > 0
-          };
-          
-          // Save images to IndexedDB if they exist
-          if (customization.images.length > 0) {
-            try {
-              await saveImagesToIndexedDB(cartItemId, customization.images);
-            } catch (err) {
-              console.warn('Failed to save to IndexedDB, falling back to localStorage:', err);
-              // Fallback: save images to localStorage (will still work for small amounts)
-              customizationForStorage.images = customization.images;
-            }
-          }
-          
-          cart.push(cartItem);
-        }
-        
-        try {
-          localStorage.setItem("hc_cart", JSON.stringify(cart));
-          
-          // CLEANUP: Remove newDesign flag from URL so page behaves normally on refresh
-          if (forceNewDesign) {
-              params.delete('newDesign');
-              const newQuery = params.toString() ? '?' + params.toString() : '';
-              window.history.replaceState({}, '', window.location.pathname + newQuery);
-          }
-        } catch (err) {
-          if (err.name === 'QuotaExceededError') {
-            throw new Error('Cart storage is full. Please clear some items and try again.');
-          }
-          throw err;
-        }
-        
-        window.updateCartBadge && window.updateCartBadge();
-        updateDesignCounter(); // Update UI counter
-        openSuccessModal(); // Show workflow modal
-        
-        btn.textContent = '✓ Added to cart!';
-        btn.style.backgroundColor = '#2e8b57';
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.backgroundColor = '';
-          btn.disabled = false;
-        }, 2000);
-      } 
-      catch (error) {
-       if (error.message === 'Please fix the errors above') {
-      btn.textContent = originalText;
-      btn.disabled = false;
-  } else {
-    btn.textContent = 'Error - try again';
-    console.error('Add to cart error:', error);
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.disabled = false;
-    }, 2000);
-  }
-}
+      if (hasError) throw new Error('Please fix the errors above');
+      return customization;
     }
-  
-  
+
+    async function persistItemToCart(product, customization, qty) {
+      const cart = JSON.parse(localStorage.getItem("hc_cart") || "[]");
+      
+      let finalPrice = Number(product.price) || 0;
+      let finalName = product.name;
+      let finalImg = product.images?.[0] || product.image || '';
+      let variantName = null;
+
+      if (currentVariant) {
+        finalName = `${product.name} - ${currentVariant.name}`;
+        variantName = currentVariant.name;
+        finalImg = currentVariant.images?.[0] || finalImg;
+        if (currentVariant.price !== undefined && currentVariant.price !== null) {
+          finalPrice = Number(currentVariant.price);
+        }
+      }
+
+      const isProductCustomizable = (document.getElementById("custom-fields-form")?.querySelectorAll("[data-field-type]").length > 0);
+      const params = new URLSearchParams(window.location.search);
+      const forceNewDesign = params.get('newDesign') === 'true';
+
+      let existingItem = null;
+      if (!isProductCustomizable && !forceNewDesign) {
+          existingItem = cart.find(item => item.baseId === (product._id || product.id) && item.variantName === variantName);
+      }
+      
+      if (existingItem) {
+        existingItem.qty = (existingItem.qty || 1) + qty;
+      } else {
+        const cartItemId = (typeof crypto !== 'undefined' && crypto.randomUUID) 
+          ? crypto.randomUUID() 
+          : Date.now().toString(36) + Math.random().toString(36).substr(2);
+        
+        const customizationForStorage = { ...customization, images: [] };
+        
+        const cartItem = {
+          id: cartItemId,
+          cartId: cartItemId,
+          baseId: product._id || product.id,
+          category: String(product.category || '').trim(),
+          subcategory: String(product.subcategory || '').trim(),
+          variantId: currentVariant?._id || currentVariant?.id || null,
+          variantName: variantName,
+          name: finalName,
+          price: finalPrice,
+          qty: Math.max(1, qty),
+          img: finalImg,
+          customization: customizationForStorage,
+          hasImages: customization.images.length > 0
+        };
+        
+        if (customization.images.length > 0) {
+          await saveImagesToIndexedDB(cartItemId, customization.images);
+        }
+        cart.push(cartItem);
+      }
+      
+      localStorage.setItem("hc_cart", JSON.stringify(cart));
+      
+      if (forceNewDesign) {
+          params.delete('newDesign');
+          const newQuery = params.toString() ? '?' + params.toString() : '';
+          window.history.replaceState({}, '', window.location.pathname + newQuery);
+      }
+      
+      window.updateCartBadge && window.updateCartBadge();
+      updateDesignCounter();
+    }
+
+    async function processPurchase(product, isBuyNow = false) {
+      const btnId = isBuyNow ? 'buy-now-btn' : 'add-to-cart-btn';
+      const btn = document.getElementById(btnId);
+      const originalText = btn.textContent;
+
+      btn.disabled = true;
+      btn.textContent = isBuyNow ? 'Processing...' : 'Adding...';
+
+      try {
+        const customization = await validateAndBuildCustomization();
+        const qty = parseInt(document.getElementById("qty-input")?.value) || 1;
+
+        await persistItemToCart(product, customization, qty);
+
+        if (isBuyNow) {
+          window.location.href = 'payment.html';
+        } else {
+          openSuccessModal();
+          btn.textContent = '✓ Added to cart!';
+          btn.style.backgroundColor = '#2e8b57';
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.backgroundColor = '';
+            btn.disabled = false;
+          }, 2000);
+        }
+      } catch (error) {
+        if (error.message === 'Please fix the errors above') {
+          btn.textContent = originalText;
+          btn.disabled = false;
+        } else {
+          btn.textContent = 'Error - try again';
+          console.error('Purchase error:', error);
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.backgroundColor = '';
+            btn.disabled = false;
+          }, 2000);
+        }
+      }
+    }
 
     function setMainImage(src, el) {
+
       document.querySelectorAll('.thumbnail').forEach((thumb) => {
         thumb.classList.remove('border-[#9e7550]', 'opacity-100');
         thumb.classList.add('border-transparent', 'opacity-70');
