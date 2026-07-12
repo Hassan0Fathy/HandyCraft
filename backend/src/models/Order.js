@@ -79,6 +79,21 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["Pending", "Paid", "Completed", "Rejected"],
       default: "Pending"
+    },
+    promoCode: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    discountAmount: {
+      type: Number,
+      default: 0,
+      min: 0
+    },
+    originalTotal: {
+      type: Number,
+      default: 0,
+      min: 0
     }
   },
   {

@@ -9,6 +9,7 @@ const productRoutes = require("./routes/productRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const subcategoryRoutes = require("./routes/subcategoryRoutes");
+const promoRoutes = require("./routes/promoRoutes");
 
 const app = express();
 
@@ -87,6 +88,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/subcategories", subcategoryRoutes);
+app.use("/api/promos", promoRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
