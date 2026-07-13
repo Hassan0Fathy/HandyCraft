@@ -285,6 +285,34 @@
               No images uploaded yet.
             </div>
           </div>
+
+          <!-- Custom Fields Section -->
+          <div class="bg-beige-soft p-6 rounded-2xl border border-brown-pale">
+            <div class="flex items-center justify-between mb-4">
+              <label class="block text-xs uppercase tracking-widest text-brown-mid font-bold">Custom Fields</label>
+              <div class="flex gap-2">
+                <button type="button" id="edit-add-text-field-btn" class="px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest border border-brown-pale text-brown-mid hover:bg-white transition">Add Text</button>
+                <button type="button" id="edit-add-image-field-btn" class="px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest border border-brown-pale text-brown-mid hover:bg-white transition">Add Image</button>
+              </div>
+            </div>
+            <div id="edit-custom-fields-list" class="space-y-3"></div>
+          </div>
+
+          <!-- Variants Section -->
+          <div class="bg-beige-soft p-6 rounded-2xl border border-brown-pale">
+            <div class="flex items-center justify-between mb-4">
+              <label class="flex items-center gap-2 text-xs uppercase tracking-widest text-brown-mid font-bold cursor-pointer">
+                <input type="checkbox" id="edit-has-variants" class="w-4 h-4 rounded accent-brown-mid">
+                Enable Variants
+              </label>
+              <button type="button" id="edit-add-variant-btn" class="px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest bg-brown-mid text-white hover:bg-brown-dark transition">
+                + Add Variant
+              </button>
+            </div>
+            <div id="edit-variants-section" class="hidden space-y-4">
+              <div id="edit-variants-list" class="space-y-4"></div>
+            </div>
+          </div>
         </div>
         <div class="md:col-span-2 flex justify-end gap-3 pt-6 border-t border-brown-pale">
           <button type="button" onclick="closeEditModal()" class="px-6 py-2 rounded-xl border border-brown-pale text-brown-mid text-xs uppercase tracking-widest hover:bg-beige-soft transition">Cancel</button>
@@ -320,17 +348,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
   <script src="image-manager.js?v=2"></script>
+  <script src="product-form.js"></script>
   <script>
     // Config and Utils
+
     const API_BASE_URL = (window.RUNTIME_CONFIG?.API_BASE_URL || "http://localhost:5000/api").replace(/\/$/, '');
     const adminToken = localStorage.getItem('adminToken');
 
     // Global ImageManager instance
-    let imageManager;
+    let editProductFormManager;
     document.addEventListener('DOMContentLoaded', () => {
-        imageManager = new ImageManager('edit-images-grid', [], (imgs) => {
-            currentProductImages = imgs;
-        });
+        // This will be initialized in init() once we have access to categories/etc if needed, 
+        // but ProductFormManager just needs the DOM elements.
     });
 
     let allProducts = [];
@@ -356,6 +385,41 @@
     await loadReferenceData();
     await loadProducts();
     setupEventListeners();
+
+    // Initialize Unified Product Form Manager for Edit Modal
+    editProductFormManager = new ProductFormManager('edit-product-form', {
+        mainImageContainerId: 'edit-images-grid',
+        customFieldsContainerId: 'edit-custom-fields-list',
+        variantsSectionId: 'edit-variants-section',
+        variantsListId: 'edit-variants-list',
+        hasVariantsCheckboxId: 'edit-has-variants',
+        onSave: async (data) => {
+            const id = data._id;
+            const btn = document.getElementById('save-product-btn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            try {
+                const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+                    method: 'PATCH',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error('Update failed');
+                await loadProducts();
+                closeEditModal();
+            } catch (e) {
+                alert(e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Changes';
+            }
+        }
+    });
+
+    // Bind "Add" buttons for custom fields and variants
+    document.getElementById('edit-add-text-field-btn').onclick = () => editProductFormManager.addCustomField('text');
+    document.getElementById('edit-add-image-field-btn').onclick = () => editProductFormManager.addCustomField('image');
+    document.getElementById('edit-add-variant-btn').onclick = () => editProductFormManager.addVariant();
   }
 
   async function loadReferenceData() {
@@ -704,23 +768,7 @@
     const product = allProducts.find(p => p._id === id);
     if (!product) return;
 
-    document.getElementById('edit-product-id').value = product._id;
-    document.getElementById('edit-name').value = product.name || '';
-    document.getElementById('edit-sku').value = product.sku || '';
-    document.getElementById('edit-price').value = product.price || '';
-    document.getElementById('edit-status').value = product.status || 'active';
-    document.getElementById('edit-description').value = product.description || '';
-
-    // Load images using the unified ImageManager
-    currentProductImages = Array.isArray(product.images) ? [...product.images] : [];
-    imageManager.setImages(currentProductImages);
-
-    // Populate categories and set current
-    const catSelect = document.getElementById('edit-category');
-    catSelect.innerHTML = '<option value="">Select category</option>' + 
-      categories.map(c => `<option value="${escapeHtml(c.name)}" ${c.name === product.category ? 'selected' : ''}>${escapeHtml(c.name)}</option>`).join('');
-    
-    updateEditSubcategories(product.subcategory);
+    editProductFormManager.loadProductData(product);
 
     const modal = document.getElementById('edit-product-modal');
     const content = document.getElementById('edit-modal-content');
@@ -747,37 +795,7 @@
 
   async function handleEditProductSubmit(e) {
     e.preventDefault();
-    const id = document.getElementById('edit-product-id').value;
-    const btn = document.getElementById('save-product-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    const payload = {
-      name: document.getElementById('edit-name').value,
-      sku: document.getElementById('edit-sku').value,
-      price: parseFloat(document.getElementById('edit-price').value),
-      status: document.getElementById('edit-status').value,
-      category: document.getElementById('edit-category').value,
-      subcategory: document.getElementById('edit-subcategory').value,
-      description: document.getElementById('edit-description').value,
-      images: currentProductImages
-    };
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/products/${id}`, {
-        method: 'PATCH',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error('Update failed');
-      await loadProducts();
-      closeEditModal();
-    } catch(e) {
-      alert(e.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Save Changes';
-    }
+    await editProductFormManager.submit();
   }
 
   async function updateProductQuickly(id, field, value) {

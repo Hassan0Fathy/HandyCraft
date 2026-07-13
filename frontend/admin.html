@@ -12,6 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
       <script src="image-manager.js"></script>
+      <script src="product-form.js"></script>
       <style>
         body{font-family:'Jost',sans-serif;background-color:#faf5ef;color:#6b4f35}
         .font-cormorant{font-family:'Cormorant Garamond',serif}
@@ -1218,8 +1219,80 @@ document.addEventListener("DOMContentLoaded", () => {
   // Ensure everything is set up when DOM is ready
   function initializeAdminPanel() {
     initializeEventDelegation();
-    initializeFormButtons();
     
+    // Initialize Unified Product Form Manager for Add Product
+    const addProductFormManager = new ProductFormManager('add-product-form', {
+        mainImageContainerId: 'add-product-images-manager',
+        customFieldsContainerId: 'custom-fields-list',
+        variantsSectionId: 'variants-section',
+        variantsListId: 'variants-list',
+        hasVariantsCheckboxId: 'has-variants',
+        onSave: async (data) => {
+            const submitBtn = document.getElementById('add-product-btn');
+            const messageEl = document.getElementById('add-product-message');
+            
+            messageEl.textContent = '';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/products`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(adminToken),
+                    body: JSON.stringify(data)
+                });
+
+                if (handleAuthError(response)) return;
+
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.message || result.error || 'Failed to add product');
+                }
+
+                messageEl.textContent = 'Product added successfully! ✓';
+                messageEl.className = 'text-sm text-green-600 font-medium';
+
+                document.getElementById('add-product-form').reset();
+                addProductFormManager.mainImageManager.setImages([]);
+                document.getElementById('custom-fields-list').innerHTML = "";
+
+                setTimeout(() => {
+                    messageEl.textContent = '';
+                }, 3000);
+            } catch (error) {
+                messageEl.textContent = error.message;
+                messageEl.className = 'text-sm text-red-600 font-medium';
+                console.error('Product creation error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Product';
+            }
+        }
+    });
+
+    // Bind "Add" buttons
+    document.getElementById('add-text-field-btn').onclick = () => addProductFormManager.addCustomField('text');
+    document.getElementById('add-image-field-btn').onclick = () => addProductFormManager.addCustomField('image');
+    
+    const addVarBtn = document.getElementById('add-variant-btn');
+    if (addVarBtn) {
+        addVarBtn.onclick = () => addProductFormManager.addVariant();
+    }
+    
+    // Update HTML button id for variants to match
+    const variantBtn = document.querySelector('button[onclick="addVariantBlock()"]');
+    if (variantBtn) {
+        variantBtn.removeAttribute('onclick');
+        variantBtn.id = 'add-variant-btn';
+        variantBtn.onclick = () => addProductFormManager.addVariant();
+    }
+
+    // Handle Form Submit
+    document.getElementById('add-product-form').onsubmit = async (e) => {
+        e.preventDefault();
+        await addProductFormManager.submit();
+    };
+
     // Load data
     fetchAndPopulateCategories();
     fetchOrders()

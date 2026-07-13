@@ -413,7 +413,8 @@
           const formData = new FormData();
           formData.append('file', blob);
 
-          const response = await fetch(`${API_BASE_URL}/upload/public`, {
+          console.log("UPLOAD URL:", `${API_BASE_URL}/upload/public-image`);
+          const response = await fetch(`${API_BASE_URL}/upload/public-image`, {
               method: 'POST',
               body: formData
           });
