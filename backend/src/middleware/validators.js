@@ -109,12 +109,12 @@ function validateTotalPrice(totalPrice, items, customer) {
   // Shipping logic:
   // 1. Graduation > Frames: Cairo/Giza = 200 EGP, Others = Not Allowed
   // 2. All other products: Cairo/Giza = 75 EGP, Others = 95 EGP
-  
+
   const governorate = (customer?.governorate || '').toLowerCase();
   const isCairoGiza = governorate === 'cairo' || governorate === 'giza';
-  
-  const hasGraduationFrames = items.some(item => 
-    (item.category || '').toLowerCase() === 'graduation' && 
+
+  const hasGraduationFrames = items.some(item =>
+    (item.category || '').toLowerCase() === 'graduation products' &&
     (item.subcategory || '').toLowerCase() === 'frames'
   );
 
@@ -131,14 +131,14 @@ function validateTotalPrice(totalPrice, items, customer) {
   } else if (isCairoGiza) {
     shipping = 75;
   } else {
-    shipping = 95;
+    shipping = 90;
   }
 
   const itemsTotal = items.reduce((sum, item) => {
     const q = item.qty || item.quantity || 0;
     return sum + (item.price * q);
   }, 0);
-  
+
   const expectedTotal = itemsTotal + shipping;
   const tolerance = 1; // 1 EGP tolerance for rounding
 

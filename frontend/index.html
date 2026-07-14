@@ -284,10 +284,6 @@
       @apply font-cormorant text-sm md:text-base italic text-brown-dark leading-snug line-clamp-1 font-medium;
     }
 
-    .featured-product-desc {
-      @apply text-[11px] md:text-[12px] text-brown-light leading-snug line-clamp-1;
-    }
-
     .featured-product-price {
       @apply text-brown-dark font-medium text-[12px] md:text-[13px] tracking-wide;
     }
@@ -453,7 +449,6 @@
           const mainImage = product.images?.[0] || 'images/placeholder.png';
           const hoverImage = product.images?.[1] || mainImage;
           const hasHover = product.images?.length > 1;
-          const shortDesc = product.description?.split('.')[0] || '';
 
           return `
             <a href="product-details.html?id=${product._id}" class="product-card-link product-card-animate">
@@ -464,7 +459,6 @@
                 </div>
                 <div class="featured-product-content">
                   <h3 class="featured-product-name">${product.name}</h3>
-                  <p class="featured-product-desc">${shortDesc}</p>
                   <p class="featured-product-price">EGP ${product.price}</p>
                 </div>
               </div>

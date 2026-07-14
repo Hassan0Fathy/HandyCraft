@@ -439,6 +439,32 @@
       }
   }
 
+  /**
+   * Professional concurrency limiter (mimics p-limit)
+   * Ensures only 'concurrency' number of tasks run at once.
+   */
+  function pLimit(concurrency) {
+      const queue = [];
+      let activeCount = 0;
+
+      const runNext = () => {
+          if (queue.length === 0) return;
+          const { fn, resolve, reject } = queue.shift();
+          activeCount++;
+          fn().then(resolve).catch(reject).finally(() => {
+              activeCount--;
+              runNext();
+          });
+      };
+
+      return (fn) => new Promise((resolve, reject) => {
+          queue.push({ fn, resolve, reject });
+          if (activeCount < concurrency) {
+              runNext();
+          }
+      });
+  }
+
   async function submitOrderToApi(receiptBase64) {
       const btn = document.getElementById('pay-btn');
       const stats = {
@@ -449,59 +475,80 @@
 
       console.log('[Order] Starting order submission process...');
       
-      // 1. Calculate total images for progress tracking
+      // 1. Calculate total images and prepare upload tasks
       let totalImages = 0;
-      for (const item of cart) {
-          if (item.hasImages) {
-              const storedImages = await getImagesFromIndexedDB(item.id);
-              totalImages += (storedImages ? storedImages.length : 0);
-          }
-      }
-      
-      console.log(`[Order] Total images to upload: ${totalImages}`);
+      const itemsContext = [];
 
-      // 2. Prepare items by fetching and uploading images
-      const itemsWithImages = [];
-      let currentImageIdx = 0;
-
-      for (const item of cart) {
-          const customization = JSON.parse(JSON.stringify(item.customization || { images: [] }));
-          const uploadedImages = [];
+      for (let i = 0; i < cart.length; i++) {
+          const item = cart[i];
+          const itemImages = [];
           
           if (item.hasImages && item.id) {
               const storedImages = await getImagesFromIndexedDB(item.id);
               if (storedImages && storedImages.length > 0) {
                   for (const imgObj of storedImages) {
-                      currentImageIdx++;
-                      const uploadedUrl = await uploadImageToApi(
-                          imgObj.file, 
-                          imgObj.field || 'General', 
-                          btn, 
-                          currentImageIdx, 
-                          totalImages,
-                          stats
-                      );
-                      uploadedImages.push({
-                          url: uploadedUrl,
+                      totalImages++;
+                      itemImages.push({
+                          globalIdx: totalImages,
+                          file: imgObj.file,
                           field: imgObj.field || 'General'
                       });
                   }
               }
           }
           
-          customization.images = uploadedImages;
+          itemsContext.push({ item, itemImages });
+      }
+      
+      console.log(`[Order] Total images to upload: ${totalImages}`);
 
+      // 2. Execute Parallel Uploads with Concurrency Limit
+      const limit = pLimit(4);
+      const flatTasks = itemsContext.flatMap(ctx => ctx.itemImages);
+      
+      const uploadPromises = flatTasks.map(task => 
+          limit(() => uploadImageToApi(
+              task.file, 
+              task.field, 
+              btn, 
+              task.globalIdx, 
+              totalImages,
+              stats
+          ))
+      );
+
+      // Promise.all ensures order preservation and stops on first failure
+      const allUploadedUrls = await Promise.all(uploadPromises);
+
+      // 3. Reconstruct items with uploaded URLs
+      const itemsWithImages = [];
+      let urlOffset = 0;
+
+      for (const ctx of itemsContext) {
+          const { item, itemImages } = ctx;
+          const uploadedImages = [];
+          
+          for (const imgTask of itemImages) {
+              uploadedImages.push({
+                  url: allUploadedUrls[urlOffset++],
+                  field: imgTask.field
+              });
+          }
+          
           itemsWithImages.push({
               productId: item.baseId || item.id,
               name: item.name,
               subcategory: item.subcategory || "",
               price: item.price,
               quantity: parseInt(item.qty || item.quantity || 1),
-              customization: customization
+              customization: {
+                  ... (item.customization || {}),
+                  images: uploadedImages
+              }
           });
       }
 
-      // 3. Upload receipt if exists and is base64
+      // 4. Upload receipt if exists and is base64
       let finalReceiptUrl = "";
       if (receiptBase64 && receiptBase64.startsWith('data:')) {
           console.log('[Order] Uploading payment receipt...');
@@ -512,7 +559,7 @@
       const uploadDuration = Date.now() - stats.startTime;
       console.log(`[Stats] All uploads completed. Total Size: ${(stats.totalSize / (1024 * 1024)).toFixed(2)}MB, Duration: ${(uploadDuration / 1000).toFixed(2)}s`);
 
-      // 4. Build the final payload with URLs
+      // 5. Build the final payload with URLs
       let paymentMethod = 'InstaPay';
       document.querySelectorAll('input[name="payment_method"]').forEach(r => {
           if (r.checked) paymentMethod = r.value;
@@ -539,7 +586,7 @@
       console.log('[Order] Creating order with payload:', payload);
       btn.innerText = "Creating order...";
 
-      // 5. Submit to API
+      // 6. Submit to API
       const response = await fetch(`${API_BASE_URL}/orders`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
