@@ -449,8 +449,10 @@
     }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchData();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchData();
+      updateDisplay();
+
       const searchInput = document.getElementById('product-search');
       if (searchInput) {
         searchInput.addEventListener('input', (e) => {

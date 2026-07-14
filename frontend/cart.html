@@ -194,16 +194,21 @@
     const gov = (governorate || 'Cairo').toLowerCase();
     const isCairoGiza = gov === 'cairo' || gov === 'giza';
 
-    const hasSpecialItem = cartItems.some(item => {
-      const subSlug = (item.subcategorySlug || item.subcategory || '').toLowerCase();
-      return subSlug === SHIPPING_CONFIG.SPECIAL_SHIPPING_SUBCATEGORY_SLUG;
+    const hasGraduationFrame = cartItems.some(item => {
+      const cat = (item.category || '').toLowerCase().trim();
+      const sub = (item.subcategory || '').toLowerCase().trim();
+      // Match 'graduation products' category and 'frames' subcategory
+      return cat === 'graduation products' && sub === 'frames';
     });
 
-    if (hasSpecialItem) {
-      return isCairoGiza ? SHIPPING_CONFIG.SPECIAL_SHIPPING_COST_CAIRO_GIZA : SHIPPING_CONFIG.SPECIAL_SHIPPING_COST_OTHER;
-    } else {
-      return isCairoGiza ? SHIPPING_CONFIG.DEFAULT_SHIPPING_COST_CAIRO_GIZA : SHIPPING_CONFIG.DEFAULT_SHIPPING_COST_OTHER;
+    if (hasGraduationFrame && isCairoGiza) {
+      console.log('Graduation frame found in Cairo/Giza. Shipping: 200');
+      return 200;
     }
+
+    const shipping = isCairoGiza ? 75 : 90;
+    console.log(`Standard shipping. Gov: ${gov}, isCairoGiza: ${isCairoGiza}, Shipping: ${shipping}`);
+    return shipping;
   }
 </script>
 
