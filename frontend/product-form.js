@@ -305,14 +305,17 @@ class ProductFormManager {
 
     async gatherData() {
         const formData = new FormData(this.form);
+        const skuValue = formData.get('sku')?.trim();
+        const priceVal = parseFloat(formData.get('price'));
+        
         const data = {
             name: formData.get('name')?.trim(),
-            price: parseFloat(formData.get('price')),
+            price: isNaN(priceVal) ? 0 : priceVal,
             category: formData.get('category')?.trim(),
             subcategory: formData.get('subcategory')?.trim() || '',
             description: formData.get('description')?.trim(),
             status: formData.get('status')?.trim() || 'active',
-            sku: formData.get('sku')?.trim(),
+            sku: skuValue !== '' ? skuValue : undefined,
             bestSeller: formData.get('bestseller') === 'on',
             images: this.mainImageManager ? this.mainImageManager.getImages() : [],
             customFields: this.readCustomFields(),

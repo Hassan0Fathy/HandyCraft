@@ -446,8 +446,8 @@
         }
 
         grid.innerHTML = featured.map(product => {
-          const mainImage = product.images?.[0] || 'images/placeholder.png';
-          const hoverImage = product.images?.[1] || mainImage;
+          const mainImage = product.images?.[0] ? window.getCloudinaryImageUrl(product.images[0], { w: 500, c: 'fill' }) : 'images/placeholder.png';
+          const hoverImage = product.images?.[1] ? window.getCloudinaryImageUrl(product.images[1], { w: 500, c: 'fill' }) : mainImage;
           const hasHover = product.images?.length > 1;
 
           return `

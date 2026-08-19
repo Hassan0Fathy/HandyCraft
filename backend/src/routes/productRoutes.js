@@ -34,14 +34,19 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", verifyAuth, async (req, res) => {
   try {
-    const { name, sku, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body || {};
+    const { name, price, category, subcategory, description, images, customFields, bestSeller, hasVariants, variants } = req.body || {};
+    let { sku } = req.body || {};
+    
+    // Normalize SKU: trim and treat "" or whitespace as undefined
+    let normalizedSku = (sku !== undefined && sku !== null) ? String(sku).trim() : undefined;
+    if (normalizedSku === '') normalizedSku = undefined;
+
     if (!name || !price || !category || !description) {
       return res.status(400).json({ error: "Missing required fields: name, price, category, description" });
     }
 
-    const product = await Product.create({
+    const productData = {
       name: String(name).trim(),
-      sku: sku ? String(sku).trim() : undefined,
       price: Number(price),
       category: String(category).trim(),
       subcategory: String(subcategory || "").trim(),
@@ -78,9 +83,18 @@ router.post("/", verifyAuth, async (req, res) => {
               : []
           })).filter(v => v.name)
         : []
-    });
+    };
+    
+    if (normalizedSku !== undefined) {
+      productData.sku = normalizedSku;
+    }
+
+    const product = await Product.create(productData);
     return res.status(201).json(product);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ success: false, error: "SKU already exists" });
+    }
     return res.status(500).json({ error: err.message });
   }
 });

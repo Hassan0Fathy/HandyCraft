@@ -261,9 +261,46 @@ async function updateOrderStatus(req, res, next) {
   }
 }
 
+async function deleteOrder(req, res, next) {
+  try {
+    const { id } = req.params;
+    const rawId = String(id || '').trim();
+    const cleanId = rawId.replace(/^#/, '');
+
+    const mongoose = require("mongoose");
+    const order = await Order.findOne({
+      $or: [
+        ...(mongoose.Types.ObjectId.isValid(rawId) ? [{ _id: rawId }] : []),
+        ...(mongoose.Types.ObjectId.isValid(cleanId) ? [{ _id: cleanId }] : []),
+        { orderNumber: rawId },
+        { orderNumber: cleanId },
+        { orderNumber: `#${cleanId}` }
+      ]
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found"
+      });
+    }
+
+    await Order.findByIdAndDelete(order._id);
+
+    res.json({
+      success: true,
+      message: "Order deleted successfully",
+      data: { id: order._id, orderNumber: order.orderNumber }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createOrder,
   getAllOrders,
   getSingleOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  deleteOrder
 };

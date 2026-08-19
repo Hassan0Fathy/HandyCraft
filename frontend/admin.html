@@ -462,108 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return response.json();
   }
 
-  // Initialize Image Manager for Add Product
-  let imageManager;
-  document.addEventListener('DOMContentLoaded', () => {
-    imageManager = new ImageManager('add-product-images-manager', [], (imgs) => {
-        document.getElementById('image-urls').value = JSON.stringify(imgs);
-    });
-  });
-
-  async function createProduct(event) {
-    event.preventDefault();
-
-    const messageEl = document.getElementById('add-product-message');
-    const submitBtn = document.getElementById('add-product-btn');
-    const form = document.getElementById('add-product-form');
-
-    messageEl.textContent = '';
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Adding...';
-
-    try {
-      if (!adminToken) {
-        throw new Error('Please re-login to add products.');
-      }
-
-      const name = document.getElementById("name").value?.trim();
-      const price = document.getElementById("price").value?.trim();
-      const category = document.getElementById("category").value?.trim();
-      const subcategory = document.getElementById("subcategory").value?.trim() || "";
-      const description = document.getElementById("description").value?.trim();
-
-      if (!name || !price || !category || !description) {
-        throw new Error("Please fill all required fields");
-      }
-
-      if (isNaN(price) || parseFloat(price) <= 0) {
-        throw new Error("Price must be a positive number");
-      }
-
-      const uploadedImages = imageManager.getImages();
-      if (uploadedImages.length === 0) {
-        throw new Error("Please add at least one product image");
-      }
-
-      const customFields = readCustomFields();
-      
-      const hasVariants = document.getElementById("has-variants")?.checked || false;
-      let variants = [];
-      if (hasVariants) {
-        variants = await processVariants(submitBtn);
-        if (variants.length === 0) {
-          throw new Error("You enabled variants but didn't add any. Please add at least one variant or uncheck 'Enable Variants'.");
-        }
-      }
-
-      submitBtn.textContent = 'Saving product...';
-
-      const payload = {
-        name,
-        price: parseFloat(price),
-        category,
-        subcategory,
-        description,
-        images: uploadedImages,
-        customFields,
-        hasVariants,
-        variants,
-        bestSeller: document.getElementById("bestseller")?.checked || false
-      };
-
-      const response = await fetch(`${API_BASE_URL}/products`, {
-        method: 'POST',
-        headers: getAuthHeaders(adminToken),
-        body: JSON.stringify(payload)
-      });
-
-      if (handleAuthError(response)) return;
-
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || result.error || 'Failed to add product');
-      }
-
-      messageEl.textContent = 'Product added successfully! ✓';
-      messageEl.className = 'text-sm text-green-600 font-medium';
-
-      form.reset();
-      imageManager.setImages([]);
-      document.getElementById("custom-fields-list").innerHTML = "";
-
-      setTimeout(() => {
-        messageEl.textContent = '';
-      }, 3000);
-
-    } catch (error) {
-      messageEl.textContent = error.message;
-      messageEl.className = 'text-sm text-red-600 font-medium';
-      console.error('Product creation error:', error);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Add Product';
-    }
-  }
+  // Note: Add Product form uses ProductFormManager (initialized in initializeAdminPanel)
 
   function addCustomFieldRow(type) {
     const list = document.getElementById("custom-fields-list");
@@ -794,12 +693,6 @@ document.addEventListener("DOMContentLoaded", () => {
       addImageBtn.dataset.eventBound = 'true';
     }
 
-    // Add product form submission
-    const addProductForm = document.getElementById('add-product-form');
-    if (addProductForm && !addProductForm.dataset.eventBound) {
-      addProductForm.addEventListener('submit', createProduct);
-      addProductForm.dataset.eventBound = 'true';
-    }
   }
 
   function formatOrderDate(value) {
@@ -945,8 +838,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           
           <div class="flex flex-col gap-3">
-            <div class="flex gap-2">
-              ${actionBtns}
+            <div class="flex gap-2 items-center">
+              <div class="flex-1 flex gap-2">${actionBtns}</div>
+              <button data-action="deleteOrder" data-index="${originalIdx}" class="px-3 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition shrink-0" title="Delete Order">Delete</button>
             </div>
             <button data-action="viewDetails" data-index="${originalIdx}" class="w-full bg-[#f5ede3] text-[#9e7550] text-[10px] tracking-widest uppercase py-2.5 rounded-lg hover:bg-[#ebdccc] transition font-medium">Full Details</button>
           </div>
@@ -1158,11 +1052,38 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOrders();
   }
 
+  async function deleteOrder(idx) {
+    const o = orders[idx];
+    if (!o) return;
+    const orderNum = o.orderNumber || o._id;
+    if (!confirm(`Are you sure you want to delete order #${orderNum}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/${o._id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(adminToken)
+      });
+      if (handleAuthError(response)) return;
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'Failed to delete order');
+      }
+      closeModal();
+      await fetchOrders();
+      renderOrders();
+    } catch (err) {
+      alert('Error deleting order: ' + err.message);
+    }
+  }
+
   // --- 1. EXPOSE TO WINDOW ---
   window.viewDetails = viewDetails;
   window.updateStatus = updateStatus;
   window.filterOrders = filterOrders;
   window.updateDetailsStatus = updateDetailsStatus;
+  window.deleteOrder = deleteOrder;
   window.closeModal = closeModal;
 
   // --- 2. GLOBAL EVENT DELEGATION (Setup once with proper initialization) ---
@@ -1207,6 +1128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       } else if (action === 'updateDetailsStatus' && !isNaN(idx) && status) {
         window.updateDetailsStatus(idx, status);
+      } else if (action === 'deleteOrder' && !isNaN(idx)) {
+        window.deleteOrder(idx);
       } else if (action === 'downloadAllAsZip') {
         window.downloadAllAsZip(window.lastInjectedUrls || []);
       } else if (action === 'openUrl' && url) {

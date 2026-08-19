@@ -2,6 +2,33 @@ window.RUNTIME_CONFIG = {
   API_BASE_URL: "https://handycraft.runasp.net/api"
 };
 
+window.getCloudinaryImageUrl = function(url, options = {}) {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes('res.cloudinary.com')) return url;
+  
+  const uploadIndex = url.indexOf('/image/upload/');
+  if (uploadIndex === -1) return url;
+  
+  const transformations = [];
+  if (options.f) transformations.push(`f_${options.f}`);
+  else transformations.push('f_auto');
+  
+  if (options.q) transformations.push(`q_${options.q}`);
+  else transformations.push('q_auto');
+  
+  if (options.w) transformations.push(`w_${options.w}`);
+  if (options.h) transformations.push(`h_${options.h}`);
+  if (options.c) transformations.push(`c_${options.c}`);
+  
+  const transformStr = transformations.join(',');
+  if (!transformStr) return url;
+
+  const basePath = url.substring(0, uploadIndex + 14);
+  const restOfPath = url.substring(uploadIndex + 14);
+  
+  return `${basePath}${transformStr}/${restOfPath}`;
+};
+
 // Back to Top Button Injection
 (function() {
   const initBackToTop = () => {

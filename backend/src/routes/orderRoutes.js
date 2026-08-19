@@ -4,7 +4,8 @@ const {
   createOrder,
   getAllOrders,
   getSingleOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  deleteOrder
 } = require("../controllers/orderController");
 
 const { verifyAuth } = require("../middleware/auth");
@@ -22,5 +23,8 @@ router.get("/:id", verifyAuth, getSingleOrder);
 
 // PATCH /api/orders/:id - Update order status (protected - admin only)
 router.patch("/:id", verifyAuth, updateOrderStatus);
+
+// DELETE /api/orders/:id - Delete order (protected - admin only)
+router.delete("/:id", verifyAuth, deleteOrder);
 
 module.exports = router;

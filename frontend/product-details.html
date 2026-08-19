@@ -317,7 +317,7 @@
                 return `
                   <div onclick="selectVariant(${i})" class="variant-thumb-wrapper shrink-0 cursor-pointer flex flex-col items-center gap-2 group">
                     <div class="variant-thumb w-[60px] h-[60px] rounded-full overflow-hidden border-2 border-[#ecdccc] transition-all duration-300 group-hover:border-[#9e7550]">
-                      <img src="${previewImg}" class="w-full h-full object-cover" onerror="this.src='images/placeholder.png'">
+                      <img src="${window.getCloudinaryImageUrl(previewImg, { w: 200, h: 200, c: 'fill' })}" class="w-full h-full object-cover" onerror="this.src='images/placeholder.png'">
                     </div>
                     <span class="text-[9px] uppercase tracking-tight text-brown-mid text-center max-w-[65px] truncate leading-tight">${v.name}</span>
                   </div>
@@ -343,7 +343,7 @@
 
       const thumbnailsHtml = images.length > 1 ? images.map((img, idx) => `
             <img 
-              src="${img}" 
+              src="${window.getCloudinaryImageUrl(img, { w: 200, h: 200, c: 'fill' })}" 
               class="thumbnail w-16 h-16 rounded-lg object-cover border-2 border-transparent opacity-70 cursor-pointer transition hover:opacity-100" 
               onclick="window.setMainImage('${img}', this)"
               onerror="this.src='images/placeholder.png'"
@@ -353,7 +353,7 @@
       productContainer.innerHTML = `
         <div class="anim-1">
           <div class="aspect-square rounded-3xl overflow-hidden mb-4 border border-[#ecdccc] bg-[#f5ede3] relative">
-            <img id="main-image" src="${mainImage}" class="w-full h-full object-cover transition duration-300 ${isOutOfStock ? 'opacity-60' : ''}" onerror="this.src='images/placeholder.png'" />
+            <img id="main-image" src="${window.getCloudinaryImageUrl(mainImage, { w: 1200, c: 'limit' })}" class="w-full h-full object-cover transition duration-300 ${isOutOfStock ? 'opacity-60' : ''}" onerror="this.src='images/placeholder.png'" />
             ${isOutOfStock ? `
               <div class="absolute inset-0 flex items-center justify-center">
                 <div class="bg-red-500 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
@@ -685,7 +685,7 @@
       const mainImg = document.getElementById('main-image');
       mainImg.style.opacity = 0;
       setTimeout(() => {
-        mainImg.src = src;
+        mainImg.src = window.getCloudinaryImageUrl(src, { w: 1200, c: 'limit' });
         mainImg.style.opacity = 1;
       }, 120);
     }
